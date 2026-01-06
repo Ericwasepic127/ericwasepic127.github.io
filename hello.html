@@ -12,9 +12,12 @@
         <p>==========================================</p>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
+            import micropip as pip
+
+            
 
             async def terminal():
-                names = {}
+                names = {"pip": pip}
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(f"Python {sys.version} \n(Erkhemee Edition)")
@@ -30,7 +33,7 @@
                          exec("\n".join(alls), names)
                          alls=[]
                          enter = ">>>"
-                      elif enter == "..." or ":" in execute:
+                      elif enter == "..." or execute.strip().endswith(":"):
                          enter = "..."
                          alls.append(execute)
                       else: 
