@@ -12,6 +12,7 @@
         <p>==========================================</p>
         <script type="py" terminal worker>
             import sys, code, time
+            
             print("Hello, from Python " + sys.version)
             print("Program doesn't store your data, ")
             print("so don't worry!")
@@ -28,17 +29,12 @@
             if selector == "yes":
                 print("Opening terminal ...")
                 time.sleep(5)
-                __terminal__.clear()
                 code.interact(local=locals())
-                print("Exited terminal. Clearing ...")
+                print("Exited terminal.")
                 time.sleep(5)
-                __terminal__.clear()
             else:
                 print("Bye! ")
                 time.sleep(5)
-                __terminal__.clear()
-                
-               
         </script>
     </body>
 </html>
