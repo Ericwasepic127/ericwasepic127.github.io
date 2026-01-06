@@ -32,7 +32,7 @@
                 try:
                    print(f"Python {sys.version} \n(Erkhemee Edition)")
                    while 1:
-                      execute= input(">>> ")
+                      execute= await input(">>> ")
                       exec(execute)
                 except Exception as e:
                     print(f"Error: {e}")
