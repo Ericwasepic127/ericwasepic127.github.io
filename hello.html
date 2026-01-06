@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>PyScript</title>
+        <title>PyScript - Python on website</title>
         <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.2/core.css" />
         <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
     </head>
@@ -11,36 +11,63 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="py" terminal worker>
-            import sys, code, time
-            
-            print("Hello, from Python " + sys.version)
-            print("Program doesn't store your data, ")
-            print("so don't worry!")
-            name = await input("What is your name? ")
-            favs = []
-            favr = ["Movie", "Food", "Fruit", "Vegetable", "WebSite"]
-            for fav in favr: 
-                 user = await input("Favourite " + fav + ": ")
-                 favs.append("Favourite " + fav + ": " + user)
-            print("Your name: " + name)
-            for fav in favs: print(fav)
-            selector = await input("Do you want to open python terminal (yes/no): ")
-            selector = selector.lower()
-            if selector == "yes":
-                print("Opening terminal ...")
-                time.sleep(5)
-                try:
-                   print(f"Python {sys.version} \n(Erkhemee Edition)")
-                   while 1:
-                      execute= await input(">>> ")
-                      exec(execute)
-                except Exception as e:
-                    print(f"Error: {e}")
-                print("Exited terminal.")
-                time.sleep(5)
-            else:
+            import time, traceback, platform, sys
+
+            def terminal():
+                tip = """
+                Use input with await like:
+                     user = await input()
+                Some modules already imported.
+                Use "exit" for exiting, "help" for helping.
+                """
+                print("Opening terminal ...", end="\r")
+                time.sleep(2.825)
+                print(tip)
+                print(f"Python {sys.version} \n(Erkhemee Edition)")
+                enter = ">>>"
+                alls = []
+                while 1:
+                   try:
+                      execute= await input("{enter} ")
+                      if not ":" in execute and enter == ">>>": 
+                         enter = ">>>"
+                         exec(execute)
+                      elif enter == "..." and not bool(execute):
+                         exec("\n".join(alls))
+                      elif enter == "..." or ":" in execute:
+                         enter = "..."
+                         alls.append(execute)
+                      else: 
+                         enter = ">>>"
+                   except SystemExit as code:
+                      break
+                   except Exception as e:
+                     print("".join(traceback.format_exception(e)))
+                print(f"Exited terminal. {code}")
                 print("Bye! ")
-                time.sleep(5)
+            
+            print("Hello from Python (Pyodide)", platform.python_version())
+            print("Program doesn't store your data, so don't worry!")
+            print("Hint: Try entering @:/\\:@")
+            name = await input("What is your name? ")
+            if name != "@:/\\:@": 
+                favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
+                favr = ["Movie", "Food", "Fruit", "Vegetable", "Game"]
+                for fav in favr: 
+                     user = await input(f"{name}'s (Your) Favourite {fav}: ")
+                print("My name is Erkhembayr")
+                for a in [0, 1, 2, 3, 4]: 
+                    print(f"Erkhembayr's (My) Favourite {favr[a]}: {favs[a]}")
+                selector = await input("Do you want to open python terminal (yes/no): ")
+                selector = selector.lower()
+                if selector == "yes":
+                    terminal()
+                else:
+                    print("Bye! ")
+                    time.sleep(5)
+            else: 
+                print("Secret: UNLOCKED! You entered @:/\\:@")
+                terminal()
         </script>
     </body>
 </html>
