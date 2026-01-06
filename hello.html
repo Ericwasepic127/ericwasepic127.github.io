@@ -11,13 +11,19 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="mpy">
-            from pyscript import display
-            import sys
-            display("Hello, from Python "+ str(sys.version))
+            
         </script>
         <script type="mpy" terminal worker>
+            import code, sys
+            print("Hello, from Python "+ str(sys.version))
+            
             print("I made python on website ")
-            print("Do you wanna see it?")
+            yes = input("Do you wanna see it (Yes/no) ? ")
+            
+            if yes.lower() == "yes":
+                code.interact()
+            else:
+                sys.exit(0)
         </script>
     </body>
 </html>
