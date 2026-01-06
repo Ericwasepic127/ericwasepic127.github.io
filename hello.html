@@ -10,11 +10,9 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <script type="mpy">
-            
-        </script>
-        <script type="mpy" terminal worker>
+        <script type="py" terminal worker>
             import sys, os
+            os.system(sys.executable)
             print("Hello, from Python "+ str(sys.version))
             
             print("I made python on website ")
