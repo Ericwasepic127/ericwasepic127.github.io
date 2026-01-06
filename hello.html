@@ -22,7 +22,7 @@
                 alls = []
                 while 1:
                    try:
-                      execute= await input("{enter} ")
+                      execute= await input(f"{enter} ")
                       if not ":" in execute and enter == ">>>": 
                          enter = ">>>"
                          exec(execute)
