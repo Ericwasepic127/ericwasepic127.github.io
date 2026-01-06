@@ -14,7 +14,7 @@
             import time, traceback, platform, sys
 
             async def terminal():
-                
+                names = {}
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(f"Python {sys.version} \n(Erkhemee Edition)")
@@ -25,9 +25,9 @@
                       execute= await input(f"{enter} ")
                       if not ":" in execute and enter == ">>>": 
                          enter = ">>>"
-                         exec(execute)
+                         exec(execute, names)
                       elif enter == "..." and not bool(execute):
-                         exec("\n".join(alls))
+                         exec("\n".join(alls), names)
                          alls=[]
                          enter = ">>>"
                       elif enter == "..." or ":" in execute:
