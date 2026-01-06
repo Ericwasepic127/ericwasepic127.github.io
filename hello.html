@@ -3,24 +3,17 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>PyScript trying</title>
+        <title>PyScript</title>
         <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.2/core.css" />
         <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
     </head>
     <body>
         <h1>Hello world!</h1>
-        <p>These are the Python interpreters in PyScript 2025.11.2:</p>
+        <p>This is the Python interpreters in PyScript:</p>
+    
         <script type="py">
-            # Pyodide
             from pyscript import display
-            import sys
-            display(sys.version)
-        </script>
-        <script type="mpy">
-            # MicroPython
-            from pyscript import display
-            import sys
-            display(sys.version)
+            display("Hello")
         </script>
     </body>
 </html>
