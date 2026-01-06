@@ -14,14 +14,14 @@
             
         </script>
         <script type="mpy" terminal worker>
-            import code, sys
+            import sys, os
             print("Hello, from Python "+ str(sys.version))
             
             print("I made python on website ")
             yes = input("Do you wanna see it (Yes/no) ? ")
             
             if yes.lower() == "yes":
-                code.interact()
+                os.system(sys.executable)
             else:
                 sys.exit(0)
         </script>
