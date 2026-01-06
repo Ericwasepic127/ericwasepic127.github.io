@@ -14,12 +14,7 @@
             import time, traceback, platform, sys
 
             def terminal():
-                tip = """
-                Use input with await like:
-                     user = await input()
-                Some modules already imported.
-                Use "exit" for exiting, "help" for helping.
-                """
+                tip = "Use input with await like:\n     user = await input()\nSome modules already imported. \nUse \"exit\" for exiting, \"help\" for helping."
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(tip)
