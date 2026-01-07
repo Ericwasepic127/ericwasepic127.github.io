@@ -10,15 +10,50 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <script type="py" terminal worker service-worker="cdn.jsdelivr.net">
-            import time, traceback, platform, sys, pyscript 
-
-            input("Trying")
-
-            def __pip__(_): pass
+        <button 
+        <script type="py" terminal worker>
+            import time, traceback, platform, sys
+            from pyscript import prompt as __e_e__
+            from pyscript import document as __e_a__
+            from js import encodeURIComponent as __val1__
+            from js import decodeURIComponent as __val2__
+            from pyscript import pyodide as __py__
             
+            doc_s = __val1__(__e_a__.cookie)
+            def __cook_in__(value):
+                value = "*".join(value)
+                if doc_s:
+                    __e_a__.cookie = __val2__(f"data={value}; path=/; max-age={90 * 24 * 60 * 60}; SameSite=Lax")
+                else: 
+                    __e_a__.cookie = __val2__(f"data=[]; path=/; max-age={90 * 24 * 60 * 60}; SameSite=Lax")
+
+            def __cook_fi__():
+                if doc_s: 
+                    spl = doc_s.split(";")
+                    for a in spl:
+                        a = a.strip()
+                        if a.startswith("data="):
+                            return a.split("*")
+                    return False
+                else: 
+                    return False
+            
+            def __pip__(_): 
+                install = __e_e__("Please enter pip package name: ")
+                if install: 
+                    cook = __cook_fi__()
+                    if cook: 
+                        __cook_in__(cook + [install])
+                    else: 
+                        __cook_in__([install])
             async def terminal():
-                names = {}
+                __py__.loadPackage("micropip")
+                cook = __cook_fi__()
+                if cook: 
+                    pip = ", ".join(cook)
+                    print(f"Packages installing: {pip}")
+                    await micropip.install(cook)
+                names = {} + globals() + locals()
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(f"Python {sys.version} \n(Erkhemee Edition)")
