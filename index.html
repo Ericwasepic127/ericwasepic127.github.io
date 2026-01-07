@@ -6,10 +6,11 @@
         <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
     </head>
     <body>
+        <p id="python">Python version (on python-on-web-browser): </p>
         <script type="py">
             from pyscript import *
             import platform 
-            display(f"Python version: {platform.python_version()}")
+            display(platform.python_version(), target="python")
         </script>
         <h1>Welcome to my web page!</h1>
         <p>My FIRST website ever!</p>
