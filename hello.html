@@ -10,11 +10,13 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <button 
+        <button onclick="__pip_install">Add PIP packages</button>
+        <button onclick="__pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
             from pyscript import prompt as __e_e__
             from pyscript import document as __e_a__
+            from pyscript import alert as __e_r__
             from js import encodeURIComponent as __val1__
             from js import decodeURIComponent as __val2__
             from pyscript import pyodide as __py__
@@ -37,8 +39,12 @@
                     return False
                 else: 
                     return False
+
+            def _check_run():
+                if not __cook_fi():
+                    __cook_in([])
             
-            def __pip__(_): 
+            def __pip_install(_): 
                 install = __e_e__("Please enter pip package name: ")
                 if install: 
                     cook = __cook_fi__()
@@ -46,13 +52,28 @@
                         __cook_in__(cook + [install])
                     else: 
                         __cook_in__([install])
+
+            def __pip_clear(_):
+                delete = _e_e_("Enter uninstall package name: ")
+                if delete and __cook_fi() and delete in __cook_fi():
+                    dat = []
+                    for cooks in __cook_fi():
+                        if cooks != delete: 
+                            dat.append(cooks)
+                    __cook_in(dat)
+                elif not delete in __cook_fi():
+                    __e_r__(f"Module {delete} isn't exists in pip installer")
+            
             async def terminal():
                 __py__.loadPackage("micropip")
+                import micropip
                 cook = __cook_fi__()
                 if cook: 
                     pip = ", ".join(cook)
                     print(f"Packages installing: {pip}")
-                    await micropip.install(cook)
+                    for cooks in cook:
+                        print(f"Installing package {cooks}", end="\r")
+                        await micropip.install(cooks)
                 names = {} + globals() + locals()
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
