@@ -8,10 +8,11 @@
         <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
     </head>
     <body>
-      <script type="py" terminal worker>
-        name = input("Name: ")
-        if name: print(f"Hello, {name}!")
-        else: print("Enter name! But hello, someone!")
-      </script>
+      <div id="new-terminal">
+            <script id="python-terminal" type="py" terminal>
+                import code
+                code.interact()
+            </script>
+      </div>
     </body>
 </html>
