@@ -15,6 +15,9 @@
         <script type="py" terminal worker>
             import pyscript
             print("Available in pyscript:", ", ".join(dir(pyscript)))
+            for mod in dir(pyscript):
+                try: print(f"Available in {mod}:", ", ".join(dir(mod)))
+                except: pass
             # Look for 'prompt', 'alert', 'window', etc.
             exit()
             import time, traceback, platform, sys
