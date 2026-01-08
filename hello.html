@@ -11,8 +11,8 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <p>Tip: Not finished, may get error.</p>
-        <button onclick="__pip_install">Add PIP packages</button>
-        <button onclick="__pip_clear">Delete PIP packages</button>
+        <button py-click="__pip_install">Add PIP packages</button>
+        <button py-click="__pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker service-worker="https://cdn.jsdelivr.net">
             import time, traceback, platform, sys
             from pyscript import window
