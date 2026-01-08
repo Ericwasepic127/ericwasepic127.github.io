@@ -12,7 +12,7 @@
         <p>==========================================</p>
         <button onclick="__pip_install">Add PIP packages</button>
         <button onclick="__pip_clear">Delete PIP packages</button>
-        <script type="py" terminal worker>
+        <script type="py" terminal worker service-worker="https://pyscript.net/releases/2025.11.2/pyscript-sw.js">
             import time, traceback, platform, sys
             from pyscript import window
             __e_e__ = window.prompt
