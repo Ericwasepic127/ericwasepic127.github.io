@@ -14,7 +14,7 @@
         <button onclick="__pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import pyscript
-            print("Available in pyscript:", dir(pyscript))
+            print("Available in pyscript:", ", ".join(dir(pyscript)))
             # Look for 'prompt', 'alert', 'window', etc.
             exit()
             import time, traceback, platform, sys
