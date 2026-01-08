@@ -14,7 +14,7 @@
         <button onclick="__pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
-            from js.window import prompt as __e_e__
+            __e_e__ = __import__("js").window.prompt
             from js.window import document as __e_a__
             from js.window import alert as __e_r__
             from js import encodeURIComponent as __val1__
