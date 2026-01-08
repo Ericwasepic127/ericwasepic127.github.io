@@ -13,15 +13,9 @@
         <button onclick="__pip_install">Add PIP packages</button>
         <button onclick="__pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
-            import pyscript
-            print("Available in pyscript:", ", ".join(dir(pyscript)))
-            for mod in dir(pyscript):
-                try: print(f"Available in {mod}:", ", ".join(dir(mod)))
-                except: pass
-            # Look for 'prompt', 'alert', 'window', etc.
-            exit()
             import time, traceback, platform, sys
-            __e_e__ = __import__("js.window").prompt
+            from pyscript import window
+            __e_e__ = window.prompt
             from js.window import document as __e_a__
             from js.window import alert as __e_r__
             from js import encodeURIComponent as __val1__
