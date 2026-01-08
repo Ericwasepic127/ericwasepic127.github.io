@@ -1,43 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>PyScript - Python on website (Terminal)</title>
-        <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.2/core.css" />
-        <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
-    </head>
-    <body>
-      <div id="new-terminal">
-            <script id="python-terminal" type="py" terminal worker>
-                import code
-                code.interact()
-            </script>
-            <script type="py">
-                import asyncio
-                import random
-                from pyscript import document
-                python_terminal = document.getElementById("python-terminal")
-
-
-                async def type_it_in(code):
-    
-                    lines = code.split("\n")
-                    for line in lines:
-                        await asyncio.sleep(1)
-                        for char in line:
-                            wait = random.choice([0.05, 0.07, 0.1, 0.15, 0.2, 0.3])
-                            await asyncio.sleep(wait)
-                            python_terminal.terminal.write(char)
-                    python_terminal.terminal.write("\x1b[2K\r>>> ")
-                    python_terminal.process(line.strip())
-
-                await type_it_in(
-                    'import platform \r\n'
-                    'print(f"Hello, from PyScript Pyodide (version {platform.python_version()}!")\r\n'
-                    '# Your turn ....'
-                )
-            </script>
-      </div>
-    </body>
+<html>
+<head>
+    <title>Python Terminal</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.2/core.css">
+    <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
+</head>
+<body>
+    <script type="py" terminal worker>
+        # That's it! PyScript gives you terminal automatically!
+        print("Ready! Type Python code below!")
+    </script>
+</body>
 </html>
