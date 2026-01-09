@@ -23,7 +23,7 @@
                 return packs
             
             async def terminal():
-                await pyodide.loadPackage("micropip")
+                await pyodide.loadPackagesFromImports("micropip")
                 import micropip
                 cook = cookie_finder()
                 if cook: 
