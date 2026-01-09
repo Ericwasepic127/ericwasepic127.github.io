@@ -12,6 +12,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <p>Tip: Not finished, may get error.</p>
+        <p style="display:none" id="packages"></p>
         <script type="py">
             from js import prompt
             from js import document
@@ -32,6 +33,9 @@
             def init():
                 if not cookie_finder():
                     cookie_set([])
+                else: 
+                    div = document.getElementById("packages")
+                    div.textContent = "*".join(cookie_finder())
             
             def pip_install(_): 
                 init()
@@ -42,6 +46,7 @@
                         cookie_set(cook + [install])
                     else: 
                         cookie_set([install])
+                init()
 
             def pip_clear(_):
                 init()
@@ -55,19 +60,21 @@
                     cookie_set(new)
                 else:
                     alert(f"Module {delete} isn't exists in pip installer")
+                init()
+
+            init()
         </script>
         <button py-click="pip_install">Add PIP packages</button>
         <button py-click="pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
 
-            from js import decodeURIComponent as decode
-            from pyscript import localStorage
+            from js import document
             
             def cookie_finder():
-                cookie = decode(localStorage.getItem("packages"))
-                if cookie: 
-                    return cookie.split("*")
+                div = document.getElementById("packages")
+                if div and div.textContent:
+                    return div.textContent.split("*")
                 return []
             
             async def terminal():
@@ -80,7 +87,7 @@
                     for cooks in cook:
                         print(f"Installing package {cooks}", end="\r")
                         await micropip.install(cooks)
-                names = {} + globals() + locals()
+                names = {**globals(), **locals()} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(f"Python {sys.version} \n(Erkhemee Edition)")
