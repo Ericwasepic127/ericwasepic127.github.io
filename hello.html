@@ -61,7 +61,8 @@
                      enter = ">>>"
                 print(f"Exited terminal. {code}")
                 print("Bye! ")
-            print("Hello from Python (Pyodide)", platform.python_version())
+            print(dir(pyodide._package_loader))
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): V2.1")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@")
             name = await input("What is your name? ")
