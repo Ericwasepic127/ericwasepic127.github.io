@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>PyScript - Python on website</title>
+        <title>PyScript - Python on website (not finished)</title>
         <script src="./mini-coi-fd.js"></script>
         <script type="module" src="./pyscript/core.js" offline></script>
         <link rel="stylesheet" href="./pyscript/core.css">
@@ -12,7 +12,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, pyodide
+            import time, traceback, platform, sys, pyodide_js
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
@@ -62,7 +62,7 @@
                 print(f"Exited terminal. {code}")
                 print("Bye! ")
 
-            print(dir(pyodide))
+            print(dir(pyodide_js))
             print("Hello from Python (Pyodide)", platform.python_version())
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@")
