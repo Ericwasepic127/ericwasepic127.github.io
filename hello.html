@@ -25,11 +25,12 @@
             
             async def terminal():
                 try:
+                    await micropip.install("micropip")
                     import micropip 
                     print("[INFO]: Regulary imported micropip")
                 except (ModuleNotFoundError, ImportError):
                     import pyodide 
-                    await pyodide.loadPackage("micropip")
+                    await pyodide.loadPackageFromImports("micropip")
                     import micropip
                     print("[INFO]: Used pyodide to import micropip")
                 cook = await cookie_finder()
