@@ -12,7 +12,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys
+            import time, traceback, platform, sys, pyodide
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
