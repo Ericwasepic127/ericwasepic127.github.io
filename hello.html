@@ -4,8 +4,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>PyScript - Python on website (In development)</title>
-        <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.2/core.css" />
-        <script type="module" src="https://pyscript.net/releases/2025.11.2/core.js"></script>
+        <script src="./mini-coi-fd.js"></script>
+        <script type="module" src="./pyscript/core.js" offline></script>
+        <link rel="stylesheet" href="./pyscript/core.css">
     </head>
     <body>
         <a href="/index.html"> Back to homepage </a>
@@ -13,12 +14,12 @@
         <p>Tip: Not finished, may get error.</p>
         <button py-click="__pip_install">Add PIP packages</button>
         <button py-click="__pip_clear">Delete PIP packages</button>
-        <script type="py" terminal worker service-worker="https://cdn.jsdelivr.net">
+        <script type="py" terminal worker>
             import time, traceback, platform, sys
             from pyscript import window
             __e_e__ = window.prompt
-            from js.window import document as __e_a__
-            from js.window import alert as __e_r__
+            from pyscript.window import document as __e_a__
+            from pyscript.window import alert as __e_r__
             from js import encodeURIComponent as __val1__
             from js import decodeURIComponent as __val2__
             from pyscript import pyodide as __py__
