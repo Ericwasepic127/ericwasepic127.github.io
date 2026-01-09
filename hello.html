@@ -13,12 +13,11 @@
         <p>==========================================</p>
         <p>Tip: Not finished, may get error.</p>
         <script type="py">
-            from pyscript.window import prompt
-            from pyscript.window import document
-            from pyscript.window import alert
+            from js import prompt
+            from js import document
+            from js import alert
             from js import encodeURIComponent as encode
             from js import decodeURIComponent as decode
-            from pyscript import pyodide
             from js.window import localStorage
             
             def cookie_finder():
@@ -61,22 +60,11 @@
         <button py-click="pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
-
-            def cookie_finder():
-                if cookie: 
-                    datas = cookie.split(";")
-                    for data in datas:
-                        data = data.strip()
-                        if data.startswith("data="):
-                            data_converted = data[5:]
-                            if data_converted:
-                                return data_converted.split("*")
-                return []
             
             async def terminal():
                 await pyodide.loadPackage("micropip")
                 import micropip
-                cook = cookie_finder()
+                cook = 
                 if cook: 
                     pip = ", ".join(cook)
                     print(f"Packages installing: {pip}")
