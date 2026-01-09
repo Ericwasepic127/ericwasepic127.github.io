@@ -13,8 +13,6 @@
         <p>==========================================</p>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
-
-            from js import document
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
