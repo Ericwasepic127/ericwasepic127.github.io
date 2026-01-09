@@ -62,7 +62,7 @@
             import time, traceback, platform, sys
 
             from js import decodeURIComponent as decode
-            from pyscript.window import localStorage
+            from pyscript import localStorage
             
             def cookie_finder():
                 cookie = decode(localStorage.getItem("packages"))
