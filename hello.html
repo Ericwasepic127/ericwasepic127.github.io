@@ -12,7 +12,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, pyodide_js
+            import time, traceback, platform, sys, pyodide
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
@@ -23,7 +23,7 @@
                 return packs
             
             async def terminal():
-                await pyodide.loadPackagesFromImports("micropip")
+                await pyodide._package_loader("micropip")
                 import micropip
                 cook = cookie_finder()
                 if cook: 
@@ -61,8 +61,6 @@
                      enter = ">>>"
                 print(f"Exited terminal. {code}")
                 print("Bye! ")
-
-            print(dir(pyodide_js))
             print("Hello from Python (Pyodide)", platform.python_version())
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@")
