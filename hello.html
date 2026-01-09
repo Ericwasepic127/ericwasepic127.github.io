@@ -60,11 +60,20 @@
         <button py-click="pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
+
+            from js import decodeURIComponent as decode
+            from js import localStorage
+            
+            def cookie_finder():
+                cookie = decode(localStorage.getItem("packages"))
+                if cookie: 
+                    return cookie.split("*")
+                return []
             
             async def terminal():
                 await pyodide.loadPackage("micropip")
                 import micropip
-                cook = 
+                cook = cookie_finder()
                 if cook: 
                     pip = ", ".join(cook)
                     print(f"Packages installing: {pip}")
