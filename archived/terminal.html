@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>PyScript - Python on website (In development)</title>
+        <script src="./mini-coi-fd.js"></script>
+        <script type="module" src="./pyscript/core.js" offline></script>
+        <link rel="stylesheet" href="./pyscript/core.css">
+    </head>
+    <body>
+        <a href="/index.html"> Back to homepage </a>
+        <p>==========================================</p>
+        <p>Tip: Not finished, may get error.</p>
+        <p style="display:none" id="packages"></p>
+        <script type="py">
+            from js import prompt
+            from js import document
+            from js import alert
+            from js import encodeURIComponent as encode
+            from js import decodeURIComponent as decode
+            from js import localStorage
+            
+            def cookie_finder():
+                cookie = decode(localStorage.getItem("packages"))
+                if cookie: 
+                    return cookie.split("*")
+                return []
+            
+            def cookie_set(value):
+                localStorage.setItem("packages", encode('*'.join(value)))
+            
+            def init():
+                if not cookie_finder():
+                    cookie_set([])
+                else: 
+                    div = document.getElementById("packages")
+                    div.textContent = "*".join(cookie_finder())
+            
+            def pip_install(_): 
+                init()
+                install = prompt("Please enter pip package name: ")
+                if install: 
+                    cook = cookie_finder()
+                    if cook: 
+                        cookie_set(cook + [install])
+                    else: 
+                        cookie_set([install])
+                init()
+
+            def pip_clear(_):
+                init()
+                delete = prompt("Enter uninstall package name: ")
+                cookie = cookie_finder()
+                if delete and cookie and delete in cookie:
+                    new = []
+                    for cooks in cookie:
+                        if cooks != delete: 
+                            new.append(cooks)
+                    cookie_set(new)
+                else:
+                    alert(f"Module {delete} isn't exists in pip installer")
+                init()
+
+            init()
+        </script>
+        <button py-click="pip_install">Add PIP packages</button>
+        <button py-click="pip_clear">Delete PIP packages</button>
+        <script type="py" terminal worker>
+            import time, traceback, platform, sys
+
+            from js import document
+            
+            def cookie_finder():
+                div = document.getElementById("packages")
+                if div and div.textContent:
+                    return div.textContent.split("*")
+                return []
+            
+            async def terminal():
+                await pyodide.loadPackage("micropip")
+                import micropip
+                cook = cookie_finder()
+                if cook: 
+                    pip = ", ".join(cook)
+                    print(f"Packages installing: {pip}")
+                    for cooks in cook:
+                        print(f"Installing package {cooks}", end="\r")
+                        await micropip.install(cooks)
+                names = {**globals(), **locals()} 
+                print("Opening terminal ...", end="\r")
+                time.sleep(2.825)
+                print(f"Python {sys.version} \n(Erkhemee Edition)")
+                enter = ">>>"
+                alls = []
+                while 1:
+                   try:
+                      execute= await input(f"{enter} ")
+                      if not ":" in execute and enter == ">>>": 
+                         enter = ">>>"
+                         exec(execute, names)
+                      elif enter == "..." and not bool(execute):
+                         exec("\n".join(alls), names)
+                         alls=[]
+                         enter = ">>>"
+                      elif enter == "..." or execute.strip().endswith(":"):
+                         enter = "..."
+                         alls.append(execute)
+                      else: 
+                         enter = ">>>"
+                   except SystemExit as code:
+                      break
+                   except Exception as e:
+                     print("".join(traceback.format_exception(e)))
+                     alls=[]
+                     enter = ">>>"
+                print(f"Exited terminal. {code}")
+                print("Bye! ")
+            
+            print("Hello from Python (Pyodide)", platform.python_version())
+            print("Program doesn't store your data, so don't worry!")
+            print("Hint: Try entering @:/\\:@")
+            name = await input("What is your name? ")
+            if name != "@:/\\:@": 
+                favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
+                favr = ["Movie", "Food", "Fruit", "Vegetable", "Game"]
+                for fav in favr: 
+                     user = await input(f"{name}'s (Your) Favourite {fav}: ")
+                print("My name is Erkhembayr")
+                for a in [0, 1, 2, 3, 4]: 
+                    print(f"Erkhembayr's (My) Favourite {favr[a]}: {favs[a]}")
+                selector = await input("Do you want to open python terminal (yes/no): ")
+                selector = selector.lower()
+                if selector == "yes":
+                    await terminal()
+                else:
+                    print("Bye! ")
+                    time.sleep(5)
+            else: 
+                print("Secret: UNLOCKED! You entered @:/\\:@")
+                await terminal()
+        </script>
+    </body>
+</html>
