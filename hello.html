@@ -12,6 +12,9 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
+        <script type="py-config">
+            packages = ["micropip"] 
+        </script>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
             
@@ -24,17 +27,16 @@
                 return packs
             
             async def terminal():
+                cancel = True
                 try:
                     await micropip.install("micropip")
                     import micropip 
                     print("[INFO]: Regulary imported micropip")
-                except (ModuleNotFoundError, ImportError):
-                    import pyodide 
-                    await pyodide.loadPackageFromImports("micropip")
-                    import micropip
-                    print("[INFO]: Used pyodide to import micropip")
+                except (ModuleNotFoundError, ImportError) as e:
+                    print("[ERROR]: Can not use micropip: {e}. \nCanceling pip package adding ....")
+                    cancel = False
                 cook = await cookie_finder()
-                if cook: 
+                if cook and cancel: 
                     pip = ", ".join(cook) if len(cook) > 1 else cook[0]
                     print(f"Package(s) installing: {pip}")
                     for cooks in cook:
