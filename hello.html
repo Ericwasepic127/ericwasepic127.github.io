@@ -12,65 +12,71 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <p>Tip: Not finished, may get error.</p>
-        <button py-click="__pip_install">Add PIP packages</button>
-        <button py-click="__pip_clear">Delete PIP packages</button>
+        <script type="py">
+            from pyscript.window import prompt
+            from pyscript.window import document
+            from pyscript.window import alert
+            from js import encodeURIComponent as encode
+            from js import decodeURIComponent as decode
+            from pyscript import pyodide
+            from pyscript.window import localStorage
+            
+            def cookie_finder():
+                cookie = decode(localStorage.getItem("packages"))
+                if cookie: 
+                    return cookie.split("*")
+                return []
+            
+            def cookie_set(value):
+                localStorage.setItem("packages", encode('*'.join(value)))
+            
+            def init():
+                if not cookie_finder():
+                    cookie_set([])
+            
+            def pip_install(_): 
+                init()
+                install = prompt("Please enter pip package name: ")
+                if install: 
+                    cook = cookie_finder()
+                    if cook: 
+                        cookie_set(cook + [install])
+                    else: 
+                        cookie_set([install])
+
+            def pip_clear(_):
+                init()
+                delete = prompt("Enter uninstall package name: ")
+                cookie = cookie_finder()
+                if delete and cookie and delete in cookie:
+                    new = []
+                    for cooks in cookie:
+                        if cooks != delete: 
+                            new.append(cooks)
+                    cookie_set(new)
+                else:
+                    alert(f"Module {delete} isn't exists in pip installer")
+        </script>
+        <button py-click="pip_install">Add PIP packages</button>
+        <button py-click="pip_clear">Delete PIP packages</button>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
-            from pyscript import window
-            __e_e__ = window.prompt
-            from pyscript.window import document as __e_a__
-            from pyscript.window import alert as __e_r__
-            from js import encodeURIComponent as __val1__
-            from js import decodeURIComponent as __val2__
-            from pyscript import pyodide as __py__
-            
-            doc_s = __val1__(__e_a__.cookie)
-            def __cook_in__(value):
-                value = "*".join(value)
-                if doc_s:
-                    __e_a__.cookie = __val2__(f"data={value}; path=/; max-age={90 * 24 * 60 * 60}; SameSite=Lax")
-                else: 
-                    __e_a__.cookie = __val2__(f"data=[]; path=/; max-age={90 * 24 * 60 * 60}; SameSite=Lax")
 
-            def __cook_fi__():
-                if doc_s: 
-                    spl = doc_s.split(";")
-                    for a in spl:
-                        a = a.strip()
-                        if a.startswith("data="):
-                            return a.split("*")
-                    return False
-                else: 
-                    return False
-
-            def _check_run():
-                if not __cook_fi():
-                    __cook_in([])
-            
-            def __pip_install(_): 
-                install = __e_e__("Please enter pip package name: ")
-                if install: 
-                    cook = __cook_fi__()
-                    if cook: 
-                        __cook_in__(cook + [install])
-                    else: 
-                        __cook_in__([install])
-
-            def __pip_clear(_):
-                delete = _e_e_("Enter uninstall package name: ")
-                if delete and __cook_fi() and delete in __cook_fi():
-                    dat = []
-                    for cooks in __cook_fi():
-                        if cooks != delete: 
-                            dat.append(cooks)
-                    __cook_in(dat)
-                elif not delete in __cook_fi():
-                    __e_r__(f"Module {delete} isn't exists in pip installer")
+            def cookie_finder():
+                if cookie: 
+                    datas = cookie.split(";")
+                    for data in datas:
+                        data = data.strip()
+                        if data.startswith("data="):
+                            data_converted = data[5:]
+                            if data_converted:
+                                return data_converted.split("*")
+                return []
             
             async def terminal():
-                __py__.loadPackage("micropip")
+                await pyodide.loadPackage("micropip")
                 import micropip
-                cook = __cook_fi__()
+                cook = cookie_finder()
                 if cook: 
                     pip = ", ".join(cook)
                     print(f"Packages installing: {pip}")
