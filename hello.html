@@ -22,9 +22,9 @@
             try: 
                 import micropip 
                 print("[INFO]: Regulary imported micropip")
-            except Exception as error:
+            except Exception as e:
                 cancel = False
-                print("[ERROR]: Can not use micropip: {e}. \nCanceling pip package adding ....")
+                print(f"[ERROR]: Can not use micropip: {e}. \nCanceling pip package adding ....")
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
