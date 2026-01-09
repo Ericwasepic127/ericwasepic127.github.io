@@ -12,7 +12,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, micropip
+            import time, traceback, platform, sys
             
             async def cookie_finder():
                 yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
@@ -23,7 +23,15 @@
                 return packs
             
             async def terminal():
-                cook = cookie_finder()
+                try:
+                    import micropip 
+                    print("[INFO]: Regulary imported micropip")
+                except (ModuleNotFoundError, ImportError):
+                    import pyodide 
+                    await pyodide.loadPackage("micropip")
+                    import micropip
+                    print("[INFO]: Used pyodide to import micropip")
+                cook = await cookie_finder()
                 if cook: 
                     pip = ", ".join(cook) if len(cook) > 1 else cook[0]
                     print(f"Package(s) installing: {pip}")
