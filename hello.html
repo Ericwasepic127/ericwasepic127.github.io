@@ -28,8 +28,8 @@
                 print("Canceling pip package adding ....")
             
             async def cookie_finder():
-                yes = await input("Do you wanna install pip packages (Y/n)? ").lower() == 'y'
-                if yes:
+                yes = await input("Do you wanna install pip packages (Y/n)? ")
+                if yes.lower() == 'y':
                     packs = await input("Enter package name (if multiple, split by space): ").split()
                 else: 
                     packs = []
@@ -91,13 +91,19 @@
                 selector = await input("Do you want to open python terminal (yes/no): ")
                 selector = selector.lower()
                 if selector == "yes":
-                    await terminal()
+                    try:
+                        await terminal()
+                    except Exception as e:
+                        print(f"Terminal crashed:", e)
                 else:
                     print("Bye! ")
                     time.sleep(5)
             else: 
                 print("Secret: UNLOCKED! You entered @:/\\:@")
-                await terminal()
+                try:
+                    await terminal()
+                except Exception as e:
+                    print(f"Terminal crashed:", e)
         </script>
     </body>
 </html>
