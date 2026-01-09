@@ -19,7 +19,7 @@
             from js import encodeURIComponent as encode
             from js import decodeURIComponent as decode
             from pyscript import pyodide
-            from pyscript.window import localStorage
+            from js.window import localStorage
             
             def cookie_finder():
                 cookie = decode(localStorage.getItem("packages"))
