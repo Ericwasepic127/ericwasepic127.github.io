@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>PyScript - Python on website (not finished)</title>
+        <title>PyScript - Python on website</title>
         <script src="./mini-coi-fd.js"></script>
         <script type="module" src="./pyscript/core.js" offline></script>
         <link rel="stylesheet" href="./pyscript/core.css">
@@ -72,12 +72,13 @@
                       else: 
                          enter = ">>>"
                    except SystemExit as code:
-                      break
+                        print(f"Exited terminal. {code if code else 0}")
+                        break
                    except Exception as e:
                      print("".join(traceback.format_exception(e)))
                      alls=[]
                      enter = ">>>"
-                print(f"Exited terminal. {code}")
+                
                 print("Bye! ")
             
             print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.1.1")
@@ -107,7 +108,8 @@
                 try:
                     await terminal()
                 except Exception as e:
-                    print(f"Terminal crashed:", e)
+                    print(f"\n\nTerminal crashed:", e)
+                    print("Consider refresh webpage and run again")
         </script>
     </body>
 </html>
