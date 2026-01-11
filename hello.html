@@ -12,9 +12,9 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <script type="py-config">
+        <py-config>
             packages = ["micropip"] 
-        </script>
+        </py-config>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
 
@@ -28,10 +28,14 @@
                 print("Canceling pip package adding ....")
             
             async def cookie_finder():
-                yes = await input("Do you wanna install pip packages (Y/n)? ")
-                if yes.lower() == 'y':
-                    packs = await input("Enter package name (if multiple, split by space): ").split()
-                else: 
+                if cancel:
+                    yes = await input("Do you wanna install pip packages (Y/n)? ")
+                    if yes.lower() == 'y':
+                        packs = await input("Enter package name (if multiple, split by space): ")
+                        packs = packs.split()
+                    else: 
+                        packs = []
+                else:
                     packs = []
                 return packs
             
