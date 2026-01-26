@@ -59,7 +59,10 @@
                 while 1:
                    try:
                       execute= await input(f"{enter} ")
-                      if not ":" in execute and enter == ">>>": 
+                      if not ":" in execute and enter == ">>>" and "await" in execute: 
+                         enter = ">>>"
+                         await exec(execute, names)
+                      elif not ":" in execute and enter == ">>>": 
                          enter = ">>>"
                          exec(execute, names)
                       elif enter == "..." and not bool(execute):
