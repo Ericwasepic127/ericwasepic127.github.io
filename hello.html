@@ -14,6 +14,7 @@
         <p>==========================================</p>
         <py-config>
             packages = ["micropip"] 
+            files = ["./loady.py"]
         </py-config>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
@@ -38,6 +39,10 @@
                 else:
                     packs = []
                 return packs
+
+            def clear():
+                sys.stdout.write("\033c")
+                sys.stdout.flush()
             
             async def terminal():
                 global cancel
@@ -59,9 +64,8 @@
                 while 1:
                    try:
                       execute= await input(f"{enter} ")
-                      if not ":" in execute and enter == ">>>" and "await" in execute: 
-                         enter = ">>>"
-                         await exec(execute, names)
+                      if execute == "%clear": 
+                         clear()
                       elif not ":" in execute and enter == ">>>": 
                          enter = ">>>"
                          exec(execute, names)
@@ -84,9 +88,9 @@
                 
                 print("Bye! ")
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.1.1")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.1.2")
             print("Program doesn't store your data, so don't worry!")
-            print("Hint: Try entering @:/\\:@")
+            print("Hint: Try entering @:/\\:@ (Developer-Mode))")
             name = await input("What is your name? ")
             if name != "@:/\\:@": 
                 favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
