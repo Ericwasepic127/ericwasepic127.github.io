@@ -1,0 +1,2 @@
+AddType text/x-python .py
+AddType application/javascript .js
