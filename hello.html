@@ -16,8 +16,11 @@
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys
+            import time, traceback, platform, sys, code
 
+            def _input(prompt=""):
+                return asyncio.run(input(prompt))
+            
             cancel = True
             try: 
                 import micropip 
@@ -54,39 +57,11 @@
                     for cooks in cook:
                         print(f"Installing package {cooks}", end="\r")
                         await micropip.install(cooks)
-                names = {**globals(), **locals()} 
+                names = {**globals(), **locals(), "input": _input} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
-                print(f"Python {sys.version} \n(Erkhemee Edition)")
-                print("Type %clear or clear() for clear screen!")
-                enter = ">>>"
-                alls = []
-                while 1:
-                   try:
-                      execute= await input(f"{enter} ")
-                      if execute.strip() == "%clear": 
-                         clear()
-                      elif not ":" in execute and enter == ">>>": 
-                         enter = ">>>"
-                         exec(execute, names)
-                      elif enter == "..." and not bool(execute):
-                         exec("\n".join(alls), names)
-                         alls=[]
-                         enter = ">>>"
-                      elif enter == "..." or execute.strip().endswith(":"):
-                         enter = "..."
-                         alls.append(execute)
-                      else: 
-                         enter = ">>>"
-                   except SystemExit as code:
-                        print(f"Exited terminal. {code if code else 0}")
-                        break
-                   except:
-                     traceback.print_exc()
-                     alls=[]
-                     enter = ">>>"
-                
-                print("Bye! ")
+                cool = f"Python {sys.version} \n(Erkhemee Edition)\nType clear() for clear screen"
+                code.interact(readfunc=_input, banner=cool, exitmsg="Exiting Erkhemee Terminal ... \r", local=names)
             
             print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.2.1")
             print("Program doesn't store your data, so don't worry!")
