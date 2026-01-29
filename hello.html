@@ -13,8 +13,7 @@
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
         <py-config>
-            packages = ["micropip"],
-            files = ["loady.py"]
+            packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
             import time, traceback, platform, sys
@@ -59,13 +58,13 @@
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
                 print(f"Python {sys.version} \n(Erkhemee Edition)")
-                print("Type %clear and clear() for clear screen, import loady for try out my project!")
+                print("Type %clear or clear() for clear screen!")
                 enter = ">>>"
                 alls = []
                 while 1:
                    try:
                       execute= await input(f"{enter} ")
-                      if execute == "%clear": 
+                      if execute.strip() == "%clear": 
                          clear()
                       elif not ":" in execute and enter == ">>>": 
                          enter = ">>>"
@@ -82,16 +81,16 @@
                    except SystemExit as code:
                         print(f"Exited terminal. {code if code else 0}")
                         break
-                   except Exception as e:
-                     print("".join(traceback.format_exception(e)))
+                   except:
+                     traceback.print_exc()
                      alls=[]
                      enter = ">>>"
                 
                 print("Bye! ")
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.1.3")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.2.1")
             print("Program doesn't store your data, so don't worry!")
-            print("Hint: Try entering @:/\\:@ (Developer-Mode))")
+            print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = await input("What is your name? ")
             if name != "@:/\\:@": 
                 favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
@@ -115,8 +114,8 @@
                 print("Secret: UNLOCKED! You entered @:/\\:@")
                 try:
                     await terminal()
-                except Exception as e:
-                    print(f"\n\nTerminal crashed:", e)
+                except BaseException as e:
+                    print(f"\n\nTerminal crashed by error {e.__class__.__name__}: {e}")
                     print("Consider refresh webpage and run again")
         </script>
     </body>
