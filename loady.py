@@ -10,45 +10,48 @@ from time import sleep as sl
 from random import choice as ch
 from itertools import cycle as cy
 
-def loadbar(icon="", long=25, sleeps=0.1):
+def loadbar(icon="", left=" ", long=25, sleeps=0.1):
     """
     Regular loading bar
     Arguments: 
         icon='' - What should display if increases 
+        left=" " - What display left items
         long=25 - How longs 
         sleeps=0.1 - How long between loads
     """
     level = long - 1
     for a in range(long):
         dashes = icon * a
-        spaces = ' ' * level
+        spaces = left * level
         print(f'[{dashes}{spaces}]', end='\r')
         level -= 1
         sl(sleeps)
-    print("\n")
+    print()
 
-def funrandomerchapter(icon="0123456789", long=25, sleeps=0.1):
+def funrandomerchapter(icon="0123456789", left=" ", long=25, sleeps=0.1):
     """
     Randomly selects from icon, then increase 
     Arguments: 
         icon='0123456789' - What should display if increases 
+        left=" " - What display left items
         long=25 - How long
         sleeps=0.1 - How long between loads
     """
     level = long - 1
     for a in range(long):
         dashes = ch(icon) * a
-        spaces = ' ' * level
+        spaces = left * level
         print(f'[{dashes}{spaces}]', end='\r')
         level -= 1
-        sl(0.1)
-    print("\n")
+        sl(sleeps)
+    print()
 
-def funconituner(icon="0123456789", long=10, sleeps=0.1):
+def funconituner(icon="0123456789", left=" ", long=10, sleeps=0.1):
     """
     Loops from icon, increase 
     Arguments: 
         icon='0123456789' - What should display if increases 
+        left=" " - What display left items
         long=10 - How longs 
         sleeps=0.1 - How long between loads
     """
@@ -56,45 +59,47 @@ def funconituner(icon="0123456789", long=10, sleeps=0.1):
     level = long - 1
     for a in range(long):
         dashes = next(ico) * a
-        spaces = ' ' * level
+        spaces = left * level
         print(f'[{dashes}{spaces}]', end='\r')
         level -= 1
         sl(sleeps)
-    print("\n")
+    print()
 
-def fundecrase(icon="", long=25, sleeps=0.1):
+def fundecrase(icon="", left=" ", long=25, sleeps=0.1):
     """
     Reversed loads
     Arguments: 
         icon='' - What should display if decreases 
+        left=" " - What display left items
         long=25 - How longs 
         sleeps=0.1 - How long between loads
     """
     level = long - 1
     for a in range(long):
-        dashes = ' ' * a
+        dashes = left * a
         spaces = icon * level
         print(f'[{dashes}{spaces}]', end='\r')
         level -= 1
         sl(sleeps)
-    print("\n")
+    print()
 
-def funbetween(icon="#", long=25, sleeps=(0.5, 0.1, 1, 3)):
+def funbetween(icon="#", left=" ", long=25, sleeps=(0.5, 0.1, 1, 3)):
     """
     Randomly selects from sleep range, then sleeps
     Arguments: 
         icon='#' - What should display if increases 
+        left=" " - What display left items
         long=25 - How long
         sleeps=(0.5, 0.1, 1, 3) - How long between loads
     """
     level = long - 1
     for a in range(long):
         dashes = icon * a
-        spaces = ' ' * level
+        spaces = left * level
         print(f'[{dashes}{spaces}]', end='\r')
         level -= 1
         sl(ch(sleeps))
-    print("\n")
+    print()
 
 __all__ = {
     "loadbar": loadbar, 
@@ -105,5 +110,4 @@ __all__ = {
 }
 __version__ = "V1.0"
 
-print("Welcome to my project: loady")
-print("Arguments:", ", ".join(__all__.keys()))
+
