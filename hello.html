@@ -19,7 +19,7 @@
             import time, traceback, platform, sys, code, asyncio
 
             def _input(prompt=""):
-                return asyncio.run(input(prompt))
+                return asyncio.run(input(str(prompt)))
             
             cancel = True
             try: 
@@ -63,7 +63,7 @@
                 cool = f"Python {sys.version} \n(Erkhemee Edition)\nType clear() for clear screen"
                 code.interact(readfunc=_input, banner=cool, exitmsg="Exiting Erkhemee Terminal ... \r", local=names)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.2.1")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.2.8")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = await input("What is your name? ")
