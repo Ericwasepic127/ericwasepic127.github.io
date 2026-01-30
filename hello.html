@@ -16,7 +16,7 @@
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, code
+            import time, traceback, platform, sys, code, asyncio
 
             def _input(prompt=""):
                 return asyncio.run(input(prompt))
