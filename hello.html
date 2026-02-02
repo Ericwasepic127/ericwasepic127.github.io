@@ -16,7 +16,7 @@
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, code, asyncio
+            import time, traceback, platform, sys, code, asyncio, pyscript
 
             def _help(obj="+++"):
                 """Help function by Erkhemee"""
@@ -29,6 +29,27 @@
                       print(item)
                    else: 
                       print("No documention found on", obj.__name__)
+
+            def fetcher(url):
+                """Gets text from website, then return
+                For example, use my loady project, URL is https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py
+                Then, 
+                file = fetcher('https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py')
+                exec(file)
+                It will execute it
+                Now, use as
+                loadbar('#')
+                """
+                try:
+                    aw = asyncio.run
+                    it = aw(pyscript.fetch(url))
+                    if it.ok:
+                       re = aw(it.text())
+                    else: 
+                       re = ""
+                    return re
+                except:
+                  return ""
             
             def _input(prompt=""):
                 """
@@ -75,9 +96,9 @@
                 names = {**globals(), **locals(), "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(2.825)
-                cool = f"Python {sys.version} \n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
-                cool += ", _await(awaitable) or awaiter(awaitable) for await keyword"
-                code.interact(readfunc=_input, banner=cool, exitmsg="Exiting Erkhemee Terminal ... \r\r\r", local=names, local_exit=True)
+                cool = f"Python {sys.version} on {sys.platform}\n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
+                cool += ", _await(awaitable) or awaiter(awaitable) for await keyword, fetcher(url_link) for get text from URL"
+                code.interact(readfunc=_input, banner=cool, exitmsg="Exiting Erkhemee Terminal ...", local=names, local_exit=True)
             
             print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.2.9")
             print("Program doesn't store your data, so don't worry!")
