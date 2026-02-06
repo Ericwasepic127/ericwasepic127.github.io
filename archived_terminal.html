@@ -11,7 +11,8 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <p>Tip: Not finished, may get error.</p>
+        <p>Tip: It's buggy one. You can copy yourself, and debug</p>
+        <a href="/hello.html">Go back to latest working</a>
         <p style="display:none" id="packages"></p>
         <script type="py">
             from js import prompt
@@ -118,6 +119,7 @@
                 print("Bye! ")
             
             print("Hello from Python (Pyodide)", platform.python_version())
+            print("\033[1mWARNING!!! IT'S OUTDATED, UNWORKING, COPY AND FIX IF YOU WANT\033[0m")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@")
             name = await input("What is your name? ")
