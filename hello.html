@@ -20,7 +20,7 @@
 
             class stderr:
                def __init__(self, original=None):
-                   self.orig = orignal or sys.stderr
+                   self.orig = original or sys.stderr
                def write(self, message):
                    self.orig.write("\033[91m" + str(message) + "\033[0m")
                def flush(self):
