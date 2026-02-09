@@ -19,11 +19,15 @@
             import time, traceback, platform, sys, code, asyncio, pyscript
 
             class stderr:
+               """Colored sys.STDERR version by Erkhemee"""
                def __init__(self, original=None):
+                   """Initalize colorful stderr"""
                    self.orig = original or sys.stderr
                def write(self, message):
+                   """Write colorful error in stderr"""
                    self.orig.write("\033[91m" + str(message) + "\033[0m")
                def flush(self):
+                   """Flush it"""
                    self.orig.flush()
             sys.stderr = stderr()
             sys.ps1 = "\033[95m>>> \033[0m"
@@ -46,7 +50,16 @@
                       except:
                         n = repr("unknown")
                       print("No documention found on", obj.__name__)
-
+            def restore():
+               """Restores layout into normal (colorless)"""
+               sys.ps1 = ">>> "
+               sys.ps2 = "... "
+               sys.stderr = sys.__stderr__
+            def color():
+               """Color the terminal (if restored or changed color codes)"""
+               sys.stderr = stderr()
+               sys.ps1 = "\033[95m>>> \033[0m"
+               sys.ps2 = "\033[92m... \033[0m"
             def fetcher(url):
                 """Gets text from website, then return
                 For example, use my loady project, URL is https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py
@@ -110,14 +123,15 @@
                     for cooks in cook:
                         print(f"Installing package {cooks}", end="\r")
                         await micropip.install(cooks)
-                names = {"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher} 
+                names = {"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore} 
                 print("Opening terminal ...", end="\r")
-                time.sleep(2.825)
-                cool = f"Python {sys.version} on {sys.platform}\n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
+                time.sleep(1.125)
+                cool = f"\033[0mPython {sys.version} on Browser\n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
                 cool += ", _await(awaitable) or awaiter(awaitable) for await keyword, fetcher(url_link) for get text from URL"
-                code.interact(readfunc=_input, banner=cool, exitmsg="Exiting Erkhemee Terminal ...", local=names, local_exit=True)
+                cool += ", color() for colorful terminal if you modified or restored, restore() for back for basic colorless terminal"
+                code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.3.4")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.3.5")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = await input("What is your name? ")
@@ -150,7 +164,7 @@
                 except BaseException as e:
                     print(f"\n\nTerminal crashed by error {e.__class__.__name__}: {e}")
                     print("Consider refresh webpage and run again")
-            print("Refresh for restart")
+            print("\033[0mRefresh for restart")
             print("============Program ended!============")
             print("\033[?25l", end="", flush=True)
         </script>
