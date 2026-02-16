@@ -1,0 +1,9 @@
+{
+  "name": "PyScript REPL",
+  "short_name": "Python",
+  "icons": [{
+    "src": "python.png",
+    "sizes": "499x499"
+  }],
+  "start_url": "hello.html"
+}
