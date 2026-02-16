@@ -3,6 +3,13 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="manifest" href="manifest.json">
+        <meta property="og:title" content="PyScript Python REPL">
+        <meta property="og:description" content="Python terminal in your browser">
+        <meta property="og:image" content="python.png">
+        <meta name="description" content="Run Python in your browser with PyScript">
+        <meta name="keywords" content="python, pyscript, repl, terminal, offline, browser, programming, erkhemee, pyodide">
+        <meta name="author" content="Erkhemee">
         <title>PyScript - Python on website</title>
         <script src="./mini-coi-fd.js"></script>
         <script type="module" src="./pyscript/core.js" offline></script>
@@ -131,7 +138,7 @@
                 cool += ", color() for colorful terminal if you modified or restored, restore() for back for basic colorless terminal"
                 code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.3.5")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.2")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = await input("What is your name? ")
