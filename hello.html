@@ -41,22 +41,23 @@
             sys.ps2 = "\033[92m... \033[0m"
             def _help(obj="+++"):
                 """Help function by Erkhemee"""
+                try:
+                    n = "'" + str(obj.__name__) + "'"
+                except:
+                    try:
+                        n = "'" + str(obj.__class__.__name__) + "'"
+                    except:
+                        n = repr("unknown")
                 if obj == "+++":
                    print("Use help(obj) like \n\033[1m help(print) \033[0m")
                 else:
                    item = obj.__doc__
                    if item:
-                      try:
-                       print("Documention of", obj.__name__)
-                      except:
-                        print("Documention of 'unknown'")
+                      print("Documention of", n)
                       print(item)
                    else: 
-                      try:
-                        n = obj.__name__
-                      except:
-                        n = repr("unknown")
-                      print("No documention found on", obj.__name__)
+            
+                      print("No documention found on", n)
             def restore():
                """Restores layout into normal (colorless)"""
                sys.ps1 = ">>> "
@@ -138,7 +139,7 @@
                 cool += ", color() for colorful terminal if you modified or restored, restore() for back for basic colorless terminal"
                 code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.2")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.4")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = await input("What is your name? ")
