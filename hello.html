@@ -105,10 +105,11 @@
                 """
                 Asks for user input
                 """
-                if inspect.iscoroutine(inputs):
-                    return asyncio.run(input(str(prompt)))
+                i = inputs(str(prompt))
+                if inspect.isawaitable(i):
+                    return asyncio.run(i)
                 else:
-                    return inputs(str(prompt))
+                    return i
             builtins.input = _input
             
             cancel = True
@@ -164,7 +165,7 @@
                 cool += ", install(package_name) for install package"
                 code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.7")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.8")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = input("What is your name? ")
