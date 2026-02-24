@@ -19,11 +19,12 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
+        <a href="/archived_termimal.html">Legacy Terminal</a>
         <py-config>
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, code, asyncio, pyscript
+            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, copy
 
             class stderr:
                """Colored sys.STDERR version by Erkhemee"""
@@ -39,7 +40,8 @@
             sys.stderr = stderr()
             sys.ps1 = "\033[95m>>> \033[0m"
             sys.ps2 = "\033[92m... \033[0m"
-            def _help(obj="+++"):
+            unknown = "Spect none if none and exec"
+            def _help(obj=unknown):
                 """Help function by Erkhemee"""
                 try:
                     n = "'" + str(obj.__name__) + "'"
@@ -48,8 +50,18 @@
                         n = "'" + str(obj.__class__.__name__) + "'"
                     except:
                         n = repr("unknown")
-                if obj == "+++":
-                   print("Use help(obj) like \n\033[1m help(print) \033[0m")
+                if obj is unknown:
+                   #print("Use help(obj) like \n\033[1m help(print) \033[0m")
+                   def hin(prompt):
+                      user = input(prompt)
+                      if not user.strip(): return ""
+                      if user in ["q", "exit", "quit"]:
+                        return 'exit()'
+                      return "help(" + user + ")"
+                   ps1 = sys.ps1
+                   sys.ps1 = "help> "
+                   code.interact(banner="Help function", exitmsg="Exited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
+                   sys.ps1 = ps1
                 else:
                    item = obj.__doc__
                    if item:
@@ -88,12 +100,16 @@
                     return re
                 except:
                   return ""
-            
+            inputs = copy.copy(input)
             def _input(prompt=""):
                 """
                 Asks for user input
                 """
-                return asyncio.run(input(str(prompt)))
+                if inspect.iscoroutine(inputs):
+                    return asyncio.run(input(str(prompt)))
+                else:
+                    return inputs(str(prompt))
+            builtins.input = _input
             
             cancel = True
             try: 
@@ -104,11 +120,11 @@
                 print(f"[ERROR]: Can not use micropip: {e}")
                 print("Canceling pip package adding ....")
             
-            async def cookie_finder():
+            def cookie_finder():
                 if cancel:
-                    yes = await input("Do you wanna install pip packages (Y/n)? ")
+                    yes = input("Do you wanna install pip packages (Y/n)? ")
                     if yes.lower() == 'y':
-                        packs = await input("Enter package name (if multiple, split by space): ")
+                        packs = input("Enter package name (if multiple, split by space): ")
                         packs = packs.split()
                     else: 
                         packs = []
@@ -119,39 +135,48 @@
             def clear():
                 sys.stdout.write("\033c")
                 sys.stdout.flush()
+
+            def install(name):
+                """Installs pip packages"""
+                asyncio.run(micropip.install(name))
             
             async def terminal():
                 global cancel
                 global micropip
             
-                cook = await cookie_finder()
+                cook = cookie_finder()
                 if cook and cancel: 
                     pip = ", ".join(cook) if len(cook) > 1 else cook[0]
                     print(f"Package(s) installing: {pip}")
                     for cooks in cook:
-                        print(f"Installing package {cooks}", end="\r")
-                        await micropip.install(cooks)
-                names = {"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore} 
+                        print(f"Installing package {cooks}")
+                        try:
+                           await micropip.install(cooks)
+                           print("Installed", cooks)
+                        except:
+                            print("Failed to install", cooks)
+                names = {"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[0mPython {sys.version} on Browser\n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
                 cool += ", _await(awaitable) or awaiter(awaitable) for await keyword, fetcher(url_link) for get text from URL"
                 cool += ", color() for colorful terminal if you modified or restored, restore() for back for basic colorless terminal"
+                cool += ", install(package_name) for install package"
                 code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.4")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.5")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
-            name = await input("What is your name? ")
+            name = input("What is your name? ")
             if name != "@:/\\:@": 
                 favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
                 favr = ["Movie", "Food", "Fruit", "Vegetable", "Game"]
                 for fav in favr: 
-                     user = await input(f"{name}'s (Your) Favourite {fav}: ")
+                     user = input(f"{name}'s (Your) Favourite {fav}: ")
                 print("My name is Erkhembayr")
                 for a in [0, 1, 2, 3, 4]: 
                     print(f"Erkhembayr's (My) Favourite {favr[a]}: {favs[a]}")
-                selector = await input("Do you want to open python terminal (yes/no): ")
+                selector = input("Do you want to open python terminal (yes/no): ")
                 selector = selector.lower()
                 if selector == "yes":
                     try:
