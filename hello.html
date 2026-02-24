@@ -10,7 +10,7 @@
         <meta name="description" content="Run Python in your browser with PyScript">
         <meta name="keywords" content="python, pyscript, repl, terminal, offline, browser, programming, erkhemee, pyodide">
         <meta name="author" content="Erkhemee">
-        <title>PyScript - Python on website</title>
+        <title>Py3REPL (PyScript) - Python on website</title>
         <script src="./mini-coi-fd.js"></script>
         <script type="module" src="./pyscript/core.js" offline></script>
         <link rel="stylesheet" href="./pyscript/core.css">
@@ -19,7 +19,8 @@
     <body>
         <a href="/index.html"> Back to homepage </a>
         <p>==========================================</p>
-        <a href="/archived_termimal.html">Legacy Terminal</a>
+        <a href="/archived_terminal.html">Legacy Terminal</a>
+        <p>------------------------------------------</p>
         <py-config>
             packages = ["micropip"]
         </py-config>
@@ -60,7 +61,7 @@
                       return "help(" + user + ")"
                    ps1 = sys.ps1
                    sys.ps1 = "help> "
-                   code.interact(banner="Help function", exitmsg="Exited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
+                   code.interact(readfunc=hin, banner="Help function", exitmsg="Exited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
                    sys.ps1 = ps1
                 else:
                    item = obj.__doc__
@@ -165,7 +166,7 @@
                 cool += ", install(package_name) for install package"
                 code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.8")
+            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.9")
             print("Program doesn't store your data, so don't worry!")
             print("Hint: Try entering @:/\\:@ (Developer-Mode)")
             name = input("What is your name? ")
