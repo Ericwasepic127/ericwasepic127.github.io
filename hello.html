@@ -8,7 +8,7 @@
         <meta property="og:description" content="Python terminal in your browser">
         <meta property="og:image" content="python.png">
         <meta name="description" content="Run Python in your browser with PyScript">
-        <meta name="keywords" content="python, pyscript, repl, terminal, offline, browser, programming, erkhemee, pyodide">
+        <meta name="keywords" content="python, pyscript, repl, terminal, offline, browser, programming, erkhemee, pyodide, ericwasepic127, Py3REPL">
         <meta name="author" content="Erkhemee">
         <title>Py3REPL (PyScript) - Python on website</title>
         <script src="./mini-coi-fd.js"></script>
@@ -56,12 +56,12 @@
                    def hin(prompt):
                       user = input(prompt)
                       if not user.strip(): return ""
-                      if user in ["q", "exit", "quit"]:
+                      if user in ["q", "exit", "quit", "e"]:
                         return 'exit()'
                       return "help(" + user + ")"
                    ps1 = sys.ps1
                    sys.ps1 = "help> "
-                   code.interact(readfunc=hin, banner="Help function", exitmsg="Exited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
+                   code.interact(readfunc=hin, banner="\033[93mHelp function by Erkhemee\nUse 'q', 'e', 'exit' or 'quit' to exit", exitmsg="\033[94mExited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
                    sys.ps1 = ps1
                 else:
                    item = obj.__doc__
@@ -89,8 +89,7 @@
                 exec(file)
                 It will execute it
                 Now, use as
-                loadbar('#')
-                """
+                loadbar('#')"""
                 try:
                     aw = asyncio.run
                     it = aw(pyscript.fetch(url))
@@ -102,16 +101,34 @@
                 except:
                   return ""
             inputs = input
+            sys.input_save = inputs # Debug: true
             def _input(prompt=""):
-                """
-                Asks for user input
-                """
+                """Asks for user input"""
                 i = inputs(str(prompt))
                 if inspect.isawaitable(i):
                     return asyncio.run(i)
                 else:
                     return i
             builtins.input = _input
+
+            class Input:
+                def __init__(self):
+                   self.shortcuts = {}
+                   self.history = []
+                def __call__(self, prompt=""):
+                   user = input(prompt)
+                   self.history.append(user)
+                   m = user.split()
+                   if m[0] in self.shortcuts.keys():
+                      return self.shortcuts[m[0]]
+                   return user
+                def assign(self, call, do_str):
+                    self.shortcuts[call] = do_str
+                def history(self, raw=False):
+                   if raw:
+                      return self.history
+                   print("-", "\n- ".join(self.history))
+            sys.Input = Input # debug: true
             
             cancel = True
             try: 
@@ -140,7 +157,10 @@
 
             def install(name):
                 """Installs pip packages"""
-                asyncio.run(micropip.install(name))
+                if cancel:
+                  asyncio.run(micropip.install(name))
+                else:
+                   raise Exception("Can't install packages because micropip doesn't loaded yet")
             
             async def terminal():
                 global cancel
@@ -157,50 +177,55 @@
                            print("Installed", cooks)
                         except:
                             print("Failed to install", cooks)
-                names = {"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install} 
+                reader = Input()
+                reader.assign("%history", "history()")
+                reader.assign("%clear", "clear()")
+                reader.assign("%color", "color()")
+                reader.assign("%restore", "restore()")
+                names = {"clear": clear, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
-                cool = f"\033[0mPython {sys.version} on Browser\n(Erkhemee Edition)\nType clear() for clear screen, help(obj) for object documention"
-                cool += ", _await(awaitable) or awaiter(awaitable) for await keyword, fetcher(url_link) for get text from URL"
-                cool += ", color() for colorful terminal if you modified or restored, restore() for back for basic colorless terminal"
-                cool += ", install(package_name) for install package"
-                code.interact(readfunc=_input, banner=cool, exitmsg="\033[0mExiting Erkhemee Terminal ...", local=names, local_exit=True)
+                cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' for object documention"
+                cool += ", '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
+                cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
+                cool += ", 'install(package_name)' for install package, 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
+                code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("Hello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.4.9")
-            print("Program doesn't store your data, so don't worry!")
-            print("Hint: Try entering @:/\\:@ (Developer-Mode)")
-            name = input("What is your name? ")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.0")
+            print("\033[92mProgram doesn't store your data, so don't worry!")
+            print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
+            name = input("\033[96mWhat is your name?\033[0m ")
             if name != "@:/\\:@": 
-                favs = ["Minecraft movie", "Chicken", "Strawberry", "Potato", "Geometry dash and Minecraft"]
-                favr = ["Movie", "Food", "Fruit", "Vegetable", "Game"]
+                favs = ["\033[93mMinecraft movie", "\033[91mChicken", "\033[92mStrawberry", "\033[94mPotato", "\033[95mGeometry dash and Minecraft"]
+                favr = ["\033[93mMovie", "\033[91mFood", "\033[92mFruit", "\033[94mVegetable", "\033[95mGame"]
                 for fav in favr: 
-                     user = input(f"{name}'s (Your) Favourite {fav}: ")
-                print("My name is Erkhembayr")
+                     input(f"\033[1m{name}'s (Your) Favourite \033[0m{fav}\033[0m: ")
+                print("\033[96mMy name is Erkhembayr")
                 for a in [0, 1, 2, 3, 4]: 
-                    print(f"Erkhembayr's (My) Favourite {favr[a]}: {favs[a]}")
-                selector = input("Do you want to open python terminal (yes/no): ")
+                    print(f"\033[1mErkhembayr's (My) Favourite \033[0m{favr[a]}\033[0m: {favs[a]}")
+                selector = input("\033[1mDo you want to open python terminal \033[0m(yes/no): ")
                 selector = selector.lower()
                 if selector == "yes":
                     try:
                         await terminal()
                     except Exception as e:
-                        print(f"Terminal crashed by {e.__class__.__name__}:", e)
+                        print(f"Terminal crashed by {e.__class__.__name__}:", e, file=stderr())
                     except BaseException as e:
-                        print(f"Terminal crashed by {e.__class__.__name__}:", e)
+                        print(f"Terminal crashed by {e.__class__.__name__}:", e, file=stderr())
                 else:
-                    print("Bye!")
+                    print("\033[94m Bye!")
                 
             else: 
-                print("Secret: UNLOCKED! You entered @:/\\:@")
+                print("\033[92mSecret: UNLOCKED! You entered @:/\\:@")
                 try:
                     await terminal()
                     time.sleep(2.825)
-                    print("Exited Erkhemee Terminal!")
-                except BaseException as e:
-                    print(f"\n\nTerminal crashed by error {e.__class__.__name__}: {e}")
+                    print("\033[94mExited Erkhemee Terminal!")
+                except (BaseException, Exception) as e:
+                    print(f"\n\nTerminal crashed by error {e.__class__.__name__}: {e}", file=stderr())
                     print("Consider refresh webpage and run again")
-            print("\033[0mRefresh for restart")
-            print("============Program ended!============")
+            print("\033[94mRefresh for restart")
+            print("\033[94m============Program ended!============")
             print("\033[?25l", end="", flush=True)
         </script>
     </body>
