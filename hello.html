@@ -26,7 +26,7 @@
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, copy
+            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins
 
             class stderr:
                """Colored sys.STDERR version by Erkhemee"""
@@ -115,20 +115,27 @@
             class Input:
                 def __init__(self):
                    self.shortcuts = {}
-                   self.history = []
+                   self._history = []
                 def __call__(self, prompt=""):
                    user = input(prompt)
-                   self.history.append(user)
+                   self._history.append(user)
                    m = user.split()
-                   if m[0] in self.shortcuts.keys():
-                      return self.shortcuts[m[0]]
+                   if m:
+                       if m[0] in self.shortcuts.keys():
+                          h = m[0]
+                          m.remove(m[0])
+                          try:
+                            self.shortcuts.get(h)(*m)
+                          except:
+                             traceback.print_exc()
+                          return ""
                    return user
-                def assign(self, call, do_str):
-                    self.shortcuts[call] = do_str
+                def assign(self, call, do):
+                    self.shortcuts[call] = do
                 def history(self, raw=False):
                    if raw:
-                      return self.history
-                   print("-", "\n- ".join(self.history))
+                      return self._history
+                   print("-", "\n- ".join(self._history))
             sys.Input = Input # debug: true
             
             cancel = True
@@ -179,23 +186,25 @@
                         except:
                             print("Failed to install", cooks)
                 reader = Input()
-                reader.assign("%history", "history()")
-                reader.assign("%clear", "clear()")
-                reader.assign("%color", "color()")
-                reader.assign("%restore", "restore()")
+                reader.assign("%history", history)
+                reader.assign("%clear", clear)
+                reader.assign("%color", color)
+                reader.assign("%restore", restore)
+                reader.assign("%install", install)
+                
                 names = {"clear": clear, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' for object documention"
                 cool += ", '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
-                cool += ", 'install(package_name)' for install package, 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
+                cool += ", 'install(package_name)' (%install package_name) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.1")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.2")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
-            name = input("\033[96mWhat is your name?\033[0m ")
+            name = input("\033[1mWhat is your name?\033[0m ")
             if name != "@:/\\:@": 
                 favs = ["\033[93mMinecraft movie", "\033[91mChicken", "\033[92mStrawberry", "\033[94mPotato", "\033[95mGeometry dash and Minecraft"]
                 favr = ["\033[93mMovie", "\033[91mFood", "\033[92mFruit", "\033[94mVegetable", "\033[95mGame"]
@@ -203,8 +212,8 @@
                      input(f"\033[1m{name}'s (Your) Favourite \033[0m{fav}\033[0m: ")
                 print("\033[96mMy name is Erkhembayr")
                 for a in [0, 1, 2, 3, 4]: 
-                    print(f"\033[1mErkhembayr's (My) Favourite \033[0m{favr[a]}\033[0m: {favs[a]}")
-                selector = input("\033[1mDo you want to open python terminal \033[0m(yes/no): ")
+                    print(f"\033[0m\033[1mErkhembayr's (My) Favourite \033[0m{favr[a]}\033[0m: {favs[a]}")
+                selector = input("\033[0m\033[1mDo you want to open python terminal \033[0m(yes/no): ")
                 selector = selector.lower()
                 if selector == "yes":
                     try:
