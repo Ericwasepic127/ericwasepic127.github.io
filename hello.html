@@ -163,7 +163,7 @@
                 sys.stdout.write("\033c")
                 sys.stdout.flush()
 
-            def install(name):
+            def install(*name):
                 """Installs pip packages"""
                 if cancel:
                   asyncio.run(micropip.install(name))
@@ -191,17 +191,18 @@
                 reader.assign("%color", color)
                 reader.assign("%restore", restore)
                 reader.assign("%install", install)
+                reader.assign("%help", _help)
                 
                 names = {"clear": clear, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
-                cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' for object documention"
+                cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
                 cool += ", '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
-                cool += ", 'install(package_name)' (%install package_name) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
+                cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.3")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
