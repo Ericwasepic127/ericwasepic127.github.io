@@ -186,7 +186,7 @@
                         except:
                             print("Failed to install", cooks)
                 reader = Input()
-                reader.assign("%history", history)
+                reader.assign("%history", reader.history)
                 reader.assign("%clear", clear)
                 reader.assign("%color", color)
                 reader.assign("%restore", restore)
@@ -201,7 +201,7 @@
                 cool += ", 'install(package_name)' (%install package_name) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.2")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.3")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
