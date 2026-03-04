@@ -42,36 +42,7 @@
             sys.stderr = stderr()
             sys.ps1 = "\033[95m>>> \033[0m"
             sys.ps2 = "\033[92m... \033[0m"
-            unknown = "Spect none if none and exec"
-            def _help(obj=unknown):
-                """Help function by Erkhemee"""
-                try:
-                    n = "'" + str(obj.__name__) + "'"
-                except:
-                    try:
-                        n = "'" + str(obj.__class__.__name__) + "'"
-                    except:
-                        n = repr("unknown")
-                if obj is unknown:
-                   #print("Use help(obj) like \n\033[1m help(print) \033[0m")
-                   def hin(prompt):
-                      user = input(prompt)
-                      if not user.strip(): return ""
-                      if user in ["q", "exit", "quit", "e"]:
-                        return 'exit()'
-                      return "help(" + user + ")"
-                   ps1 = sys.ps1
-                   sys.ps1 = "help> "
-                   code.interact(readfunc=hin, banner="\033[93mHelp function by Erkhemee\nUse 'q', 'e', 'exit' or 'quit' to exit", exitmsg="\033[94mExited help", local={"clear": clear, "input": _input, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install}, local_exit=True)
-                   sys.ps1 = ps1
-                else:
-                   item = obj.__doc__
-                   if item:
-                      print("Documention of", n)
-                      print(item)
-                   else: 
-            
-                      print("No documention found on", n)
+
             def restore():
                """Restores layout into normal (colorless)"""
                sys.ps1 = ">>> "
@@ -116,9 +87,42 @@
                 def __init__(self):
                    self.shortcuts = {}
                    self._history = []
+                   self._limit = 50
+                def limit(self, does=50):
+                    """
+                    Sets limit for history
+                    If no arguments, sets default (50)
+                    - Negative or 0 for no savings and resets history
+                    - float('inf') for infinity
+                    """
+                    if does == float('inf') or does >= 1000:
+                       print("WARNING! THIS MIGHT CAN USE RAM LOT WHEN HISTORY GOES LOT\nAND MAY CRASH YOUR PC DUE OUT OF RAM", file=sys.stderr)
+                       if input("Continue? (Y/n) ") == "Y":
+                           self._limit = does
+                           print(f"LIMIT SET FOR {does} IN CURRENT SESSION", file=sys.stderr)
+                       else:
+                         return
+                    if does <= 0:
+                       print("WARNING! IT WILL NOT SAVE HISTORY ANYMORE AND DELETES HISTORY", file=sys.stderr)
+                       if input("Continue? (Y/n) ") == "Y":
+                           self._limit = does
+                           self._history = []
+                           print("History reseted and not saving in CURRENT SESSION", file=sys.stderr)
+                       else:
+                         return
+                    if not type(does) is int:
+                       try:
+                         does = int(does)
+                       except:
+                          traceback.print_exc()
+                    self._limit = does
+                    print(f"Limit has been set to {does}!")
+                    
                 def __call__(self, prompt=""):
                    user = input(prompt)
-                   self._history.append(user)
+                   self._history.append(user) if user.strip() else None
+                   if len(self._history) >= self._limit:
+                      del self._history[0]
                    m = user.split()
                    if m:
                        if m[0] in self.shortcuts.keys():
@@ -133,9 +137,10 @@
                 def assign(self, call, do):
                     self.shortcuts[call] = do
                 def history(self, raw=False):
+                   """Shows terminal history"""
                    if raw:
                       return self._history
-                   print("-", "\n- ".join(self._history))
+                   print("-\033[7m", "\033[0m\n- \033[7m".join(self._history), "\033[0m")
             sys.Input = Input # debug: true
             
             cancel = True
@@ -191,18 +196,19 @@
                 reader.assign("%color", color)
                 reader.assign("%restore", restore)
                 reader.assign("%install", install)
-                reader.assign("%help", _help)
+                reader.assign("%limit", reader.limit)
+                reader.assign("%help", help)
                 
-                names = {"clear": clear, "help": _help, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
+                names = {"limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
-                cool += ", '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
+                cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.4")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.5")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
@@ -238,6 +244,7 @@
             print("\033[94mRefresh for restart")
             print("\033[94m============Program ended!============")
             print("\033[?25l", end="", flush=True)
+            
         </script>
     </body>
 </html>
