@@ -93,8 +93,14 @@
                     Sets limit for history
                     If no arguments, sets default (50)
                     - Negative or 0 for no savings and resets history
-                    - float('inf') for infinity
+                    - 'inf' for infinity
                     """
+                    if not type(does) is float:
+                       try:
+                         does = float(does)
+                       except:
+                          traceback.print_exc()
+                          return
                     if does == float('inf') or does >= 1000:
                        print("WARNING! THIS MIGHT CAN USE RAM LOT WHEN HISTORY GOES LOT\nAND MAY CRASH YOUR PC DUE OUT OF RAM", file=sys.stderr)
                        if input("Continue? (Y/n) ") == "Y":
@@ -110,11 +116,7 @@
                            print("History reseted and not saving in CURRENT SESSION", file=sys.stderr)
                        else:
                          return
-                    if not type(does) is int:
-                       try:
-                         does = int(does)
-                       except:
-                          traceback.print_exc()
+                    
                     self._limit = does
                     print(f"Limit has been set to {does}!")
                     
@@ -208,7 +210,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.5")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.6")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
