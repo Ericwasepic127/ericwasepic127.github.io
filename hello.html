@@ -27,7 +27,9 @@
         </py-config>
         <script type="py" terminal worker>
             import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins
-
+            from pyscript import storage as s
+            from asyncio import run as a
+            from random import choice as c
             class stderr:
                """Colored sys.STDERR version by Erkhemee"""
                def __init__(self, original=None):
@@ -86,8 +88,13 @@
             class Input:
                 def __init__(self):
                    self.shortcuts = {}
-                   self._history = []
-                   self._limit = 50
+                   obj = SLD("history")
+                   if not obj["saves"]:
+                       obj.save("saves", [])
+                   if not obj["limit"]:
+                       obj.save("limit", 50)
+                   self._history = obj["saves"]
+                   self._limit = obj["limit"]
                 def limit(self, does=50):
                     """
                     Sets limit for history
@@ -145,6 +152,58 @@
                    print("-\033[7m", "\033[0m\n- \033[7m".join(self._history), "\033[0m")
             sys.Input = Input # debug: true
             
+            class SLD:
+                def __init__(self, name=None):
+                    if name is None:
+                        q = "qwertyuiopasdfghjklzxcvbnm1234567890"
+                        name = "".join([c(q) for _ in "-"*6])
+                    self.name = name
+                    self.storage = a(s(name))
+                 def __repr__(self):
+                     return f"<pyscript.storage (SLD): {self.name}>"
+                 def sync(self):
+                     """Synchronization"""
+                     a(self.storage.sync())
+                 def save(self, name, item):
+                     """Saves item to persistent storage"""
+                     self.storage[name] = item
+                     self.sync()
+                 def load(self, name):
+                     """Loads item from persistent storage"""
+                     self.sync()
+                     return self.storage.get(name)
+                 def delete(self, name):
+                     """Deletes item from persistent storage"""
+                     if name in self.storage.keys():
+                         del self.storage[name]
+                         self.sync()
+                     else:
+                         raise KeyError(f"Key {name} doesn't exist!")
+                  def __getitem__(self, name):
+                     return self.load(name)
+                  def __delitem__(self, name):
+                     self.delete(name)
+                  def __setitem__(self, name, value):
+                     self.save(name, value)
+                  def help(self):
+                     """A small helping tool. Run as `storage.help`"""
+                     x = """This is persistent storage, and here's guide to use.
+                     1. How to save?
+                     - Use 'storage.save(name, value)' or 'storage[name] = value'.
+                       * For example, `storage.save("variable1", 20)`
+                     2. How to load?
+                     - Use 'storage.load(name)' or 'storage[name]'. If name doesn't found, it returns None.
+                       * For example, `storage["variable1"]` returns 20 if we saved as above
+                     3. How to delete?
+                     - Use 'storage.delete(name)' or 'del storage[name]'. If name doesn't found, KeyError raises.
+                       * For example, `del storage["variable1"]` will delete variable1 from persistent storage, if added
+                     
+                     A small knowledge just for you:
+                       Q: Does it use internet and cloud uploading?
+                       A: No, it saves onto your browser storage called indexedDB
+                     """
+                     print(x)
+            
             cancel = True
             try: 
                 import micropip 
@@ -201,13 +260,13 @@
                 reader.assign("%limit", reader.limit)
                 reader.assign("%help", help)
                 
-                names = {"limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
+                names = {"storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "color": color, "restore": restore, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
                 cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
-                cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*) \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
+                cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m)\n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
             print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.5.6")
