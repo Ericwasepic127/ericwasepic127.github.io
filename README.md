@@ -29,8 +29,9 @@ And **GitHub Developers** for giving free website! That's my dream!
 - No paywalls
 - No data collection
 - No ads
-- Latest python (3.13.2)
-
+- Latest python  will come soon! Currently: 3.13.2
+- Persistent storage!
+  
 ## My logo
 ![My logo](logo.png)
 
