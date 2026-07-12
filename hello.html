@@ -88,11 +88,11 @@
             class Input:
                 def __init__(self):
                    self.shortcuts = {}
-                   obj = SLD("history")
-                   if not obj["saves"]:
-                       obj.save("saves", [])
-                   if not obj["limit"]:
-                       obj.save("limit", 50)
+                   self.obj = SLD("history")
+                   if not self.obj["saves"]:
+                       self.obj.save("saves", [])
+                   if not self.obj["limit"]:
+                       self.obj.save("limit", 50)
                    self._history = obj["saves"]
                    self._limit = obj["limit"]
                 def limit(self, does=50):
@@ -113,6 +113,7 @@
                        if input("Continue? (Y/n) ") == "Y":
                            self._limit = does
                            print(f"LIMIT SET FOR {does} IN CURRENT SESSION", file=sys.stderr)
+                           return
                        else:
                          return
                     if does <= 0:
@@ -121,10 +122,12 @@
                            self._limit = does
                            self._history = []
                            print("History reseted and not saving in CURRENT SESSION", file=sys.stderr)
+                           return
                        else:
                          return
                     
                     self._limit = does
+                    self.obj["limit"] = self._limit
                     print(f"Limit has been set to {does}!")
                     
                 def __call__(self, prompt=""):
@@ -132,6 +135,7 @@
                    self._history.append(user) if user.strip() else None
                    if len(self._history) >= self._limit:
                       del self._history[0]
+                   self.obj["saves"] = self._history
                    m = user.split()
                    if m:
                        if m[0] in self.shortcuts.keys():
