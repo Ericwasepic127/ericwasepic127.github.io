@@ -95,19 +95,23 @@
                        self.obj.save("limit", 50)
                    self._history = self.obj["saves"]
                    self._limit = self.obj["limit"]
-                def limit(self, does=50):
+                def limit(self, does=None):
                     """
                     Sets limit for history
-                    If no arguments, sets default (50)
+                    If no arguments, shows current limit & saved entities
                     - Negative or 0 for no savings and resets history
                     - 'inf' for infinity
                     """
-                    if not type(does) is float:
+                    
+                    if not type(does) is float and not (type(does) is None):
                        try:
                          does = float(does)
                        except:
                           traceback.print_exc()
                           return
+                    elif type(does) is None:
+                       print(f"Current limit: {self._limit}\nSaved entities (persistent): {len(self.obj.load('saves') or [])}\nSaved entities (in memory): {len(self._history)}")
+                       return
                     if does == float('inf') or does >= 1000:
                        print("WARNING! THIS MIGHT CAN USE RAM LOT WHEN HISTORY GOES LOT\nAND MAY CRASH YOUR PC DUE OUT OF RAM", file=sys.stderr)
                        if input("Continue? (Y/n) ") == "Y":
@@ -277,7 +281,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.0")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.1")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
