@@ -102,7 +102,7 @@
                     - Negative or 0 for no savings and resets history
                     - 'inf' for infinity
                     """
-                    if type(does) is None:
+                    if does is None:
                        print(f"Current limit: {self._limit}\nSaved entities (persistent): {len(self.obj.load('saves') or [])}\nSaved entities (in memory): {len(self._history)}")
                        return
             
@@ -285,7 +285,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.6")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.7")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
