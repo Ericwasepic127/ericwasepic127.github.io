@@ -285,7 +285,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.5")
+            print("\033[92mHello from Python (Pyodide)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV2.7.6")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
@@ -295,8 +295,8 @@
                 for fav in favr: 
                      input(f"\033[1m{name}'s (Your) Favourite \033[0m{fav}\033[0m: ")
                 print("\033[96mMy name is Erkhembayr")
-                for a in [0, 1, 2, 3, 4]: 
-                    print(f"\033[0m\033[1mErkhembayr's (My) Favourite \033[0m{favr[a]}\033[0m: {favs[a]}")
+                for i in [0, 1, 2, 3, 4]: 
+                    print(f"\033[0m\033[1mErkhembayr's (My) Favourite \033[0m{favr[i]}\033[0m: {favs[i]}")
                 selector = input("\033[0m\033[1mDo you want to open python terminal \033[0m(yes/no): ")
                 selector = selector.lower()
                 if selector == "yes":
