@@ -67,7 +67,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.1</strong></p>
+    <p><strong>Py3IDE Version: v2.9.3</strong></p>
     <hr>
     <button id="runBtn">Run</button>
     <button id="dwnldBtn">Download code into storage</button>
@@ -199,12 +199,12 @@
     sys.stderr = stderr()
     inputs = input
     def _input(prompt=""):
-                """Asks for user input"""
-                i = inputs(str(prompt))
-                if inspect.isawaitable(i):
-                    return asyncio.run(i)
-                else:
-                    return i
+        """Asks for user input"""
+        i = inputs(str(prompt))
+        if inspect.isawaitable(i):
+            return asyncio.run(i)
+        else:
+            return i
     builtins.input = _input
     connect = m2w.Worker()
     print(f"Ready to run! Python version: {sys.version}")
@@ -219,8 +219,8 @@
                 traceback.print_exc()
             finally:
                 print("=======END=======")
-           connect.getmsg = None
-           connect.sendmsg("")
+            connect.getmsg = None
+            connect.sendmsg("")
         time.sleep(.0825)
     </script>
 </body>
