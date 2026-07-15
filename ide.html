@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta property="og:title" content="PyScript Python IDE">
+    <meta property="og:description" content="Python environment in your browser">
+    <meta property="og:image" content="python.png">
+    <meta name="description" content="Run Python in your browser with PyScript">
+    <meta name="keywords" content="python, pyscript, ide, terminal, offline, browser, programming, erkhemee, pyodide, ericwasepic127, Py3IDE">
+    <meta name="author" content="Erkhemee">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="./mini-coi-fd.js"></script>
     <script type="module" src="./pyscript/core.js" offline></script>
     <link rel="stylesheet" href="./pyscript/core.css">
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
-    <title>Py3IDE - Run python code with IDE! - In development!</title>
+    <title>Py3IDE - Run python code with IDE!</title>
     <style>
         body {
             font-family: 'Courier New', monospace;
@@ -57,8 +63,16 @@
     </style>
 </head>
 <body>
+    <a href="/index.html">Back to homepage</a>
+    <hr>
+    <a href="/hello.html">Go to REPL version</a>
+    <hr>
+    <p><strong>Py3IDE Version: v2.8.7</strong></p>
+    <hr>
     <button id="runBtn">Run</button>
-    <p id="ready">Loading Pyodide ... Please wait!</p>
+    <button id="dwnldBtn">Download code into storage</button>
+    <button id="loadBtn>Upload code from storage</button>
+    <p id="ready">Loading PyScript ... Please wait!</p>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
         <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
@@ -103,6 +117,46 @@
             }
         });
 
+        function downloadCode() {
+            const code = document.getElementById('codeInput').value;
+            if (!code.trim()) {
+                alert('No code to download!');
+                return;
+            }
+            const ins = prompt("Enter filename (extension will automatically added)", "script")
+            if (ins === null) return;
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (ins.trim() || "script") + '.py';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        document.getElementById('dwnldBtn').onclick = downloadCode;
+
+        function loadCode() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.py,.txt';
+
+                input.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                                const code = event.target.result;
+                                document.getElementById('codeInput').value = code;
+                                updateEditor();
+                        };
+                        reader.readAsText(file);
+                };
+
+                input.click();
+        }
+        document.getElementById('loadBtn').onclick = loadCode
+        
         updateEditor();
         textarea.focus();
     </script>
@@ -110,38 +164,38 @@
         import pyscript, asyncio
         data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
         with open("m2w.py", "w") as file:
-               file.write(asyncio.run(data.text())) if data.ok else None
+            file.write(asyncio.run(data.text())) if data.ok else None
         import pyscript, m2w
         from pyodide.ffi import create_proxy
         connect = m2w.Main()
         def codeparse(): 
-               return pyscript.document.querySelector("#codeInput").value
+            return pyscript.document.querySelector("#codeInput").value
         def onrun(event):
-              if connect.getmsg:
-                  pyscript.alert("Already running code!")
-              else:
-                  connect.sendmsg(codeparse())
+            if connect.getmsg:
+                js.alert("Already running code!")
+            else:
+                connect.sendmsg(codeparse())
         run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
-        pyscript.document.querySelector("#ready").innerHTML = "Loaded Pyodide! Ready to run!"
+        pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <script type="py" terminal worker>
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
     with open("m2w.py", "w") as file:
-         file.write(asyncio.run(data.text())) if data.ok else None
+        file.write(asyncio.run(data.text())) if data.ok else None
     import m2w, time, traceback, sys, asyncio, builtins, inspect
     class stderr:
-               """Colored sys.STDERR version by Erkhemee"""
-               def __init__(self, original=None):
-                   """Initalize colorful stderr"""
-                   self.orig = original or sys.stderr
-               def write(self, message):
-                   """Write colorful error in stderr"""
-                   self.orig.write("\033[91m" + str(message) + "\033[0m")
-               def flush(self):
-                   """Flush it"""
-                   self.orig.flush()
+        """Colored sys.STDERR version by Erkhemee"""
+        def __init__(self, original=None):
+            """Initalize colorful stderr"""
+            self.orig = original or sys.stderr
+        def write(self, message):
+            """Write colorful error in stderr"""
+            self.orig.write("\033[91m" + str(message) + "\033[0m")
+        def flush(self):
+            """Flush it"""
+            self.orig.flush()
     sys.stderr = stderr()
     inputs = input
     def _input(prompt=""):
@@ -155,19 +209,19 @@
     connect = m2w.Worker()
     print(f"Ready to run! Python version: {sys.version}")
     while 1:
-      if connect.getmsg:
-        connect.sendmsg("dontrun")
-        try:
-          print("\033cCode executing ...")
-          exec(connect.getmsg)
-        except:
-            print("\nError occured! Details:")
-            traceback.print_exc()
-        finally:
-            print("=======END=======")
-        connect.getmsg = None
-        connect.sendmsg("")
-      time.sleep(.0825)
+        if connect.getmsg:
+            connect.sendmsg("dontrun")
+            try:
+                print("\033cCode executing ...")
+                exec(connect.getmsg)
+            except:
+                print("\nError occured! Details:")
+                traceback.print_exc()
+           finally:
+                print("=======END=======")
+           connect.getmsg = None
+           connect.sendmsg("")
+        time.sleep(.0825)
     </script>
 </body>
   </html>
