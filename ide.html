@@ -67,7 +67,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.3</strong></p>
+    <p><strong>Py3IDE Version: v2.9.4</strong></p>
     <hr>
     <button id="runBtn">Run</button>
     <button id="dwnldBtn">Download code into storage</button>
@@ -165,7 +165,7 @@
         data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
         with open("m2w.py", "w") as file:
             file.write(asyncio.run(data.text())) if data.ok else None
-        import pyscript, m2w
+        import js, m2w
         from pyodide.ffi import create_proxy
         connect = m2w.Main()
         def codeparse(): 
