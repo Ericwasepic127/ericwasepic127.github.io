@@ -118,7 +118,7 @@
         def onrun(event):
               if connect.getmsg:
                   pyscript.alert("Already running code!")
-             else:
+              else:
                   connect.sendmsg(codeparse())
         run_btn = document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
@@ -127,7 +127,7 @@
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
     with open("m2w.py", "w") as file:
-         file.write(data.text()) if data.ok else None
+         file.write(asyncio.run(data.text())) if data.ok else None
     import m2w, time, traceback, sys, asyncio, builtins, inspect
     class stderr:
                """Colored sys.STDERR version by Erkhemee"""
