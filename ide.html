@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./mini-coi-fd.js"></script>
+    <script type="module" src="./pyscript/core.js" offline></script>
+    <link rel="stylesheet" href="./pyscript/core.css">
+    <link rel="icon" type="image/png" sizes="499x499" href="python.png">
+    <title>Py3IDE - Run python code with IDE! - In development!</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 20px;
+        }
+        .editor-container {
+            display: flex;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+        .line-numbers {
+            color: #888;
+            text-align: right;
+            padding: 8px 10px;
+            user-select: none;
+            pointer-events: none;
+            border-right: 1px solid #ccc;
+            background: #f8f8f8;
+            white-space: pre;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            overflow: hidden;
+        }
+        #codeInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: none;
+            padding: 8px 12px;
+            white-space: pre;
+            overflow: auto;
+            tab-size: 4;
+            min-height: 400px;
+            background: #fff;
+            color: #000;
+        }
+        .status-bar {
+            font-size: 0.8rem;
+            color: #555;
+            padding: 4px 0;
+            border-top: 1px solid #ccc;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <button id="runBtn">Run</button>
+    <div class="editor-container">
+        <div class="line-numbers" id="lineNumbers">1</div>
+        <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
+    </div>
+    <div class="status-bar">
+        <span id="statusLine">Line 1</span> &nbsp;|&nbsp; <span id="statusChar">Chars: 0</span>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('codeInput');
+        const lineNumbers = document.getElementById('lineNumbers');
+        const statusLine = document.getElementById('statusLine');
+        const statusChar = document.getElementById('statusChar');
+
+        function updateEditor() {
+            const lines = textarea.value.split('\n');
+            let numbers = '';
+            for (let i = 1; i <= lines.length; i++) {
+                numbers += i + '\n';
+            }
+            lineNumbers.textContent = numbers;
+
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
+            const currentLine = textBefore.split('\n').length;
+            statusLine.textContent = `Line ${currentLine} of ${lines.length}`;
+            statusChar.textContent = `Chars: ${textarea.value.length}`;
+        }
+
+        textarea.addEventListener('input', updateEditor);
+        textarea.addEventListener('click', updateEditor);
+        textarea.addEventListener('keyup', updateEditor);
+
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+                updateEditor();
+            }
+        });
+
+        updateEditor();
+        textarea.focus();
+    </script>
+    <script type="py">
+        import pyscript, asyncio
+        data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
+       with open("m2w.py", "w") as file:
+               file.write(data)
+        import pyscript, m2w
+        from pyodide.ffi import create_proxy
+        connect = m2w.Main()
+        def codeparse(): 
+               return pyscript.document.querySelector("#codeInput").value
+        def onrun(event):
+              if connect.getmsg:
+                  pyscript.alert("Already running code!")
+             else:
+                  connect.sendmsg(codeparse())
+        run_btn = document.querySelector("#runBtn")
+        run_btn.addEventListener("click", create_proxy(onrun))
+    </script>
+    <script type="py" terminal worker>
+    import pyscript, asyncio
+    data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
+    with open("m2w.py", "w") as file:
+         file.write(data)
+    import m2w, time, traceback, sys, asyncio, builtins, inspect
+    class stderr:
+               """Colored sys.STDERR version by Erkhemee"""
+               def __init__(self, original=None):
+                   """Initalize colorful stderr"""
+                   self.orig = original or sys.stderr
+               def write(self, message):
+                   """Write colorful error in stderr"""
+                   self.orig.write("\033[91m" + str(message) + "\033[0m")
+               def flush(self):
+                   """Flush it"""
+                   self.orig.flush()
+    sys.stderr = stderr()
+    inputs = input
+    def _input(prompt=""):
+                """Asks for user input"""
+                i = inputs(str(prompt))
+                if inspect.isawaitable(i):
+                    return asyncio.run(i)
+                else:
+                    return i
+    builtins.input = _input
+    connect = m2w.Worker()
+    while 1:
+      if connect.getmsg:
+        connect.sendmsg("dontrun")
+        try:
+          print("\033c")
+          exec(connect.getmsg)
+        except:
+            traceback.print_exc()
+        connect.getmsg = None
+        connect.sendmsg("")
+      time.sleep( 1 / 60)
+    </script>
+</body>
+  </html>
