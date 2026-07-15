@@ -58,6 +58,7 @@
 </head>
 <body>
     <button id="runBtn">Run</button>
+    <p id="ready">Loading Pyodide ... Please wait!</p>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
         <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
@@ -120,8 +121,9 @@
                   pyscript.alert("Already running code!")
               else:
                   connect.sendmsg(codeparse())
-        run_btn = document.querySelector("#runBtn")
+        run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
+        pyscript.document.querySelector("#ready").value = "Loaded Pyodide! Ready to run!"
     </script>
     <script type="py" terminal worker>
     import pyscript, asyncio
@@ -151,17 +153,21 @@
                     return i
     builtins.input = _input
     connect = m2w.Worker()
+    print(f"Ready to run! Python version: {sys.version}")
     while 1:
       if connect.getmsg:
         connect.sendmsg("dontrun")
         try:
-          print("\033c")
+          print("\033cCode executing ...")
           exec(connect.getmsg)
         except:
+            print("\nError occured! Details:")
             traceback.print_exc()
+        finally:
+            print("=======END=======")
         connect.getmsg = None
         connect.sendmsg("")
-      time.sleep( 1 / 60)
+      time.sleep(.0825)
     </script>
 </body>
   </html>
