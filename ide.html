@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.3.5</strong></p>
+    <p><strong>Py3IDE Version: V3.3.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -209,13 +209,13 @@
         def lsp(event):
             run = [
                 "import micropip",
-                "print("-------Pip packages list-------")",
+                "print(\"-------Pip packages list-------\")",
                 "name = micropip.list().keys()",
                 "names = name",
                 "if len(names) > 50:",
                 "    names = name[:49]",
-                "    names.append(f"and {len(name) - 50} more")",
-                "build = "- " + "\\n- ".join(names)",
+                "    names.append(f\"and {len(name) - 50} more\")",
+                "build = '- ' + '\\n- '.join(names)",
                 "print('Pip packages installed:')",
                 "print(build)"
             ]
