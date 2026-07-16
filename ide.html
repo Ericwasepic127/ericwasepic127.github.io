@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.1</strong></p>
+    <p><strong>Py3IDE Version: V3.0.2</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -171,7 +171,7 @@
         with open("m2w.py", "w") as file:
             file.write(asyncio.run(data.text())) if data.ok else None
         import js, m2w
-        from pyodide.ffi import create_proxy
+        from pyodide.ffi import create_proxy, JsNull as null
         connect = m2w.Main()
         def codeparse(): 
             return pyscript.document.querySelector("#codeInput").value
@@ -192,7 +192,7 @@
 
         def inp(event):
             packages = js.prompt("Enter package name (if multiple, split by space)")
-            if packages is None:
+            if packages is null:
                 return
             package_list = packages.split()
             if package_list:
