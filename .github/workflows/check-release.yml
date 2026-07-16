@@ -1,0 +1,34 @@
+name: Check for PyScript Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check for new release
+        id: check
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/pyscript/pyscript/releases/latest | jq -r .tag_name)
+          CURRENT=$(cat pyscript-version.txt 2>/dev/null || echo "none")
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "new=true" >> $GITHUB_OUTPUT
+            echo "version=$LATEST" >> $GITHUB_OUTPUT
+          else
+            echo "new=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger update
+        if: steps.check.outputs.new == 'true'
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"pyscript-update"}'
