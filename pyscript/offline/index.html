@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PyScript Offline</title>
+        <script src="./mini-coi-fd.js"></script>
+        <script type="module" src="./pyscript/core.js" offline></script>
+        <link rel="stylesheet" href="./pyscript/core.css">
+    </head>
+    <body>
+        <script type="mpy">
+            from pyscript import document
+
+            document.body.append("MicroPython Offline", document.createElement("hr"))
+        </script>
+        <script type="py" worker>
+            from pyscript import document
+
+            document.body.append("Pyodide Offline")
+        </script>
+    </body>
+</html>
