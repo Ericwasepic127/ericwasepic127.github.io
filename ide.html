@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.8</strong></p>
+    <p><strong>Py3IDE Version: V3.3.2</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -235,25 +235,14 @@
     <hr>
     <button id="runBtn" disabled>Run</button>
     
-    <h3>Terminal/Output</h4>
+    <h3>Terminal/Output</h3>
     <script type="py" terminal worker>
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
     with open("m2w.py", "w") as file:
         file.write(asyncio.run(data.text())) if data.ok else None
     import m2w, time, traceback, sys, asyncio, builtins, inspect
-    class stderr:
-        """Colored sys.STDERR version by Erkhemee"""
-        def __init__(self, original=None):
-            """Initalize colorful stderr"""
-            self.orig = original or sys.stderr
-        def write(self, message):
-            """Write colorful error in stderr"""
-            self.orig.write("\033[91m" + str(message) + "\033[0m")
-        def flush(self):
-            """Flush it"""
-            self.orig.flush()
-    sys.stderr = stderr()
+
     inputs = input
     def _input(prompt=""):
         """Asks for user input"""
