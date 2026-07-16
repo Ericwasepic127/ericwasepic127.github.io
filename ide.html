@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.9</strong></p>
+    <p><strong>Py3IDE Version: v3.0.0</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -183,16 +183,20 @@
         run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
         run_btn.disabled = False
+        async def sinp(p):
+            try:
+                await micropip.install(p)
+                js.alert(f"Installed {p} successfully!" if p in micropip.list().keys() else f"Something went wrong when installing package {p}")
+            except Exception as e:
+                js.alert(f"Failed to install {p}\nDetails: {str(e)}")
+
         def inp(event):
             packages = js.prompt("Enter package name (if multiple, split by space)")
             if packages is None:
-               return
-            for package in packages.split():
-              try:
-                   asyncio.create_task(micropip.install(package))
-                   js.alert(f"Installed {package} successfully!" if package in micropip.list().keys() else f"Something went wrong when installing package {package}")
-              except Exception as e:
-                   js.alert(f"Failed to install {package}\nDetails: {str(e)}")
+                return
+            package_list = packages.split()
+            if package_list:
+                asyncio.create_task(asyncio.gather(*[sinp(p) for p in package_list]))
         def lsp(event):
             name = micropip.list().keys()
             names = name
