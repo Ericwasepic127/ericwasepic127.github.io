@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.8</strong></p>
+    <p><strong>Py3IDE Version: v2.9.9</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -189,7 +189,7 @@
                return
             for package in packages.split():
               try:
-                   asyncio.run(micropip.install(package))
+                   asyncio.create_task(micropip.install(package))
                    js.alert(f"Installed {package} successfully!" if package in micropip.list().keys() else f"Something went wrong when installing package {package}")
               except Exception as e:
                    js.alert(f"Failed to install {package}\nDetails: {str(e)}")
