@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.7</strong></p>
+    <p><strong>Py3IDE Version: v2.9.8</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -198,7 +198,7 @@
             names = name
             if len(names) > 50:
                  names = name[:49]
-                 names.append("and {len(name) - 50} more")
+                 names.append(f"and {len(name) - 50} more")
             build = "- " + "\n- ".join(names)
             js.alert(f"Installed package(s):\n{build}" if name else "Not installed packages, yet")
         pip = [pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn")]
