@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.4</strong></p>
+    <p><strong>Py3IDE Version: V3.0.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -224,8 +224,8 @@
                 "print('-----Pip package installer-----')"
                 "import asyncio, micropip",
                 f"for p in {package_list}:",
-                "    try:
-                "        asyncio.ensure_future(micropip.install(p))"
+                "    try:",
+                "        asyncio.ensure_future(micropip.install(p))",
                 "        print(f'Installed package {p} successfully' if p in micropip.list().keys() else 'Something went wrong')",
                 "    except Exception as e:",
                 "        print(f'Failed to install package {p}: {str(e)}')"
