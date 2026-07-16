@@ -13,7 +13,7 @@
         <meta name="author" content="Erkhemee">
         <title>Py3REPL (PyScript) - Python on website</title>
         <script src="./mini-coi-fd.js"></script>
-        <script type="module" src="./pyscript/core.js" offline></script>
+        <script type="module" src="./pyscript/core.js"></script>
         <link rel="stylesheet" href="./pyscript/core.css">
         <link rel="icon" type="image/png" sizes="499x499" href="python.png">
     </head>
@@ -258,7 +258,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV3.3.1")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV3.3.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
