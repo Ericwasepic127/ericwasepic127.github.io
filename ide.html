@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.6</strong></p>
+    <p><strong>Py3IDE Version: V3.0.7</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -191,7 +191,7 @@
                 return
             package_list = packages.split()
             run = [
-                "print('-----Pip package installer-----')"
+                "print('-----Pip package installer-----')",
                 "import asyncio, micropip",
                 f"for p in {package_list}:",
                 "    try:",
@@ -223,7 +223,7 @@
                 js.alert("Code has been executing, once stopped, you can install")
                 return
             js.alert("Results are at Terminal")
-            connect.sendmsg("\n".join(run))
+            connect.sendmsg(run)
         
         pip = [pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn")]
         for x in pip:
