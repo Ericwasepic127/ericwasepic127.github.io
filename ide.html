@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.5</strong></p>
+    <p><strong>Py3IDE Version: V3.0.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -79,50 +79,50 @@
     <p id="ready">Loading PyScript ... Please wait!</p>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
-        <div id="editor"></div>
+        <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
     </div>
     <div class="status-bar">
         <span id="statusLine">Line 1</span> &nbsp;|&nbsp; <span id="statusChar">Chars: 0</span>
     </div>
 
     <script>
+        const textarea = document.getElementById('codeInput');
         const lineNumbers = document.getElementById('lineNumbers');
         const statusLine = document.getElementById('statusLine');
         const statusChar = document.getElementById('statusChar');
 
-        let editorView;
-
         function updateEditor() {
-            const code = editorView ? editorView.state.doc.toString() : '';
-            const lines = code.split('\n');
+            const lines = textarea.value.split('\n');
             let numbers = '';
             for (let i = 1; i <= lines.length; i++) {
                 numbers += i + '\n';
             }
             lineNumbers.textContent = numbers;
 
-            const cursorPos = 0;
-            const textBefore = code.substring(0, cursorPos);
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
             const currentLine = textBefore.split('\n').length;
             statusLine.textContent = `Line ${currentLine} of ${lines.length}`;
-            statusChar.textContent = `Chars: ${code.length}`;
+            statusChar.textContent = `Chars: ${textarea.value.length}`;
         }
 
-        function getCode() {
-            return editorView ? editorView.state.doc.toString() : '';
-        }
+        textarea.addEventListener('input', updateEditor);
+        textarea.addEventListener('click', updateEditor);
+        textarea.addEventListener('keyup', updateEditor);
 
-        function setCode(code) {
-            if (editorView) {
-                editorView.dispatch({
-                    changes: { from: 0, to: editorView.state.doc.length, insert: code }
-                });
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
                 updateEditor();
             }
-        }
+        });
 
         function downloadCode() {
-            const code = getCode();
+            const code = document.getElementById('codeInput').value;
             if (!code.trim()) {
                 alert('No code to download!');
                 return;
@@ -140,59 +140,29 @@
         document.getElementById('dwnldBtn').onclick = downloadCode;
 
         function loadCode() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.py,.txt';
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.py,.txt';
 
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
+                input.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
 
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const code = event.target.result;
-                    setCode(code);
-                    updateEditor();
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                                const code = event.target.result;
+                                document.getElementById('codeInput').value = code;
+                                updateEditor();
+                        };
+                        reader.readAsText(file);
                 };
-                reader.readAsText(file);
-            };
 
-            input.click();
+                input.click();
         }
-        document.getElementById('loadBtn').onclick = loadCode;
-
-        import { EditorView, basicSetup } from "./pyscript/codemirror_view-BqWXTi4q.js";
-        import { python } from "./pyscript/codemirror_lang-python-DNPefh30.js";
-
-        editorView = new EditorView({
-            doc: "# Write your Python code here...",
-            extensions: [
-                basicSetup,
-                python(),
-                EditorView.lineWrapping,
-            ],
-            parent: document.getElementById("editor"),
-        });
-
-        editorView.dom.addEventListener('input', updateEditor);
-        editorView.dom.addEventListener('click', updateEditor);
-        editorView.dom.addEventListener('keyup', updateEditor);
-
-        editorView.dom.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const insert = '    ';
-                const pos = editorView.state.selection.main.head;
-                editorView.dispatch({
-                    changes: { from: pos, to: pos, insert: insert },
-                    selection: { anchor: pos + insert.length },
-                });
-                updateEditor();
-            }
-        });
-
+        document.getElementById('loadBtn').onclick = loadCode
+        
         updateEditor();
-        editorView.focus();
+        textarea.focus();
     </script>
     <script type="py">
         import pyscript, asyncio, micropip
@@ -203,7 +173,7 @@
         from pyodide.ffi import create_proxy, JsNull as null
         connect = m2w.Main()
         def codeparse(): 
-            return js.getCode()
+            return pyscript.document.querySelector("#codeInput").value
         def onrun(event):
             if connect.getmsg:
                 js.alert("Already running code!")
@@ -311,4 +281,4 @@
         time.sleep(.0825)
     </script>
 </body>
-    </html>
+  </html>
