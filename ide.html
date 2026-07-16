@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.5</strong></p>
+    <p><strong>Py3IDE Version: v2.9.6</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -184,8 +184,8 @@
         run_btn.addEventListener("click", create_proxy(onrun))
         run_btn.disabled = False
         def inp(event):
-            packages = js.prompt("Enter package name (if multiple, split by space)").rstrip().strip()
-            if not packages:
+            packages = js.prompt("Enter package name (if multiple, split by space)")
+            if packages is None:
                return
             for package in packages.split():
               try:
