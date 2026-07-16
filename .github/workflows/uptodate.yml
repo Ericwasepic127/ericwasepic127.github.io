@@ -23,7 +23,7 @@ jobs:
           LATEST=$(curl -s https://api.github.com/repos/pyscript/pyscript/releases/latest | jq -r .tag_name)
           wget -O pyscript.zip https://pyscript.net/releases/$LATEST/offline_$LATEST.zip
           unzip -o pyscript.zip -d ./tmp/
-          rm -rf ./pyscript/
+          rm -rf ./pyscript/*
           mv ./tmp/offline/pyscript/* ./pyscript/
           rm -rf ./tmp/
 
