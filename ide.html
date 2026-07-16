@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.6</strong></p>
+    <p><strong>Py3IDE Version: v2.9.7</strong></p>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
@@ -166,7 +166,7 @@
         textarea.focus();
     </script>
     <script type="py">
-        import pyscript, asyncio
+        import pyscript, asyncio, micropip
         data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
         with open("m2w.py", "w") as file:
             file.write(asyncio.run(data.text())) if data.ok else None
