@@ -63,13 +63,18 @@
     </style>
 </head>
 <body>
+    <py-config>
+        packages = ["micropip"]
+    </py-config>
     <a href="/index.html">Back to homepage</a>
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: v2.9.4</strong></p>
+    <p><strong>Py3IDE Version: v2.9.5</strong></p>
     <hr>
-    <button id="runBtn">Run</button>
+    <button id="runBtn" disabled>Run</button>
+    <button id="pipIn" disabled>Install pip package</button>
+    <button id="pipLs" disabled>List all installed pip packages</button>
     <button id="dwnldBtn">Download code into storage</button>
     <button id="loadBtn">Upload code from storage</button>
     <p id="ready">Loading PyScript ... Please wait!</p>
@@ -177,6 +182,30 @@
                 connect.sendmsg(codeparse())
         run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
+        run_btn.disabled = False
+        def inp(event):
+            packages = js.prompt("Enter package name (if multiple, split by space)").rstrip().strip()
+            if not packages:
+               return
+            for package in packages.split():
+              try:
+                   asyncio.run(micropip.install(package))
+                   js.alert(f"Installed {package} successfully!" if package in micropip.list().keys() else f"Something went wrong when installing package {package}")
+              except Exception as e:
+                   js.alert(f"Failed to install {package}\nDetails: {str(e)}")
+        def lsp(event):
+            name = micropip.list().keys()
+            names = name
+            if len(names) > 50:
+                 names = name[:49]
+                 names.append("and {len(name) - 50} more")
+            build = "- " + "\n- ".join(names)
+            js.alert(f"Installed package(s):\n{build}" if name else "Not installed packages, yet")
+        pip = [pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn")]
+        for x in pip:
+            x.disabled = False
+        pip[0].onclick = create_proxy(lsp)
+        pip[1].onclick = create_proxy(inp)
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <script type="py" terminal worker>
