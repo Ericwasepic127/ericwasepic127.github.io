@@ -20,7 +20,7 @@ jobs:
 
       - name: Download PyScript
         run: |
-          wget -O pyscript.zip https://github.com/pyscript/pyscript/releases/latest/download/pyscript.zip
+          wget -O pyscript.zip https://pyscript.net/releases/$LATEST/offline.zip
           unzip -o pyscript.zip -d ./pyscript/
 
       - name: Update version file
