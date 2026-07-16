@@ -3,7 +3,7 @@ name: Update PyScript
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [pyscript-update]
+    types: [uptodate]
 
 jobs:
   update:
@@ -30,10 +30,13 @@ jobs:
       - name: Update version file
         run: echo "${{ steps.version.outputs.version }}" > pyscript-version.txt
 
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ./pyscript/ pyscript-version.txt
-          git commit -m "Update PyScript to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
-          git push || echo "No changes to push"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update PyScript to ${{ steps.version.outputs.version }}"
+          title: "Update PyScript to ${{ steps.version.outputs.version }}"
+          body: "This PR updates PyScript to the latest release.\n\n**Version:** ${{ steps.version.outputs.version }}"
+          branch: "update-pyscript-${{ steps.version.outputs.version }}"
+          base: "main"
+          labels: "automated-pr"
