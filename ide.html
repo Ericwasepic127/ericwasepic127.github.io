@@ -70,13 +70,13 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.7</strong></p>
+    <p><strong>Py3IDE Version: V3.0.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
     <button id="dwnldBtn">Download code into storage</button>
     <button id="loadBtn">Upload code from storage</button>
-    <p id="ready">Loading PyScript ... Please wait!</p>
+    <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
         <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
@@ -207,18 +207,18 @@
             connect.sendmsg("\n".join(run))
             
         def lsp(event):
-            run = """
-            import micropip
-            print("-------Pip packages list-------")
-            name = micropip.list().keys()
-            names = name
-            if len(names) > 50:
-                 names = name[:49]
-                 names.append(f"and {len(name) - 50} more")
-            build = "- " + "\\n- ".join(names)
-            print("Pip packages installed:")
-            print(build)
-            """
+            run = [
+                "import micropip",
+                "print("-------Pip packages list-------")",
+                "name = micropip.list().keys()",
+                "names = name",
+                "if len(names) > 50:",
+                "    names = name[:49]",
+                "    names.append(f"and {len(name) - 50} more")",
+                "build = "- " + "\\n- ".join(names)",
+                "print("Pip packages installed:")"*
+                "print(build)"
+            ]
             if connect.getmsg:
                 js.alert("Code has been executing, once stopped, you can install")
                 return
@@ -235,7 +235,7 @@
     <hr>
     <button id="runBtn" disabled>Run</button>
     
-    <h4>Terminal/Output</h4>
+    <h3>Terminal/Output</h4>
     <script type="py" terminal worker>
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
