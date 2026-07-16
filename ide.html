@@ -70,9 +70,8 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.0.2</strong></p>
+    <p><strong>Py3IDE Version: V3.0.3</strong></p>
     <hr>
-    <button id="runBtn" disabled>Run</button>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
     <button id="dwnldBtn">Download code into storage</button>
@@ -183,28 +182,49 @@
         run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
         run_btn.disabled = False
-        async def sinp(p):
-            try:
-                await micropip.install(p)
-                js.alert(f"Installed {p} successfully!" if p in micropip.list().keys() else f"Something went wrong when installing package {p}")
-            except Exception as e:
-                js.alert(f"Failed to install {p}\nDetails: {str(e)}")
-
+        
         def inp(event):
             packages = js.prompt("Enter package name (if multiple, split by space)")
             if packages is null:
                 return
+            if not packages:
+                return
             package_list = packages.split()
-            if package_list:
-                asyncio.ensure_future(asyncio.gather(*[sinp(p) for p in package_list]))
+            run = [
+                "print('-----Pip package installer-----')"
+                "import asyncio, micropip",
+                f"for p in {package_list}:",
+                "    try:
+                "        asyncio.ensure_future(micropip.install(p))"
+                "        print(f'Installed package {p} successfully' if p in micropip.list().keys() else 'Something went wrong')",
+                "    except Exception as e:",
+                "        print(f'Failed to install package {p}: {str(e)}')"
+            ]
+            if connect.getmsg:
+                js.alert("Code has been executing, once stopped, you can install")
+                return
+            js.alert("Results are at Terminal")
+            connect.sendmsg("\n".join(run))
+            
         def lsp(event):
+            run = """
+            import micropip
+            print("-------Pip packages list-------")
             name = micropip.list().keys()
             names = name
             if len(names) > 50:
                  names = name[:49]
                  names.append(f"and {len(name) - 50} more")
-            build = "- " + "\n- ".join(names)
-            js.alert(f"Installed package(s):\n{build}" if name else "Not installed packages, yet")
+            build = "- " + "\\n- ".join(names)
+            print("Pip packages installed:")
+            print(build)
+            """
+            if connect.getmsg:
+                js.alert("Code has been executing, once stopped, you can install")
+                return
+            js.alert("Results are at Terminal")
+            connect.sendmsg("\n".join(run))
+        
         pip = [pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn")]
         for x in pip:
             x.disabled = False
@@ -212,6 +232,10 @@
         pip[1].onclick = create_proxy(inp)
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
+    <hr>
+    <button id="runBtn" disabled>Run</button>
+    
+    <h4>Terminal/Output</h4>
     <script type="py" terminal worker>
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
