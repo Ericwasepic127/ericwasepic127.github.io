@@ -6,11 +6,15 @@ on:
     types: [uptodate]
 
 jobs:
-  update:
+  update-and-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Create branch for update
+        run: |
+          git checkout -b pyscript-latest
 
       - name: Get latest PyScript version
         id: version
@@ -18,22 +22,35 @@ jobs:
           LATEST=$(curl -s https://api.github.com/repos/pyscript/pyscript/releases/latest | jq -r .tag_name)
           echo "version=$LATEST" >> $GITHUB_OUTPUT
 
-      - name: Download PyScript
+      - name: Download and extract PyScript
         run: |
           LATEST=$(curl -s https://api.github.com/repos/pyscript/pyscript/releases/latest | jq -r .tag_name)
           wget -O pyscript.zip https://pyscript.net/releases/$LATEST/offline_$LATEST.zip
-          unzip -o pyscript.zip -d ./tmp/
+          mkdir -p ./pyscript-temp
+          unzip -o pyscript.zip -d ./pyscript-temp/
           rm -rf ./pyscript/*
-          mv ./tmp/offline/pyscript/* ./pyscript/
-          rm -rf ./tmp/
+          mv ./pyscript-temp/offline/pyscript/* ./pyscript/
+          rm -rf ./pyscript-temp/
 
       - name: Update version file
         run: echo "${{ steps.version.outputs.version }}" > pyscript-version.txt
 
-      - name: Commit changes
+      - name: Commit changes to branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ./pyscript/ pyscript-version.txt
+          git commit -m "Update PyScript to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git push --set-upstream origin pyscript-latest
+
+      - name: Create Pull Request
+        uses: ws2git/gh-pr-creator-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          title: "Update PyScript to ${{ steps.version.outputs.version }}"
+          body: "This PR updates PyScript to the latest version.\n\n**Version:** ${{ steps.version.outputs.version }}"
+          source_branch: "pyscript-latest"
+          dest_branch: "main"          git add ./pyscript/ pyscript-version.txt
           git commit -m "Update PyScript to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push || echo "No changes to push"
