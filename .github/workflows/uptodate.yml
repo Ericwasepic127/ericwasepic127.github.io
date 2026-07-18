@@ -15,7 +15,7 @@ jobs:
       - name: Create branch for update
         run: |
           git checkout -b pyscript-latest || git checkout pyscript-latest
-          git push --set-upstream origin pyscript-latest || true
+          git push --set-upstream origin pyscript-latest || git branch --set-upstream-to=origin/pyscript-latest pyscript-latest || true
       - name: Get latest PyScript version
         id: version
         run: |
