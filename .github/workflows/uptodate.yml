@@ -6,7 +6,7 @@ on:
     types: [uptodate]
 
 jobs:
-  upgrade-pyscript:
+  initailize:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -14,8 +14,13 @@ jobs:
 
       - name: Create branch for update
         run: |
-          git checkout -b pyscript-latest
-
+          git checkout -b pyscript-latest || git checkout pyscript-latest
+          git push --set-upstream origin pyscript-latest || true
+          
+  start-modify:
+      needs: initailize
+      runs-on: ubuntu-latest
+      steps:
       - name: Get latest PyScript version
         id: version
         run: |
@@ -34,6 +39,10 @@ jobs:
 
       - name: Update version file
         run: echo "${{ steps.version.outputs.version }}" > pyscript-version.txt
+  add-pr-action:
+    needs: [start-modify, initailize]
+    runs-on: ubuntu-latest
+    steps:
       - name: Commit changes to branch
         run: |
           git config user.name "github-actions[bot]"
