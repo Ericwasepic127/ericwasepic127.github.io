@@ -34,6 +34,7 @@ jobs:
           mkdir -p ./pyscript-temp
           unzip -o pyscript.zip -d ./pyscript-temp/
           rm -rf ./pyscript/*
+          mkdir -p ./pyscript
           mv ./pyscript-temp/offline/pyscript/* ./pyscript/
           rm -rf ./pyscript-temp/
 
