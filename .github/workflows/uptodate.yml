@@ -41,7 +41,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ./pyscript/ pyscript-version.txt
           git commit -m "Update PyScript to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
-          git push --set-upstream origin pyscript-latest
+          git push --force origin pyscript-latest
 
       - name: Create Pull Request
         uses: ws2git/gh-pr-creator-action@v1
