@@ -6,7 +6,7 @@ on:
     types: [uptodate]
 
 jobs:
-  initailize:
+  job:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,11 +16,6 @@ jobs:
         run: |
           git checkout -b pyscript-latest || git checkout pyscript-latest
           git push --set-upstream origin pyscript-latest || true
-          
-  start-modify:
-      needs: initailize
-      runs-on: ubuntu-latest
-      steps:
       - name: Get latest PyScript version
         id: version
         run: |
