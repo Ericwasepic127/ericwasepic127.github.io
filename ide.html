@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.5.2</strong></p>
+    <p><strong>Py3IDE Version: V3.5.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -279,9 +279,10 @@
                  break
             await asyncio.sleep(.0825)
         
-    async def runcode(code):
-        _, pending = await asyncio.wait([asyncio.create_task(run_code(code)), asyncio.create_task(timer())], return_when=asyncio.FIRST_COMPLETED)
-        [task.cancel() for task in pending]
+    def runcode(code):
+        done, pending = asyncio.run(asyncio.wait([asyncio.create_task(run_code(code)), asyncio.create_task(timer())], return_when=asyncio.FIRST_COMPLETED))
+        for task in pending:
+            task.cancel()
         
     builtins.input = _input
     connect = m2w.Worker()
@@ -295,7 +296,7 @@
             os.chdir(cd)
             connect.sendmsg("dontrun")
             print("\033cCode executing ...")
-            await runcode(connect.getmsg)
+            runcode(connect.getmsg)
             connect.getmsg = None
             connect.sendmsg("")
         time.sleep(.0825)
