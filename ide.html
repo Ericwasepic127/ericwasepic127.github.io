@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.5.6</strong></p>
+    <p><strong>Py3IDE Version: V3.5.7</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -273,12 +273,14 @@
             return i
     async def run_code(code):
         def runable(c):
-           try:
-               res = repr(eval(c, {}))
-               if res:
-                   print(res)
-           except SyntaxError:
-               exec(c, {})
+            svs = {}
+            for line in c:
+               try:
+                   res = repr(eval(line, svs))
+                   if res:
+                       print(f"- From line {c.index(res)}:\033[1m", res, "\033[0m")
+               except SyntaxError:
+                   exec(line, svs)
         try:
             await asyncio.to_thread(runable, code)
         except asyncio.CancelledError:
