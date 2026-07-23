@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.5.5</strong></p>
+    <p><strong>Py3IDE Version: V3.5.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -171,7 +171,7 @@
             file.write(asyncio.run(data.text())) if data.ok else None
         import js, m2w
         from pyodide.ffi import create_proxy, JsNull as null
-        connect = m2w.Main()
+        connect = m2w.Main(id="#executer")
         def codeparse(): 
             return pyscript.document.querySelector("#codeInput").value
         def onrun(event):
@@ -223,7 +223,7 @@
                 js.alert("Code has been executing, once stopped, you can install")
                 return
             js.alert("Results are at Terminal")
-            connect.sendmsg(run)
+            connect.sendmsg("\n".join(run))
 
         def stopBtn(event):
             if connect.getmsg:
@@ -243,7 +243,7 @@
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
     <h3>Terminal/Output</h3>
-    <script type="py" terminal worker>
+    <script type="py" terminal worker id="executer">
     import pyscript, asyncio
     data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
     with open("m2w.py", "w") as file:
@@ -274,7 +274,9 @@
     async def run_code(code):
         def runable(c):
            try:
-               print(repr(eval(c, {})))
+               res = repr(eval(c, {}))
+               if res:
+                   print(res)
            except SyntaxError:
                exec(c, {})
         try:
@@ -306,7 +308,7 @@
     builtins.input = _input
     connect = m2w.Worker()
     cd = os.getcwd()
-    print(f"Ready to run! Python version: {sys.version}")
+    print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
     while 1:
         if connect.getmsg:
             if connect.getmsg == "STOP":
