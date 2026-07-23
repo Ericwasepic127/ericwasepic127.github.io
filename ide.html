@@ -70,7 +70,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.5.3</strong></p>
+    <p><strong>Py3IDE Version: V3.5.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -250,6 +250,19 @@
         file.write(asyncio.run(data.text())) if data.ok else None
     import m2w, time, traceback, builtins, inspect, os, sys
 
+    class stderr:
+        """Colored sys.STDERR version by Erkhemee"""
+        def __init__(self, original=None):
+            """Initalize colorful stderr"""
+            self.orig = original or sys.stderr
+        def write(self, message):
+            """Write colorful error in stderr"""
+            self.orig.write("\033[91m" + str(message) + "\033[0m")
+        def flush(self):
+            """Flush it"""
+            self.orig.flush()
+    sys.stderr = stderr()
+        
     inputs = input
     def _input(prompt=""):
         """Asks for user input"""
@@ -259,19 +272,25 @@
         else:
             return i
     async def run_code(code):
-        await asyncio.sleep(0.00001)
+        def runable(c):
+           try:
+               print(repr(eval(c, {})))
+           except SyntaxError:
+               exec(c, {})
         try:
-            exec(code)
+            await asyncio.to_thread(runable, code)
         except asyncio.CancelledError:
             try:
                 raise KeyboardInterrupt
             except:
                 traceback.print_exc()
+        except SystemExit:
+            print("Looks like you've run exit()!")
         except:
             print("Error occured! Details:")
             traceback.print_exc()
         finally:
-            print("=======END=======")
+            print("\033[95m=======\033[96mEND\033[95m=======\033[0m")
 
     async def timer():
         while 1:
@@ -279,8 +298,8 @@
                  break
             await asyncio.sleep(.0825)
         
-    def runcode(code):
-        done, pending = asyncio.run(asyncio.wait([asyncio.create_task(run_code(code)), asyncio.create_task(timer())], return_when=asyncio.FIRST_COMPLETED))
+    async def runcode(code):
+        done, pending = await asyncio.wait([asyncio.create_task(run_code(code)), asyncio.create_task(timer())], return_when=asyncio.FIRST_COMPLETED)
         for task in pending:
             task.cancel()
         
@@ -291,12 +310,12 @@
     while 1:
         if connect.getmsg:
             if connect.getmsg == "STOP":
-                print("\033cWrong code gathered, skipping")
+                print("\033c\033[93mWrong code gathered, skipping\033[0m")
                 continue
             os.chdir(cd)
             connect.sendmsg("dontrun")
-            print("\033cCode executing ...")
-            runcode(connect.getmsg)
+            print("\033c\033[92mCode executing ...\033[96m")
+            await runcode(connect.getmsg)
             connect.getmsg = None
             connect.sendmsg("")
         time.sleep(.0825)
