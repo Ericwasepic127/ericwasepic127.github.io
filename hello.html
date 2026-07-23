@@ -30,6 +30,32 @@
             from pyscript import storage as s
             from asyncio import run as a
             from random import choice as c
+
+            class stderr:
+               """Colored sys.STDERR version by Erkhemee"""
+               def __init__(self, original=None):
+                   """Initalize colorful stderr"""
+                   self.orig = original or sys.stderr
+               def write(self, message):
+                   """Write colorful error in stderr"""
+                   self.orig.write("\033[91m" + str(message) + "\033[0m")
+               def flush(self):
+                   """Flush it"""
+                   self.orig.flush()
+            sys.stderr = stderr()
+            sys.ps1 = "\033[95m>>> \033[0m"
+            sys.ps2 = "\033[92m... \033[0m"
+
+            def restore():
+               """Restores layout into normal (colorless)"""
+               sys.ps1 = ">>> "
+               sys.ps2 = "... "
+               sys.stderr = sys.__stderr__
+            def color():
+               """Color the terminal (if restored or changed color codes)"""
+               sys.stderr = stderr()
+               sys.ps1 = "\033[95m>>> \033[0m"
+               sys.ps2 = "\033[92m... \033[0m"
             
             def fetcher(url):
                 """Gets text from website, then return
@@ -248,17 +274,20 @@
                 reader.assign("%install", install)
                 reader.assign("%limit", reader.limit)
                 reader.assign("%help", help)
+                reader.assign("%color", color)
+                reader.assign("%restore", restore)
                 reader.assign("%clean_history", reader.clshist)
                 
-                names = {"storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
+                names = {"color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
                 cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
+                cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV3.3.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV3.5.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
