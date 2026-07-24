@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Load up PyScript version 
         id: ver
-        run: echo "version=$(cat python-version.txt) > $GITHUB_OUTPUT
+        run: echo "version=$(cat python-version.txt)" > $GITHUB_OUTPUT
       - name: Build
         run: |
             git checkout -b release || git checkout release
