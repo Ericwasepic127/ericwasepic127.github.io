@@ -11,7 +11,7 @@ jobs:
       - name: Zip it
         run: |
             git checkout -b release || git checkout release
-            git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
+            #git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
             mkdir tmp
             mkdir build
             cd release && cd ..
