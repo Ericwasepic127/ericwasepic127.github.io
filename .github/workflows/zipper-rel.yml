@@ -12,7 +12,10 @@ jobs:
         run: |
             git checkout -b release || git checkout release
             mkdir build
-            zip -r offline.zip ./release/
+            mkdir offline
+            ls
+            cp -r release/ offline/
+            zip -r offline.zip tmp -i offline/release/
             mv offline.zip ./build/
       - name: Upload
         run: |
