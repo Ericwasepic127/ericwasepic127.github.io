@@ -18,6 +18,9 @@ jobs:
             cp ../demo.html index.html
             cp ../ide.html ide.html
             cp ../hello.html repl.html
+            cp ../mini-coi-fd.js mini-coi-fd.js
+            cp ../python.png python.png
+            curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
       - name: Upload
         run: |
           git config user.name "github-actions[bot]"
