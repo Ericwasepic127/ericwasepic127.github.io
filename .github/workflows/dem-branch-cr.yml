@@ -23,6 +23,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit
+          git commit -m "git"
           git push
       
