@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: Beta 3.7.0</strong></p>
+    <p><strong>Py3IDE Version: Beta 3.7.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -177,12 +177,15 @@
         from random import choice as c
         
         class SLD:
-                 async def __init__(self, name=None):
+                 def __init__(self, name=None):
                     if name is None:
                         q = "qwertyuiopasdfghjklzxcvbnm1234567890"
                         name = "".join([c(q) for _ in "-"*6])
                     self.name = name
-                    self.storage = await s(name)
+
+                 async def init(self):
+                     """RUN ME before anything"""
+                     self.storage = await s(name)
                  def __repr__(self):
                      return f"<pyscript.storage (SLD): {self.name}>"
                  async def sync(self):
@@ -206,7 +209,8 @@
                  
         from pyodide.ffi import create_proxy, JsNull as null
         connect = m2w.Main(id="#executer")
-        storage = await SLD("codeStorage")
+        storage = SLD("codeStorage")
+        await storage.init()
         def codeparse(): 
             return pyscript.document.querySelector("#codeInput").value.strip().rstrip()
         async def saveBtn(event):
