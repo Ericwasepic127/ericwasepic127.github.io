@@ -21,4 +21,6 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: build/offline.zip
+          tag_name: ${{ steps.ver.outputs.version }}
+          make_latest: "true"
           body: "Offline release with **IDE verhere** and **REPL verhere** (PyScript version: ${{ steps.ver.outputs.version }})!"
