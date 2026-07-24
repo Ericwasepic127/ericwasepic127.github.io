@@ -14,8 +14,8 @@ jobs:
       - name: Essential
         id: ver
         run: |
-          echo "version=$(cat python-version.txt)" > $GITHUB_OUTPUT
           git checkout release
+          echo "version=$(cat python-version.txt)" > $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
