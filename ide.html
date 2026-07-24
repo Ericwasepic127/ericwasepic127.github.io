@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.7.5</strong></p>
+    <p><strong>Py3IDE Version: V3.7.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -350,7 +350,7 @@
         def shareBtn(event):
             c = codeparse()
             if c:
-               o = sharecode()
+               o = sharecode(c)
                pyscript.window.copy(o)
                js.alert(f"Copied to Clipboard!\nURL: {o}")
             else:
