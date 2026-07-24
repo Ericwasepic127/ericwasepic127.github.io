@@ -16,10 +16,7 @@ jobs:
         run: |
             mkdir build
             mkdir offline
-            ls
-            git branch
-            ls /
-            pwd
+            git ls-tree -r --name-only release | grep release/
             cp -r release/ offline/
             zip -r offline.zip tmp -i offline/release/
             mv offline.zip ./build/
