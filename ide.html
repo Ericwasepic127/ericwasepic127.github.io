@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V3.7.9</strong></p>
+    <p><strong>Py3IDE Version: V3.8.0</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -85,7 +85,8 @@ import sys, datetime
 print("Hello from Py3IDE!")
 print("Python version:", sys.version)
 datenow = datetime.datetime.now()
-date = f"{datenow.year}.{datenow.month}.{datetime.day} {datetime.hour}:{datetime.minute}"
+date = f"{datenow.year}.{datenow.month:02d}.{datetime.day:02d} {datetime.hour:02d}:{datetime.minute:02d}"
+# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!
 print("Current date & time:", date)</textarea>
     </div>
     <div class="status-bar">
