@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V3.8.1</strong></p>
+    <p><strong>Py3IDE Version: V3.8.2</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -169,16 +169,14 @@ print("Current date & time:", date)</textarea>
         }
         document.getElementById('loadBtn').onclick = loadCode
         
-        updateEditor();
         const urlParams = new URLSearchParams(window.location.search);
         const sharedCode = urlParams.get('code');
 
         if (sharedCode) {
-            textarea.innerHTML = `
-            # Looks like you opened shared code!<br>
-            # Please wait, loading your code...
-            `;
+            textarea.innerHTML = `# Looks like you opened shared code!
+# Please wait, loading your code...`;
         }
+        updateEditor();
         window.updateEditor = updateEditor;
         textarea.focus();
     </script>
