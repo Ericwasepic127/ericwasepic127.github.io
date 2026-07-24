@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V3.8.4</strong></p>
+    <p><strong>Py3IDE Version: V3.8.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -79,15 +79,7 @@
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
-        <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false">
-# Click 'Run' to run!
-import sys, datetime
-print("Hello from Py3IDE!")
-print("Python version:", sys.version)
-datenow = datetime.datetime.now()
-date = f"{datenow.year}.{datenow.month:02d}.{datetime.day:02d} {datetime.hour:02d}:{datetime.minute:02d}"
-# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!
-print("Current date & time:", date)</textarea>
+        <textarea id="codeInput" placeholder="# Once PyScript loaded, you can code here!" spellcheck="false"></textarea>
     </div>
     <div class="status-bar">
         <span id="statusLine">Line 1</span> &nbsp;|&nbsp; <span id="statusChar">Chars: 0</span>
@@ -148,6 +140,10 @@ print("Current date & time:", date)</textarea>
         document.getElementById('dwnldBtn').onclick = downloadCode;
 
         function loadCode() {
+                if (textarea.disabled) {
+                    alert(`You can't upload code when PyScript is not ready yet!`);
+                    return;
+                }
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.py,.txt';
@@ -168,7 +164,7 @@ print("Current date & time:", date)</textarea>
                 input.click();
         }
         document.getElementById('loadBtn').onclick = loadCode
-        
+
         const urlParams = new URLSearchParams(window.location.search);
         const sharedCode = urlParams.get('code');
 
@@ -178,7 +174,7 @@ print("Current date & time:", date)</textarea>
         }
         updateEditor();
         window.updateEditor = updateEditor;
-        textarea.focus();
+        textarea.disabled = true;
     </script>
     <script type="py">
         import pyscript, asyncio, micropip
@@ -385,6 +381,8 @@ print("Current date & time:", date)</textarea>
         svciq.disabled = False
         svciq.onclick = create_proxy(shareBtn)
         lsc()
+        pyscript.document.querySelector("#codeInput").disabled = False
+        pyscript.document.querySelector("#codeInput").placeholder = "Write your Python code here..."
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
