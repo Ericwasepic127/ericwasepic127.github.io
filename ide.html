@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: Beta 3.7.1</strong></p>
+    <p><strong>Py3IDE Version: Beta 3.7.2</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -185,7 +185,7 @@
 
                  async def init(self):
                      """RUN ME before anything"""
-                     self.storage = await s(name)
+                     self.storage = await s(self.name)
                  def __repr__(self):
                      return f"<pyscript.storage (SLD): {self.name}>"
                  async def sync(self):
