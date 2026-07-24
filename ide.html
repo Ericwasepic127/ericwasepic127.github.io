@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: Beta 3.7.3</strong></p>
+    <p><strong>Py3IDE Version: V3.7.4</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -217,7 +217,7 @@
             code = codeparse()
             if code:
                 name = js.prompt("What do you want to name your code as? ", code.split("\n")[0])
-                if name == null: 
+                if name is null or name is None: 
                     return
                 name = name.strip().rstrip()
                 if not name:
@@ -232,10 +232,13 @@
                 js.alert("No code to save!")
         async def loadB(event):
              alls = storage.storage
+             if not alls:
+                 js.alert("No saved projects found!")
+                 return 
              build = "\n".join(["- " + per for per in alls.keys()])
              pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
              nm = js.prompt(pr)
-             if nm == null: 
+             if nm is null or nm is None: 
                 return
              nm = nm.strip().rstrip()
              if not nm:
@@ -248,10 +251,13 @@
                  js.alert(f"{nm} doesn't found!")
         async def delB(event):
              alls = storage.storage
+             if not alls:
+                 js.alert("No saved projects found!")
+                 return 
              build = "\n".join(["- " + per for per in alls.keys()])
              pr = "Saved projects:\n" + build + "\nEnter name of saved code to delete:"
              nm = js.prompt(pr)
-             if nm == null: 
+             if nm is null or nm is None: 
                 return
              nm = nm.strip().rstrip()
              if not nm:
