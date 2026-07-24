@@ -15,9 +15,7 @@ jobs:
       - name: Zip it
         run: |
             mkdir build
-            mkdir offline
-            cp -r release/ offline/
-            zip -r offline.zip tmp -i offline/release/
+            zip -r offline.zip release/
             mv offline.zip ./build/
       - name: Upload
         run: |
