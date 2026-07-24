@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: Beta 3.7.2</strong></p>
+    <p><strong>Py3IDE Version: Beta 3.7.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -216,8 +216,11 @@
         async def saveBtn(event):
             code = codeparse()
             if code:
-                name = js.prompt("What do you want to name your code as? ", code.split("\n")[0]).strip().rstrip()
-                if not name or name == null: 
+                name = js.prompt("What do you want to name your code as? ", code.split("\n")[0])
+                if name == null: 
+                    return
+                name = name.strip().rstrip()
+                if not name:
                     return
                 if name in storage.storage.keys():
                    if js.confirm("Name exists! Do you want to override it?"):
@@ -231,9 +234,12 @@
              alls = storage.storage
              build = "\n".join(["- " + per for per in alls.keys()])
              pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
-             nm = js.prompt(pr).strip().rstrip()
-             if not nm or nm == null: 
+             nm = js.prompt(pr)
+             if nm == null: 
                 return
+             nm = nm.strip().rstrip()
+             if not nm:
+                 return
              if nm in alls.keys():
                  pyscript.document.querySelector("#codeInput").value = await storage.load(nm)
                  pyscript.window.updateEditor()
@@ -243,10 +249,13 @@
         async def delB(event):
              alls = storage.storage
              build = "\n".join(["- " + per for per in alls.keys()])
-             pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
-             nm = js.prompt(pr).strip().rstrip()
-             if not nm or nm == null: 
+             pr = "Saved projects:\n" + build + "\nEnter name of saved code to delete:"
+             nm = js.prompt(pr)
+             if nm == null: 
                 return
+             nm = nm.strip().rstrip()
+             if not nm:
+                 return
              if nm in alls.keys():
                  await storage.delete(nm)
                  js.alert(f"Successfully deleted {nm}!")
