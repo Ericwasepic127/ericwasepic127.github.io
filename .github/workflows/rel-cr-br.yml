@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: release
       - name: Essential
         id: ver
         run: |
@@ -20,7 +22,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
-          files: build/offline.zip
+          files: ./build/offline.zip
           tag_name: ${{ steps.ver.outputs.version }}
           make_latest: "true"
           body: "Offline release with **IDE verhere** and **REPL verhere** (PyScript version: ${{ steps.ver.outputs.version }})!"
