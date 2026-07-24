@@ -71,12 +71,13 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.7.4</strong></p>
+    <p><strong>Py3IDE Version: V3.7.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
     <button id="dwnldBtn">Download code into storage</button>
     <button id="loadBtn">Upload code from storage</button>
+    <button id="shareBtn">Share your code</button>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
@@ -325,23 +326,53 @@
             else:
                  js.alert("Cannot stop when code is not running")
         
-        pip = [pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
+        pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
             x.disabled = False
-        pip[0].onclick = create_proxy(lsp)
-        pip[1].onclick = create_proxy(inp)
-        pip[2].onclick = create_proxy(stopBtn)
+        import js, pyscript, base64
+
+        def sharecode(code):
+            code_bytes = code.encode('utf-8')
+            b64_encoded = base64.urlsafe_b64encode(code_bytes).decode('utf-8')
+            uri_encoded = js.encodeURIComponent(b64_encoded)
+            base_url = js.window.location.origin + js.window.location.pathname
+            share_url = f"{base_url}?code={uri_encoded}"
+            return share_url
+
+        def lsc():
+            params = js.URLSearchParams(js.window.location.search)
+            uri_encoded = params.get('code')
+            if uri_encoded:
+               b64_encoded = js.decodeURIComponent(uri_encoded)
+               code_bytes = base64.urlsafe_b64decode(b64_encoded)
+            pyscript.window.querySelector("#codeInput").value = code_bytes.decode('utf-8')
+            pyscript.window.updateEditor()
+        def shareBtn(event):
+            c = codeparse()
+            if c:
+               o = sharecode()
+               pyscript.window.copy(o)
+               js.alert(f"Copied to Clipboard!\nURL: {o}")
+            else:
+               print("No code to share!")
+        pip[3].onclick = create_proxy(lsp)
+        pip[4].onclick = create_proxy(inp)
+        pip[5].onclick = create_proxy(stopBtn)
         pyscript.document.querySelector("#saveBtn").onclick = create_proxy(lambda event: create_proxy(saveBtn).callPromising(event))
         pyscript.document.querySelector("#loadB").onclick = create_proxy(lambda event: create_proxy(loadB).callPromising(event))
         pyscript.document.querySelector("#delB").onclick = create_proxy(lambda event: create_proxy(delB).callPromising(event))
+        svciq = pyscript.document.querySelector("#shareBtn")
+        svciq.disabled = False
+        svciq.onclick = create_proxy(shareBtn)
+        lsc()
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
-    <button id="saveBtn">Save to local browser storage</button>
-    <button id="loadB">Load code from local browser storage</button>
-    <button id="delB">Delete code from local browser storage</button>
+    <button id="saveBtn" disabled>Save to local browser storage</button>
+    <button id="loadB" disabled>Load code from local browser storage</button>
+    <button id="delB" disabled>Delete code from local browser storage</button>
     <h3>Terminal/Output</h3>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio
