@@ -11,17 +11,9 @@ jobs:
       - name: Zip it
         run: |
             git checkout -b release || git checkout release
-            #git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
-            mkdir tmp
             mkdir build
-            cd release && cd ..
-            cd tmp
-            mkdir rel
-            cp -r ../release/* ./rel/
-            zip -r offline.zip rel/
-            mv offline.zip ../build/
-            cd ..
-            rm -rf tmp/
+            zip -r offline.zip ./release/
+            mv offline.zip ./build/
       - name: Upload
         run: |
           git config user.name "github-actions[bot]"
