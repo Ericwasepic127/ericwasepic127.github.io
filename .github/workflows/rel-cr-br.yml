@@ -14,7 +14,8 @@ jobs:
       - name: Essential
         id: ver
         run: |
-          git checkout release
+          git checkout -b release || git checkout release
+          git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || echo "$(git pull origin release && git push origin release)" || true
           echo "version=$(cat python-version.txt)" > $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v3
