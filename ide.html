@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: V3.6.7</strong></p>
+    <p><strong>Py3IDE Version: Beta 3.6.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -163,6 +163,7 @@
         document.getElementById('loadBtn').onclick = loadCode
         
         updateEditor();
+        const window.updateEditor = updateEditor;
         textarea.focus();
     </script>
     <script type="py">
@@ -171,10 +172,88 @@
         with open("m2w.py", "w") as file:
             file.write(asyncio.run(data.text())) if data.ok else None
         import js, m2w
+        from pyscript import storage as s
+        from asyncio import run as a
+        from random import choice as c
+        
+        class SLD:
+                 def __init__(self, name=None):
+                    if name is None:
+                        q = "qwertyuiopasdfghjklzxcvbnm1234567890"
+                        name = "".join([c(q) for _ in "-"*6])
+                    self.name = name
+                    self.storage = a(s(name))
+                 def __repr__(self):
+                     return f"<pyscript.storage (SLD): {self.name}>"
+                 def sync(self):
+                     """Synchronization"""
+                     a(self.storage.sync())
+                 def save(self, name, item):
+                     """Saves item to persistent storage"""
+                     self.storage[name] = item
+                     self.sync()
+                 def load(self, name):
+                     """Loads item from persistent storage"""
+                     self.sync()
+                     return self.storage.get(name)
+                 def delete(self, name):
+                     """Deletes item from persistent storage"""
+                     if name in self.storage.keys():
+                         del self.storage[name]
+                         self.sync()
+                     else:
+                         raise KeyError(f"Key {name} doesn't exist!")
+                 def __getitem__(self, name):
+                     return self.load(name)
+                 def __delitem__(self, name):
+                     self.delete(name)
+                 def __setitem__(self, name, value):
+                     self.save(name, value)
         from pyodide.ffi import create_proxy, JsNull as null
         connect = m2w.Main(id="#executer")
+        storage = SLD("codeStorage")
         def codeparse(): 
-            return pyscript.document.querySelector("#codeInput").value
+            return pyscript.document.querySelector("#codeInput").value.strip().rstrip()
+        def saveBtn(event):
+            code = codeparse()
+            if code:
+                name = js.prompt("What do you want to name your code as? ", code.split("\n")[0]).strip().rstrip()
+                if not name or name == null: 
+                    return
+                if name in storage.storage.keys():
+                   if js.confirm("Name exists! Do you want to override it?"):
+                     storage[name] = code
+                else:
+                     storage[name] = code
+                js.alert("Saved!")
+            else:
+                js.alert("No code to save!")
+        def loadB(event):
+             alls = storage.storage
+             build = "\n".join(["- " + per for per in alls.keys()])
+             pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
+             nm = js.prompt(pr).strip().rstrip()
+             if not nm or nm == null: 
+                return
+             if nm in alls.keys():
+                 pyscript.document.querySelector("#codeInput").value = storage[nm]
+                 pyscript.window.updateEditor()
+                 alert(f"Successfully loaded {nm}!")
+             else:
+                 alert(f"{nm} doesn't found!")
+        def delB(event):
+             alls = storage.storage
+             build = "\n".join(["- " + per for per in alls.keys()])
+             pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
+             nm = js.prompt(pr).strip().rstrip()
+             if not nm or nm == null: 
+                return
+             if nm in alls.keys():
+                 del storage[nm]
+                 alert(f"Successfully deleted {nm}!")
+             else:
+                 alert(f"{nm} doesn't found!")
+        
         def onrun(event):
             if connect.getmsg:
                 js.alert("Already running code!")
@@ -238,11 +317,17 @@
         pip[0].onclick = create_proxy(lsp)
         pip[1].onclick = create_proxy(inp)
         pip[2].onclick = create_proxy(stopBtn)
+        pyscript.document.querySelector("#saveBtn").onclick = create_proxy(saveBtn)
+        pyscript.document.querySelector("#loadB").onclick = create_proxy(loadB)
+        pyscript.document.querySelector("#delB").onclick = create_proxy(delB)
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
+    <button id="saveBtn">Save to local browser storage</button>
+    <button id="loadB">Load code from local browser storage</button>
+    <button id="delB">Delete code from local browser storage</button>
     <h3>Terminal/Output</h3>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio
