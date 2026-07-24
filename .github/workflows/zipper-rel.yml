@@ -8,9 +8,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Brancher
+        run: git checkout -b release || git checkout release
       - name: Zip it
         run: |
-            git checkout -b release || git checkout release
             mkdir build
             mkdir offline
             ls
