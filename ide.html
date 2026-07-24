@@ -67,21 +67,24 @@
     <py-config>
         packages = ["micropip"]
     </py-config>
-    <a href="/index.html">Back to homepage</a>
+    <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <a href="/hello.html">Go to REPL version</a>
-    <hr>
-    <p><strong>Py3IDE Version: V3.7.6</strong></p>
+    <p><strong>Py3IDE Version: V3.7.7</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
     <button id="dwnldBtn">Download code into storage</button>
     <button id="loadBtn">Upload code from storage</button>
-    <button id="shareBtn">Share your code</button>
+    <button id="shareBtn" disabled>Share your code</button>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div class="editor-container">
         <div class="line-numbers" id="lineNumbers">1</div>
-        <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false"></textarea>
+        <textarea id="codeInput" placeholder="Write your Python code here..." spellcheck="false">
+            print("Hello from Py3IDE!")
+            # Click 'Run' to run!
+            import sys
+            print("Python version:", sys.version)
+        </textarea>
     </div>
     <div class="status-bar">
         <span id="statusLine">Line 1</span> &nbsp;|&nbsp; <span id="statusChar">Chars: 0</span>
