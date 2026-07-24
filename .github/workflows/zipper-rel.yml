@@ -9,7 +9,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Brancher
-        run: git checkout -b release || git checkout release
+        run: |
+          git checkout -b release || git checkout release
+          git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
       - name: Zip it
         run: |
             mkdir build
