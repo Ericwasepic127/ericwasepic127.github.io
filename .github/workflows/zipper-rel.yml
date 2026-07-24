@@ -1,4 +1,4 @@
-name: Release creator
+name: Zip it shipit
 
 on: workflow_dispatch
 
