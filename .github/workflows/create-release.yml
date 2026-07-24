@@ -17,7 +17,7 @@ jobs:
             git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
             cd release || mkdir release && cd release
             mkdir pyscript
-            cp ../pyscript/* pyscript/
+            cp -r ../pyscript/* pyscript/
             cp ../demo.html index.html
             cp ../ide.html ide.html
             cp ../hello.html repl.html
