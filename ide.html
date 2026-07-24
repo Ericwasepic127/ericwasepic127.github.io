@@ -71,7 +71,7 @@
     <hr>
     <a href="/hello.html">Go to REPL version</a>
     <hr>
-    <p><strong>Py3IDE Version: Beta 3.6.8</strong></p>
+    <p><strong>Py3IDE Version: Beta 3.6.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -163,7 +163,7 @@
         document.getElementById('loadBtn').onclick = loadCode
         
         updateEditor();
-        const window.updateEditor = updateEditor;
+        window.updateEditor = updateEditor;
         textarea.focus();
     </script>
     <script type="py">
@@ -238,9 +238,9 @@
              if nm in alls.keys():
                  pyscript.document.querySelector("#codeInput").value = storage[nm]
                  pyscript.window.updateEditor()
-                 alert(f"Successfully loaded {nm}!")
+                 js.alert(f"Successfully loaded {nm}!")
              else:
-                 alert(f"{nm} doesn't found!")
+                 js.alert(f"{nm} doesn't found!")
         def delB(event):
              alls = storage.storage
              build = "\n".join(["- " + per for per in alls.keys()])
@@ -250,9 +250,9 @@
                 return
              if nm in alls.keys():
                  del storage[nm]
-                 alert(f"Successfully deleted {nm}!")
+                 js.alert(f"Successfully deleted {nm}!")
              else:
-                 alert(f"{nm} doesn't found!")
+                 js.alert(f"{nm} doesn't found!")
         
         def onrun(event):
             if connect.getmsg:
