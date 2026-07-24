@@ -1,7 +1,7 @@
 {
   "name": "Py3 - Run Python offline on your device with IDE!",
   "short_name": "Py3IDE",
-  "description": "Interactive Python REPL in your browser, featuring upload & download code! Free, ad-less, no paywalls & data collection!",
+  "description": "Python Integrated Development Environment in your browser, featuring upload & download code! Free, ad-less, no paywalls & data collection!",
   "icons": [{
     "src": "python.png",
     "sizes": "499x499"
