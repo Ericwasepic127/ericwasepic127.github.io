@@ -1,4 +1,4 @@
-name: Release creator
+name: Demo branch creator
 
 on: workflow_dispatch
 
