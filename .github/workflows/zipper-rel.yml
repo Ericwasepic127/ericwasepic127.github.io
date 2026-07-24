@@ -15,6 +15,9 @@ jobs:
             mkdir build
             mkdir offline
             ls
+            git branch
+            ls /
+            pwd
             cp -r release/ offline/
             zip -r offline.zip tmp -i offline/release/
             mv offline.zip ./build/
