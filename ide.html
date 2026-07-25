@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.2.8</strong></p>
+    <p><strong>Py3IDE Version: V4.2.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -363,12 +363,15 @@
                 code_bytes = '# Click \'Run\' to run!\nimport sys, datetime\nprint("Hello from Py3IDE!")\nprint("Python version:", sys.version)\ndatenow = datetime.datetime.now()\ndate = f"{datenow.year}.{datenow.month:02d}.{datetime.day:02d} {datetime.hour:02d}:{datetime.minute:02d}"\n# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!\nprint("Current date & time:", date)'
             pyscript.document.querySelector("#codeInput").value = code_bytes
             pyscript.window.updateEditor()
-        def shareBtn(event):
+        async def shareBtn(event):
             c = codeparse()
             if c:
                o = sharecode(c)
-               js.copy(o)
-               js.alert(f"Copied to Clipboard!\nURL: {o}")
+               try:
+                   await pyscript.window.navigator.clipboard.writeText(o)
+                   js.alert(f"Copied to Clipboard!\nURL: {o}")
+               except:
+                    js.alert(f"URL: {o}")
             else:
                print("No code to share!")
         pip[3].onclick = create_proxy(lsp)
@@ -379,7 +382,7 @@
         pyscript.document.querySelector("#delB").onclick = create_proxy(lambda event: create_proxy(delB).callPromising(event))
         svciq = pyscript.document.querySelector("#shareBtn")
         svciq.disabled = False
-        svciq.onclick = create_proxy(shareBtn)
+        svciq.onclick = create_proxy(lambda event: create_proxy(shareBtn).callPromising(event))
         lsc()
         pyscript.document.querySelector("#codeInput").disabled = False
         pyscript.document.querySelector("#codeInput").placeholder = "Write your Python code here..."
