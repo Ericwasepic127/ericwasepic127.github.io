@@ -25,6 +25,7 @@
             "@codemirror/search": "https://cdn.jsdelivr.net/npm/@codemirror/search@latest/dist/index.js",
             "@codemirror/history": "https://cdn.jsdelivr.net/npm/@codemirror/history@latest/dist/index.js",
             "@codemirror/comment": "https://cdn.jsdelivr.net/npm/@codemirror/comment@latest/dist/index.js",
+            "@codemirror/theme-eclipse": "https://cdn.jsdelivr.net/npm/@codemirror/theme-eclipse@latest/dist/index.js"
         }
     }
     </script>
@@ -45,11 +46,13 @@
         import { autocompletion } from '@codemirror/autocomplete';
         import { searchKeymap } from '@codemirror/search';
         import { commentKeymap } from '@codemirror/comment';
+        import { eclipse } from '@codemirror/theme-eclipse';
         window.console.log(`[codemirror/main]: Imported success`)
         const editor = new EditorView({
             state: EditorState.create({
                 lineNumbers: true,
                 extensions: [
+                    eclipse, 
                     basicSetup,
                     python(),
                     indentUnit.of("    "),
@@ -103,7 +106,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.3.9</strong></p>
+    <p><strong>Py3IDE Version: V4.4.0</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
