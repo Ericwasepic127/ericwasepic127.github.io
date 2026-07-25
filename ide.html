@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V3.8.5</strong></p>
+    <p><strong>Py3IDE Version: V4.2.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -351,7 +351,7 @@
         def lsc():
             import binascii
             try:
-               params = js.URLSearchParams(js.window.location.search)
+               params = js.URLSearchParams.new(js.window.location.search)
                uri_encoded = params.get('code')
                if uri_encoded:
                   b64_encoded = js.decodeURIComponent(uri_encoded).encode("utf-8")
