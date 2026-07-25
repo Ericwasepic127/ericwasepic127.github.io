@@ -11,8 +11,6 @@
     <link rel="manifest" href="manifest-ide.json">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="./mini-coi-fd.js"></script>
-    <script type="module" src="./pyscript/core.js"></script>
-    <link rel="stylesheet" href="./pyscript/core.css">
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
     <title>Py3IDE - Run python code with IDE!</title>
     <script type="importmap">
@@ -84,6 +82,8 @@
         }
         window.setPlaceholder = setPlaceholder
     </script>
+    <script type="module" src="./pyscript/core.js"></script>
+    <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
     <py-config>
@@ -91,7 +91,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: Beta 4.3.1</strong></p>
+    <p><strong>Py3IDE Version: Beta 4.3.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
