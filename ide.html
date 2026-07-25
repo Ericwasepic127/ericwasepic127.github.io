@@ -40,8 +40,6 @@
         const editor = new EditorView({
             state: EditorState.create({
                 lineNumbers: true,
-                
-                doc: defaultCode,
                 extensions: [
                     basicSetup,
                     python(),
@@ -81,6 +79,7 @@
             });
         }
         window.setPlaceholder = setPlaceholder
+        window.console.log(`[main/codemirror]: Initailization finished`);
     </script>
     <script type="module" src="./pyscript/core.js"></script>
     <link rel="stylesheet" href="./pyscript/core.css">
@@ -91,7 +90,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.3.4</strong></p>
+    <p><strong>Py3IDE Version: V4.3.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
