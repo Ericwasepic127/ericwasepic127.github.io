@@ -95,9 +95,12 @@
             });
         }
         window.setPlaceholder = setPlaceholder
-        window.console.log(`[main/codemirror]: Initailization finished`);
+        window.console.log(`[codemirror/main]: Initailization finished`);
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = './pyscript/core.js';
+        document.head.appendChild(script);
     </script>
-    <script type="module" src="./pyscript/core.js"></script>
     <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
@@ -106,7 +109,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.4.0</strong></p>
+    <p><strong>Py3IDE Version: V4.4.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
