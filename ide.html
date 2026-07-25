@@ -16,11 +16,15 @@
     <script type="importmap">
     {
         "imports": {
-            "@codemirror/state": "./pyscript/codemirror-BDx3jn9j.js.map",
-            "@codemirror/view": "./pyscript/codemirror_view-BsXnWedx.js.map",
-            "@codemirror/commands": "./pyscript/codemirror_commands-JTJPAaAA.js.map",
-            "@codemirror/language": "./pyscript/codemirror_language-BeYrpeur.js.map",
-            "@codemirror/lang-python": "./pyscript/codemirror_lang-python-r-dBg-Wd.js.map"
+            "@codemirror/state": "https://cdn.jsdelivr.net/npm/@codemirror/state@latest/dist/index.js",
+            "@codemirror/view": "https://cdn.jsdelivr.net/npm/@codemirror/view@latest/dist/index.js",
+            "@codemirror/commands": "https://cdn.jsdelivr.net/npm/@codemirror/commands@latest/dist/index.js",
+            "@codemirror/language": "https://cdn.jsdelivr.net/npm/@codemirror/language@latest/dist/index.js",
+            "@codemirror/lang-python": "https://cdn.jsdelivr.net/npm/@codemirror/lang-python@latest/dist/index.js",
+            "@codemirror/autocomplete": "https://cdn.jsdelivr.net/npm/@codemirror/autocomplete@latest/dist/index.js",
+            "@codemirror/search": "https://cdn.jsdelivr.net/npm/@codemirror/search@latest/dist/index.js",
+            "@codemirror/history": "https://cdn.jsdelivr.net/npm/@codemirror/history@latest/dist/index.js",
+            "@codemirror/comment": "https://cdn.jsdelivr.net/npm/@codemirror/comment@latest/dist/index.js",
         }
     }
     </script>
@@ -38,6 +42,9 @@
         import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
         import { python } from '@codemirror/lang-python';
         import { indentUnit } from '@codemirror/language';
+        import { autocompletion } from '@codemirror/autocomplete';
+        import { searchKeymap } from '@codemirror/search';
+        import { commentKeymap } from '@codemirror/comment';
         window.console.log(`[codemirror/main]: Imported success`)
         const editor = new EditorView({
             state: EditorState.create({
@@ -47,17 +54,20 @@
                     python(),
                     indentUnit.of("    "),
                     history(),
+                    autocompletion(),
                     placeholder(`# Once PyScript loaded, you can code here!`),
                     keymap.of([
                         ...defaultKeymap,
-                        ...historyKeymap
+                        ...historyKeymap,
+                        ...searchKeymap,
+                        ...commentKeymap
                     ]),
                     EditorView.lineWrapping,
                 ]
             }),
+            ".cm-scroller": {overflow: "auto"}
             parent: document.getElementById('editor-container')
         });
-
         console.log(`[codemirror/main]: Setup success`)
         function getCode() {
             return editor.state.doc.toString();
@@ -93,7 +103,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.3.8</strong></p>
+    <p><strong>Py3IDE Version: V4.3.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
