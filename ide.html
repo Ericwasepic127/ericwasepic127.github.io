@@ -15,53 +15,75 @@
     <link rel="stylesheet" href="./pyscript/core.css">
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
     <title>Py3IDE - Run python code with IDE!</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "@codemirror/state": "./codemirror_state-DxSVIxgn.js",
+            "@codemirror/view": "./codemirror_view-BsXnWedx.js",
+            "@codemirror/commands": "./codemirror_commands-JTJPAaAA.js",
+            "@codemirror/language": "./codemirror_language-BeYrpeur.js",
+            "@codemirror/lang-python": "./codemirror_lang-python-r-dBg-Wd.js"
+        }
+    }
+    </script>
     <style>
         body {
             font-family: 'Courier New', monospace;
             margin: 20px;
         }
-        .editor-container {
-            display: flex;
-            border: 1px solid #ccc;
-            background: #fff;
-        }
-        .line-numbers {
-            color: #888;
-            text-align: right;
-            padding: 8px 10px;
-            user-select: none;
-            pointer-events: none;
-            border-right: 1px solid #ccc;
-            background: #f8f8f8;
-            white-space: pre;
-            line-height: 1.5;
-            font-size: 0.9rem;
-            overflow: hidden;
-        }
-        #codeInput {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            resize: none;
-            padding: 8px 12px;
-            white-space: pre;
-            overflow: auto;
-            tab-size: 4;
-            min-height: 400px;
-            background: #fff;
-            color: #000;
-        }
-        .status-bar {
-            font-size: 0.8rem;
-            color: #555;
-            padding: 4px 0;
-            border-top: 1px solid #ccc;
-            margin-top: 4px;
-        }
     </style>
+    <script type="module">
+        import { EditorView, basicSetup, placeholder } from '@codemirror/view';
+        import { EditorState } from '@codemirror/state';
+        import { keymap } from '@codemirror/view';
+        import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+        import { python } from '@codemirror/lang-python';
+        import { indentUnit } from '@codemirror/language';
+        const editor = new EditorView({
+            state: EditorState.create({
+                lineNumbers: true,
+                
+                doc: defaultCode,
+                extensions: [
+                    basicSetup,
+                    python(),
+                    indentUnit.of("    "),
+                    history(),
+                    placeholder(`# Once PyScript loaded, you can code here!`),
+                    keymap.of([
+                        ...defaultKeymap,
+                        ...historyKeymap
+                    ]),
+                    EditorView.lineWrapping,
+                ]
+            }),
+            parent: document.getElementById('editor-container')
+        });
+    
+        function getCode() {
+            return editor.state.doc.toString();
+        }
+    
+        function setCode(code) {
+            editor.dispatch({
+                changes: {
+                    from: 0,
+                    to: editor.state.doc.length,
+                    insert: code || ''
+                }
+            });
+        }
+    
+        window.codeEditor = editor;
+        window.getCode = getCode;
+        window.setCode = setCode;
+        function setPlaceholder(text) {
+            editor.dispatch({
+                effects: placeholder.reconfigure(placeholder(text))
+            });
+        }
+        window.setPlaceholder = setPlaceholder
+    </script>
 </head>
 <body>
     <py-config>
@@ -69,7 +91,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.3.0</strong></p>
+    <p><strong>Py3IDE Version: Beta 4.3.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -77,52 +99,10 @@
     <button id="loadBtn">Upload code from storage</button>
     <button id="shareBtn" disabled>Share your code</button>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
-    <div class="editor-container">
-        <div class="line-numbers" id="lineNumbers">1</div>
-        <textarea id="codeInput" placeholder="# Once PyScript loaded, you can code here!" spellcheck="false"></textarea>
-    </div>
-    <div class="status-bar">
-        <span id="statusLine">Line 1</span> &nbsp;|&nbsp; <span id="statusChar">Chars: 0</span>
-    </div>
-
+    <div id="editor-container"></div>
     <script>
-        const textarea = document.getElementById('codeInput');
-        const lineNumbers = document.getElementById('lineNumbers');
-        const statusLine = document.getElementById('statusLine');
-        const statusChar = document.getElementById('statusChar');
-
-        function updateEditor() {
-            const lines = textarea.value.split('\n');
-            let numbers = '';
-            for (let i = 1; i <= lines.length; i++) {
-                numbers += i + '\n';
-            }
-            lineNumbers.textContent = numbers;
-
-            const cursorPos = textarea.selectionStart;
-            const textBefore = textarea.value.substring(0, cursorPos);
-            const currentLine = textBefore.split('\n').length;
-            statusLine.textContent = `Line ${currentLine} of ${lines.length}`;
-            statusChar.textContent = `Chars: ${textarea.value.length}`;
-        }
-
-        textarea.addEventListener('input', updateEditor);
-        textarea.addEventListener('click', updateEditor);
-        textarea.addEventListener('keyup', updateEditor);
-
-        textarea.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-                this.selectionStart = this.selectionEnd = start + 4;
-                updateEditor();
-            }
-        });
-
         function downloadCode() {
-            const code = document.getElementById('codeInput').value;
+            const code = window.getCode()
             if (!code.trim()) {
                 alert('No code to download!');
                 return;
@@ -140,7 +120,7 @@
         document.getElementById('dwnldBtn').onclick = downloadCode;
 
         function loadCode() {
-                if (textarea.disabled) {
+                if () {
                     alert(`You can't upload code when PyScript is not ready yet!`);
                     return;
                 }
@@ -169,12 +149,10 @@
         const sharedCode = urlParams.get('code');
 
         if (sharedCode) {
-            textarea.innerHTML = `# Looks like you opened shared code!
-# Please wait, loading your code...`;
+            window.setPlaceholder(`# Looks like you opened shared code!
+# Please wait, loading your code...`);
         }
-        updateEditor();
-        window.updateEditor = updateEditor;
-        textarea.disabled = true;
+        
     </script>
     <script type="py">
         import pyscript, asyncio, micropip
@@ -222,7 +200,7 @@
         storage = SLD("codeStorage")
         await storage.init()
         def codeparse(): 
-            return pyscript.document.querySelector("#codeInput").value.strip().rstrip()
+            return pyscript.window.getCode()
         async def saveBtn(event):
             code = codeparse()
             if code:
@@ -361,8 +339,7 @@
             except (binascii.Error, UnicodeDecodeError) as e:
                 js.alert(f"Looks like your link is malformed!\nError details: {e}")
                 code_bytes = '# Click \'Run\' to run!\nimport sys, datetime\nprint("Hello from Py3IDE!")\nprint("Python version:", sys.version)\ndatenow = datetime.datetime.now()\ndate = f"{datenow.year}.{datenow.month:02d}.{datenow.day:02d} {datenow.hour:02d}:{datenow.minute:02d}"\n# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!\nprint("Current date & time:", date)'
-            pyscript.document.querySelector("#codeInput").value = code_bytes
-            pyscript.window.updateEditor()
+            pyscript.window.setCode(code_bytes)
         async def shareBtn(event):
             c = codeparse()
             if c:
