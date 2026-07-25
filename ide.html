@@ -53,13 +53,11 @@
         import { autocompletion } from '@codemirror/autocomplete';
         import { searchKeymap } from '@codemirror/search';
         import { commentKeymap } from '@codemirror/comment';
-        import { eclipse } from '@codemirror/theme-eclipse';
         window.console.log(`[codemirror/main]: Imported success`)
         const editor = new EditorView({
             state: EditorState.create({
                 lineNumbers: true,
                 extensions: [
-                    eclipse, 
                     basicSetup,
                     python(),
                     indentUnit.of("    "),
@@ -101,6 +99,23 @@
             });
         }
         window.setPlaceholder = setPlaceholder
+        function disableEditor() {
+            editor.dispatch({
+                effects: EditorView.editable.reconfigure(EditorView.editable.of(false))
+            });
+        }
+
+        function enableEditor() {
+            editor.dispatch({
+                effects: EditorView.editable.reconfigure(EditorView.editable.of(true))
+            });
+        }
+        function isEditor() {
+            return editor.state.facet(EditorView.editable);
+        }
+        window.isEditor = isEditor;
+        window.disableEditor = disableEditor;
+        window.enableEditor = enableEditor;
         window.console.log(`[codemirror/main]: Initailization finished`);
         const script = document.createElement('script');
         script.type = 'module';
@@ -115,7 +130,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.5.0</strong></p>
+    <p><strong>Py3IDE Version: V4.5.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -144,7 +159,7 @@
         document.getElementById('dwnldBtn').onclick = downloadCode;
 
         function loadCode() {
-                if () {
+                if (!window.isEditor()) {
                     alert(`You can't upload code when PyScript is not ready yet!`);
                     return;
                 }
@@ -159,8 +174,7 @@
                         const reader = new FileReader();
                         reader.onload = function(event) {
                                 const code = event.target.result;
-                                document.getElementById('codeInput').value = code;
-                                updateEditor();
+                                window.setCode(code);
                         };
                         reader.readAsText(file);
                 };
@@ -183,7 +197,7 @@
         data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
         with open("m2w.py", "w") as file:
             file.write(asyncio.run(data.text())) if data.ok else None
-        import js, m2w
+        import js, m2w, base64
         from pyscript import storage as s
         from asyncio import run as a
         from random import choice as c
@@ -256,8 +270,7 @@
              if not nm:
                  return
              if nm in alls.keys():
-                 pyscript.document.querySelector("#codeInput").value = await storage.load(nm)
-                 pyscript.window.updateEditor()
+                 pyscript.window.setCode(await storage.load(nm))
                  js.alert(f"Successfully loaded {nm}!")
              else:
                  js.alert(f"{nm} doesn't found!")
@@ -336,11 +349,6 @@
                  connect.sendmsg("STOP")
             else:
                  js.alert("Cannot stop when code is not running")
-        
-        pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
-        for x in pip:
-            x.disabled = False
-        import js, pyscript, base64
 
         def sharecode(code):
             code_bytes = code.encode('utf-8')
@@ -375,6 +383,10 @@
                     js.alert(f"URL: {o}")
             else:
                print("No code to share!")
+        lsc()
+        pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
+        for x in pip:
+            x.disabled = False
         pip[3].onclick = create_proxy(lsp)
         pip[4].onclick = create_proxy(inp)
         pip[5].onclick = create_proxy(stopBtn)
@@ -384,9 +396,8 @@
         svciq = pyscript.document.querySelector("#shareBtn")
         svciq.disabled = False
         svciq.onclick = create_proxy(lambda event: create_proxy(shareBtn).callPromising(event))
-        lsc()
-        pyscript.document.querySelector("#codeInput").disabled = False
-        pyscript.document.querySelector("#codeInput").placeholder = "Write your Python code here..."
+        pyscript.window.enableEditor()
+        pyscript.window.setPlaceholder("Write your Python code here...")
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
