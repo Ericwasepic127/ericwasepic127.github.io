@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.2.6</strong></p>
+    <p><strong>Py3IDE Version: V4.2.7</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -359,9 +359,9 @@
                else:
                   code_bytes = '# Click \'Run\' to run!\nimport sys, datetime\nprint("Hello from Py3IDE!")\nprint("Python version:", sys.version)\ndatenow = datetime.datetime.now()\ndate = f"{datenow.year}.{datenow.month:02d}.{datetime.day:02d} {datetime.hour:02d}:{datetime.minute:02d}"\n# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!\nprint("Current date & time:", date)'
             except (binascii.Error, UnicodeDecodeError) as e:
-                alert(f"Looks like your link is malformed!\nError details: {e}")
+                js.alert(f"Looks like your link is malformed!\nError details: {e}")
                 code_bytes = '# Click \'Run\' to run!\nimport sys, datetime\nprint("Hello from Py3IDE!")\nprint("Python version:", sys.version)\ndatenow = datetime.datetime.now()\ndate = f"{datenow.year}.{datenow.month:02d}.{datetime.day:02d} {datetime.hour:02d}:{datetime.minute:02d}"\n# Did you know? :02d in formatted strings (f-strings) makes 1 dight integer to 2 dights integer, as like 2 to 02!\nprint("Current date & time:", date)'
-            pyscript.window.querySelector("#codeInput").value = code_bytes
+            pyscript.document.querySelector("#codeInput").value = code_bytes
             pyscript.window.updateEditor()
         def shareBtn(event):
             c = codeparse()
