@@ -30,13 +30,15 @@
             margin: 20px;
         }
     </style>
-    <script type="module">
+    <script>
+        window.console.log(`[codemirror/main]: Starting up`)
         import { EditorView, basicSetup, placeholder } from '@codemirror/view';
         import { EditorState } from '@codemirror/state';
         import { keymap } from '@codemirror/view';
         import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
         import { python } from '@codemirror/lang-python';
         import { indentUnit } from '@codemirror/language';
+        window.console.log(`[codemirror/main]: Imported success`)
         const editor = new EditorView({
             state: EditorState.create({
                 lineNumbers: true,
@@ -55,7 +57,8 @@
             }),
             parent: document.getElementById('editor-container')
         });
-    
+
+        console.log(`[codemirror/main]: Setup success`)
         function getCode() {
             return editor.state.doc.toString();
         }
@@ -90,7 +93,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.3.5</strong></p>
+    <p><strong>Py3IDE Version: V4.3.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
