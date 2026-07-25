@@ -69,7 +69,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.2.7</strong></p>
+    <p><strong>Py3IDE Version: V4.2.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -367,7 +367,7 @@
             c = codeparse()
             if c:
                o = sharecode(c)
-               pyscript.window.copy(o)
+               js.copy(o)
                js.alert(f"Copied to Clipboard!\nURL: {o}")
             else:
                print("No code to share!")
