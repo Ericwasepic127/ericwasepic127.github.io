@@ -1,0 +1,65 @@
+.cm-editor {
+    height: 100%;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    background: #fff;
+    color: #000;
+}
+
+.cm-scroller {
+    overflow: auto;
+    height: 100%;
+}
+
+.cm-content {
+    padding: 4px 0;
+    white-space: pre;
+}
+
+.cm-line {
+    padding: 0 2px 0 6px;
+}
+
+.cm-gutters {
+    background: #f5f5f5;
+    border-right: 1px solid #ddd;
+}
+
+.cm-gutterElement {
+    padding: 0 6px;
+    color: #999;
+}
+
+.cm-activeLineGutter {
+    background: #e2f2ff;
+}
+
+.cm-selectionBackground {
+    background: #d9d9d9;
+}
+
+.cm-focused .cm-selectionBackground {
+    background: #d7d4f0;
+}
+
+.cm-cursor {
+    border-left: 1.2px solid black;
+}
+
+.cm-focused .cm-cursor {
+    display: block;
+}
+
+.cm-activeLine {
+    background-color: #cceeff44;
+}
+
+.cm-placeholder {
+    color: #888;
+}
+
+.cm-lineWrapping {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
