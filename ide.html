@@ -34,7 +34,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.5.6</strong></p>
+    <p>Py3IDE Version: <strong>V4.6.2</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -59,7 +59,7 @@
         window.setCode = (code) => editor.setValue(code);
         window.disableEditor = () => editor.setReadOnly(true);
         window.enableEditor = () => editor.setReadOnly(false);
-        window.isEditor = () => editor.getReadOnly();
+        window.isEditor = () => !editor.getReadOnly();
         window.disableEditor()
         function downloadCode() {
             const code = window.getCode()
