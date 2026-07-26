@@ -3,6 +3,9 @@
 ## Special thanks 
 **For PyScript developers**
 And **GitHub Developers** for giving free website! That's my dream! 
+## License:
+
+License is [**MIT**](LICENSE) but I've been tested and it has almost no bugs ([releases](https://github.com/Ericwasepic127/ericwasepic127.github.io/releases) only). Bugs appear so feel free to [create issue](https://github.com/Ericwasepic127/ericwasepic127.github.io/issues) and tell about it!
 ## Screenshots:
 
 ![Screenshot 1: The starting](https://ericwasepic127.github.io/Pyrepl.jpg)
