@@ -14,108 +14,8 @@
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
     <title>Py3IDE - Run python code with IDE!</title>
     <link rel="stylesheet" href="./codemirror.css">
-    <script type="importmap">
-    {
-        "imports": {
-            "@codemirror/state": "https://cdn.jsdelivr.net/npm/@codemirror/state@latest/+esm",
-            "@codemirror/view": "https://cdn.jsdelivr.net/npm/@codemirror/view@latest/+esm",
-            "@codemirror/commands": "https://cdn.jsdelivr.net/npm/@codemirror/commands@latest/+esm",
-            "@codemirror/language": "https://cdn.jsdelivr.net/npm/@codemirror/language@latest/+esm",
-            "@codemirror/lang-python": "https://cdn.jsdelivr.net/npm/@codemirror/lang-python@latest/+esm",
-            "@codemirror/autocomplete": "https://cdn.jsdelivr.net/npm/@codemirror/autocomplete@latest/+esm",
-            "@codemirror/search": "https://cdn.jsdelivr.net/npm/@codemirror/search@latest/+esm",
-            "@codemirror/history": "https://cdn.jsdelivr.net/npm/@codemirror/history@latest/+esm",
-            "@codemirror/comment": "https://cdn.jsdelivr.net/npm/@codemirror/comment@latest/+esm"
-            "@codemirror/basic-setup": "https://cdn.jsdelivr.net/npm/@codemirror/basic-setup@latest/+esm"
-        }
-    }
-    </script>
-    <style>
-        body {
-            font-family: 'Courier New', monospace;
-            margin: 20px;
-        }
-    </style>
-    <script type="module">
-        window.console.log(`[codemirror/main]: Starting up`)
-        import { EditorView, basicSetup, placeholder } from '@codemirror/view';
-        import { EditorState } from '@codemirror/state';
-        import { keymap } from '@codemirror/view';
-        import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-        import { python } from '@codemirror/lang-python';
-        import { indentUnit } from '@codemirror/language';
-        import { autocompletion } from '@codemirror/autocomplete';
-        import { searchKeymap } from '@codemirror/search';
-        import { commentKeymap } from '@codemirror/comment';
-        window.console.log(`[codemirror/main]: Imported success`)
-        const editor = new EditorView({
-            state: EditorState.create({
-                lineNumbers: true,
-                extensions: [
-                    basicSetup,
-                    python(),
-                    indentUnit.of("    "),
-                    history(),
-                    autocompletion(),
-                    placeholder(`# Once PyScript loaded, you can code here!`),
-                    keymap.of([
-                        ...defaultKeymap,
-                        ...historyKeymap,
-                        ...searchKeymap,
-                        ...commentKeymap
-                    ]),
-                    EditorView.lineWrapping,
-                ]
-            }),
-            parent: document.getElementById('editor-container')
-        });
-        console.log(`[codemirror/main]: Setup success`)
-        function getCode() {
-            return editor.state.doc.toString();
-        }
-    
-        function setCode(code) {
-            editor.dispatch({
-                changes: {
-                    from: 0,
-                    to: editor.state.doc.length,
-                    insert: code || ''
-                }
-            });
-        }
-    
-        window.codeEditor = editor;
-        window.getCode = getCode;
-        window.setCode = setCode;
-        function setPlaceholder(text) {
-            editor.dispatch({
-                effects: placeholder.reconfigure(placeholder(text))
-            });
-        }
-        window.setPlaceholder = setPlaceholder
-        function disableEditor() {
-            editor.dispatch({
-                effects: EditorView.editable.reconfigure(EditorView.editable.of(false))
-            });
-        }
-
-        function enableEditor() {
-            editor.dispatch({
-                effects: EditorView.editable.reconfigure(EditorView.editable.of(true))
-            });
-        }
-        function isEditor() {
-            return editor.state.facet(EditorView.editable);
-        }
-        window.isEditor = isEditor;
-        window.disableEditor = disableEditor;
-        window.enableEditor = enableEditor;
-        window.console.log(`[codemirror/main]: Initailization finished`);
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = './pyscript/core.js';
-        document.head.appendChild(script);
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js"></script>
     <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
@@ -124,7 +24,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.5.3</strong></p>
+    <p><strong>Py3IDE Version: V4.5.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -134,6 +34,23 @@
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div id="editor-container"></div>
     <script>
+        const editor = ace.edit("editor-container", {
+            mode: "ace/mode/python",
+            theme: "ace/theme/eclipse",
+            fontSize: 14,
+            tabSize: 4,
+            useSoftTabs: true,
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+            showPrintMargin: false
+        });
+        window.getCode = () => editor.getValue();
+        window.setCode = (code) => editor.setValue(code);
+        window.disableEditor = () => editor.setReadOnly(true);
+        window.enableEditor = () => editor.setReadOnly(false);
+        window.isEditor = () => editor.getReadOnly();
+        window.disableEditor()
         function downloadCode() {
             const code = window.getCode()
             if (!code.trim()) {
@@ -181,8 +98,7 @@
         const sharedCode = urlParams.get('code');
 
         if (sharedCode) {
-            window.setPlaceholder(`# Looks like you opened shared code!
-# Please wait, loading your code...`);
+            document.querySelector("#ready").innerHTML = `Looks like you opened shared code! Please wait, loading your code...`;
         }
         
     </script>
@@ -391,7 +307,6 @@
         svciq.disabled = False
         svciq.onclick = create_proxy(lambda event: create_proxy(shareBtn).callPromising(event))
         pyscript.window.enableEditor()
-        pyscript.window.setPlaceholder("Write your Python code here...")
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
