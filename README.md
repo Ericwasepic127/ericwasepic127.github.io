@@ -11,33 +11,40 @@ And **GitHub Developers** for giving free website! That's my dream!
 
 ## What Makes This Different:
 
-**Smart Color System**
+**Smart Color System on Py3REPL**
 - Errors automatically show in red
 - Purple prompts (>>>), green continuation lines (...)
 - Toggle: `color()` for colors, `restore()` for plain
 
-**Browser-Native**
-- Runs 100% in your browser (no servers!)
-- Async/await ready
-- Install packages with micropip
-
-**Developer Secrets**
+**Developer Secrets on Py3REPL**
 - Enter `@:/\:@` for open terminal faster
 - Had features lots of *features*, that can useful
 
-**The Cons And Pros**
+**Saving system on Py3IDE**
+- Download code from storage & Upload code to storage
+- Save, Load, and Delete code at local browser storage
+
+**Sharing system on Py3IDE**
+- No servers used
+- In-URL code
+- Safe formatting (base64 + URI encoder)
+
+**The Pros**
 - No paywalls
 - No data collection
 - No ads
 - Latest python (3.14.2)
 - Persistent storage!
+
+**Browser-Native**
+- Runs 100% in your browser (no servers!)
+- Async/await ready
+- Install packages with micropip
   
 ## My logo
 ![My logo](logo.png)
 
 ## Launch it now!
-**Using that button**
-[ Click it now!](https://ericwasepic127.github.io/hello.html)
+**[Click it now to open REPL!](https://ericwasepic127.github.io/hello.html) | [Click it now to open IDE!](https://ericwasepic127.github.io/ide.html)**
 
-**For more info, Gist is**
-[ here.](https://gist.github.com/Ericwasepic127/604f2f08069171905c5dacf776f10b68)
+**For more info, wiki is** [here.](https://github.com/Ericwasepic127/ericwasepic127.github.io/wiki)
