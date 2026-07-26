@@ -28,9 +28,34 @@
         <script type="py" terminal worker>
             import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins
             from pyscript import storage as s
-            from asyncio import run as a
+            from asyncio import run as asynch
             from random import choice as c
+            from pyodide.ffi import create_proxy as cP, can_run_sync as cRs
 
+            def a(coroutine):
+                """Awaits coroutine"""
+                try:
+                   if cRs():
+                      return asynch(coroutine)
+                except (BaseException, Exception) as e: 
+                   if "stack" in str(e).lower():
+                      pass
+                   else:
+                      raise
+                async def coro_wrap():
+                    try:
+                       return False, await coroutine
+                    except (BaseException, Exception) as e:
+                       return True, e
+                       
+                coro = cP(coro_wrap).callPromising(args)
+                while not coro.done():
+                    time.sleep(.0825)
+                status, info = coro.result()
+                if status:
+                    raise info
+                return info
+            
             class stderr:
                """Colored sys.STDERR version by Erkhemee"""
                def __init__(self, original=None):
@@ -287,7 +312,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV3.5.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.5.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
