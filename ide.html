@@ -13,9 +13,19 @@
     <script src="./mini-coi-fd.js"></script>
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
     <title>Py3IDE - Run python code with IDE!</title>
-    <link rel="stylesheet" href="./codemirror.css">
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 20px;
+        }
+        #editor-container {
+            min-height: 400px;
+            border: 1px solid #ccc;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js"></script>
+    <script type="module" src="./pyscript/core.js"></script>
     <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
@@ -24,7 +34,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p><strong>Py3IDE Version: V4.5.5</strong></p>
+    <p>Py3IDE Version: <strong>V4.5.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
