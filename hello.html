@@ -55,7 +55,66 @@
                 if status:
                     raise info
                 return info
-            
+            asyncio.run = a
+
+            class SLD:
+                 def __init__(self, name=None):
+                    if name is None:
+                        q = "qwertyuiopasdfghjklzxcvbnm1234567890"
+                        name = "".join([c(q) for _ in "-"*6])
+                    self.name = name
+                    self.storage = a(s(name))
+                 def __repr__(self):
+                     return f"<pyscript.storage (SLD): {self.name}>"
+                 def sync(self):
+                     """Synchronization"""
+                     a(self.storage.sync())
+                 def save(self, name, item):
+                     """Saves item to persistent storage"""
+                     self.storage[name] = item
+                     self.sync()
+                 def load(self, name):
+                     """Loads item from persistent storage"""
+                     self.sync()
+                     return self.storage.get(name)
+                 def delete(self, name):
+                     """Deletes item from persistent storage"""
+                     if name in self.storage.keys():
+                         del self.storage[name]
+                         self.sync()
+                     else:
+                         raise KeyError(f"Key {name} doesn't exist!")
+                 def __getitem__(self, name):
+                     return self.load(name)
+                 def __delitem__(self, name):
+                     self.delete(name)
+                 def __setitem__(self, name, value):
+                     self.save(name, value)
+                 def help(self):
+                     """A small helping tool. Run as `storage.help`"""
+                     x = [
+                       "This is persistent storage, and here's guide to use.",
+                       "1. How to save?",
+                       "- Use 'storage.save(name, value)' or 'storage[name] = value'.",
+                       "  * For example, `storage.save(\"variable1\", 20)`",
+                       "2. How to load?",
+                       "- Use 'storage.load(name)' or 'storage[name]'. If name doesn't found, it returns None.",
+                       "  * For example, `storage[\"variable1\"]` returns 20 if we saved as above",
+                       "3. How to delete?",
+                       "- Use 'storage.delete(name)' or 'del storage[name]'. If name doesn't found, KeyError raises.",
+                       "  * For example, `del storage[\"variable1\"]` will delete variable1 from persistent storage, if added",
+                       "4. How to get dictionary directly?",
+                       "- Use `storage.storage` to get dictionary.",
+                       "  * For example, `print(storage.storage)` shows {'variable1': 20} if you saved as above",
+                       "",
+                       "A small knowledge just for you:",
+                       "  Q: Does it use internet and cloud uploading?",
+                       "  A: No, it saves onto your browser storage called indexedDB",
+                     ]
+                     
+                     print("\n".join(x))
+
+            confIg = SLD("configs")
             class stderr:
                """Colored sys.STDERR version by Erkhemee"""
                def __init__(self, original=None):
@@ -67,30 +126,29 @@
                def flush(self):
                    """Flush it"""
                    self.orig.flush()
-            sys.stderr = stderr()
-            sys.ps1 = "\033[95m>>> \033[0m"
-            sys.ps2 = "\033[92m... \033[0m"
 
             def restore():
                """Restores layout into normal (colorless)"""
                sys.ps1 = ">>> "
                sys.ps2 = "... "
                sys.stderr = sys.__stderr__
+               confIg.save("nocolor", True)
             def color():
                """Color the terminal (if restored or changed color codes)"""
                sys.stderr = stderr()
                sys.ps1 = "\033[95m>>> \033[0m"
                sys.ps2 = "\033[92m... \033[0m"
-            
+               confIg.save("nocolor", False)
+            restore() if confIg.get("nocolor") else color()
             def fetcher(url):
                 """Gets text from website, then return
                 For example, use my loady project, URL is https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py
                 Then, 
-                file = fetcher('https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py')
-                exec(file)
+                  file = fetcher('https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py')
+                  exec(file)
                 It will execute it
                 Now, use as
-                loadbar('#')"""
+                  loadBar('#')"""
                 try:
                     aw = asyncio.run
                     it = aw(pyscript.fetch(url))
@@ -102,7 +160,7 @@
                 except:
                   return ""
             inputs = input
-            sys.input_save = inputs # Debug: true
+            sys.input = inputs
             def _input(prompt=""):
                 """Asks for user input"""
                 i = inputs(str(prompt))
@@ -187,64 +245,9 @@
                       return self._history
                    print("-\033[7m", "\033[0m\n- \033[7m".join(self._history), "\033[0m")
                 def clshist(self):
-                    """Clears history from persistent storage"""
+                    """Clears history from persistent storage and this session"""
                     self.obj.save("saves", [])
-            
-            sys.Input = Input # debug: true
-            class SLD:
-                 def __init__(self, name=None):
-                    if name is None:
-                        q = "qwertyuiopasdfghjklzxcvbnm1234567890"
-                        name = "".join([c(q) for _ in "-"*6])
-                    self.name = name
-                    self.storage = a(s(name))
-                 def __repr__(self):
-                     return f"<pyscript.storage (SLD): {self.name}>"
-                 def sync(self):
-                     """Synchronization"""
-                     a(self.storage.sync())
-                 def save(self, name, item):
-                     """Saves item to persistent storage"""
-                     self.storage[name] = item
-                     self.sync()
-                 def load(self, name):
-                     """Loads item from persistent storage"""
-                     self.sync()
-                     return self.storage.get(name)
-                 def delete(self, name):
-                     """Deletes item from persistent storage"""
-                     if name in self.storage.keys():
-                         del self.storage[name]
-                         self.sync()
-                     else:
-                         raise KeyError(f"Key {name} doesn't exist!")
-                 def __getitem__(self, name):
-                     return self.load(name)
-                 def __delitem__(self, name):
-                     self.delete(name)
-                 def __setitem__(self, name, value):
-                     self.save(name, value)
-                 def help(self):
-                     """A small helping tool. Run as `storage.help`"""
-                     x = """This is persistent storage, and here's guide to use.
-                     1. How to save?
-                     - Use 'storage.save(name, value)' or 'storage[name] = value'.
-                       * For example, `storage.save("variable1", 20)`
-                     2. How to load?
-                     - Use 'storage.load(name)' or 'storage[name]'. If name doesn't found, it returns None.
-                       * For example, `storage["variable1"]` returns 20 if we saved as above
-                     3. How to delete?
-                     - Use 'storage.delete(name)' or 'del storage[name]'. If name doesn't found, KeyError raises.
-                       * For example, `del storage["variable1"]` will delete variable1 from persistent storage, if added
-                     4. How to get dictionary directly?
-                     - Use `storage.storage` to get dictionary.
-                       * For example, `print(storage.storage)` shows {"variable1": 20} if you saved as above
-            
-                     A small knowledge just for you:
-                       Q: Does it use internet and cloud uploading?
-                       A: No, it saves onto your browser storage called indexedDB
-                     """
-                     print(x)
+                    self._history = []
             
             cancel = True
             try: 
@@ -257,10 +260,21 @@
             
             def cookie_finder():
                 if cancel:
+                    preSave = confIg.load("pip")
+                    if preSave:
+                       print("Saved pip package configuration found:")
+                       print("-", "\n- ".join(preSave))
+                       yes = input("Looks like you've been saved pip package names. Do you want to install those (Y/n)? ")
+                       if yes.lower() == 'y':
+                             packs = preSave
                     yes = input("Do you wanna install pip packages (Y/n)? ")
                     if yes.lower() == 'y':
                         packs = input("Enter package name (if multiple, split by space): ")
                         packs = packs.split()
+                        if not preSave:
+                             yes = input("Do you wanna save this pip package configuration (Y/n)? ")
+                             if yes.lower() == 'y':
+                                 confIg.save("pip", packs)
                     else: 
                         packs = []
                 else:
@@ -294,25 +308,33 @@
                         except:
                             print("Failed to install", cooks)
                 reader = Input()
+                def clsall(type=""):
+                    if type == "terminal" or not type:
+                          clear()
+                    elif type == "history":
+                        reader.clshist()
+                    else:
+                        print("Available types:")
+                        print("- terminal: For clear terminal (default for empty cases)\n- history: Clears persistent & current history")
                 reader.assign("%history", reader.history)
-                reader.assign("%clear", clear)
+                reader.assign("%clear", clsall)
                 reader.assign("%install", install)
                 reader.assign("%limit", reader.limit)
                 reader.assign("%help", help)
                 reader.assign("%color", color)
                 reader.assign("%restore", restore)
-                reader.assign("%clean_history", reader.clshist)
                 
                 names = {"color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
+                reader.assign("%storage.help", names["storage"].help)
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
                 cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
-                cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help()\033[0m\033[93m), '%clean_history' to clear history in persistent storage. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
+                cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.5.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.6.3")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
