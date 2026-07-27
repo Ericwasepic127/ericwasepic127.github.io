@@ -36,7 +36,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.7.1</strong></p>
+    <p>Py3IDE Version: <strong>V4.7.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -131,9 +131,12 @@
         from random import choice as c
 
         async def fetcher(url):
+            from pyodide.ffi import JsNull as null
+            if url == null:
+                return 1
             by = await pyscript.fetch(url)
             if by.ok:
-                 return await by.bytes()
+                 return await bytes(by.bytes())
             else:
                  js.alert(f"Looks like error encourted: {by.status}")
                  return 1
