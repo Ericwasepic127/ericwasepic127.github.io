@@ -23,6 +23,8 @@
             border: 1px solid #ccc;
         }
     </style>
+    <link rel="./dialog/index.css">
+    <script src="./dialog/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js"></script>
     <script type="module" src="./pyscript/core.js"></script>
@@ -34,7 +36,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.6.2</strong></p>
+    <p>Py3IDE Version: <strong>V4.6.4</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -56,11 +58,18 @@
             showPrintMargin: false
         });
         window.getCode = () => editor.getValue();
-        window.setCode = (code) => editor.setValue(code);
+        window.setCode = (code) => {
+            editor.setValue(code);
+            const lines = editor.session.getLength();
+            const lastLine = editor.session.getLine(lines - 1);
+            editor.moveCursorTo(lines - 1, lastLine.length);
+            editor.focus();
+        };
         window.disableEditor = () => editor.setReadOnly(true);
-        window.enableEditor = () => editor.setReadOnly(false);
         window.isEditor = () => !editor.getReadOnly();
-        window.disableEditor()
+        window.focus = editor.focus;
+        window.enableEditor = () => editor.setReadOnly(false);
+        window.disableEditor();
         function downloadCode() {
             const code = window.getCode()
             if (!code.trim()) {
@@ -114,14 +123,21 @@
     </script>
     <script type="py">
         import pyscript, asyncio, micropip
-        data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
+        data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
         with open("m2w.py", "w") as file:
-            file.write(asyncio.run(data.text())) if data.ok else None
+            file.write(await data.text()) if data.ok else None
         import js, m2w, base64
         from pyscript import storage as s
-        from asyncio import run as a
         from random import choice as c
-        
+
+        async def fetcher(url):
+            by = await pyscript.fetch(url)
+            if by.ok:
+                 return await by.bytes()
+            else:
+                 js.alert(f"Looks like error encourted: {by.status}")
+                 return 1
+                
         class SLD:
                  def __init__(self, name=None):
                     if name is None:
@@ -157,6 +173,46 @@
         connect = m2w.Main(id="#executer")
         storage = SLD("codeStorage")
         await storage.init()
+        async def module_load(url):
+            if connect.getmsg:
+                js.alert("You can't load module when your code is running!")
+            modcode = await fetcher(url)
+            if modcode != 1:
+                path = js.URL(url).new().pathname
+                name = path.split("/")[-1].strip().rstrip()
+                if not name:
+                   name = js.prompt("Enter name to save it (note: extension .py won't added, so you can save as anyfilenamewith.anyextention)")
+                run = f"with open({repr(name)}, \"wb\") as file:\n    file.write({repr(modcode)})"
+
+        async def putincode(url):
+            codeb = await fetcher(url)
+            if codeb == 1:
+                return
+            try:
+              code = codeb.decode("ascii")
+            except UnicodeDecodeError:
+               js.alert("Given URL isn't plain text!")
+               return
+            pyscript.window.setCode(code)
+
+        async def fetchBtn(event):
+            w = await pyscript.window.Confirm("Do you want to ...", {"confirmText": "Load up to editor", "cancelText": "Load as module"})
+            if w:
+                link = js.prompt("Enter URL:")
+                await putincode(link)
+            else:
+                link = js.prompt("Enter URL:")
+                await module_load(link)
+
+        async def gitBtn(event):
+            b = js.prompt("Enter GitHub repo & branch/file (i.e. Ericwasepic127/loader-python main/loady.py)").split()
+            link = f"https://raw.githubusercontent.com/{b[0]}/refs/heads/{b[1]}"
+            w = await pyscript.window.Confirm("Do you want to ...", {"confirmText": "Load up to editor", "cancelText": "Load as module"})
+            if w:
+                await putincode(link)
+            else:
+                await module_load(link)
+        
         def codeparse(): 
             return pyscript.window.getCode()
         async def saveBtn(event):
@@ -316,12 +372,20 @@
         svciq = pyscript.document.querySelector("#shareBtn")
         svciq.disabled = False
         svciq.onclick = create_proxy(lambda event: create_proxy(shareBtn).callPromising(event))
+        eishA = pyscript.document.querySelector("#fetchBtn")
+        eishA.disabled = False
+        eishA.onclick = create_proxy(lambda event: create_proxy(fetchBtn).callPromising(event))
+        eish = pyscript.document.querySelector("#gitBtn")
+        eish.disabled = False
+        eish.onclick = create_proxy(lambda event: create_proxy(gitBtn).callPromising(event))
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
     <hr>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
+    <button id="fetchBtn" disabled>Fetch code from network</button>
+    <button id="gitBtn" disabled>Fetch code from GitHub</button>
     <button id="saveBtn" disabled>Save to local browser storage</button>
     <button id="loadB" disabled>Load code from local browser storage</button>
     <button id="delB" disabled>Delete code from local browser storage</button>
