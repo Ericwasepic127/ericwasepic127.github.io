@@ -36,7 +36,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.6.9</strong></p>
+    <p>Py3IDE Version: <strong>V4.7.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -178,7 +178,7 @@
                 js.alert("You can't load module when your code is running!")
             modcode = await fetcher(url)
             if modcode != 1:
-                path = js.URL(url).new().pathname
+                path = js.URL.new(url).pathname
                 name = path.split("/")[-1].strip().rstrip()
                 if not name:
                    name = js.prompt("Enter name to save it (note: extension .py won't added, so you can save as anyfilenamewith.anyextention)")
@@ -199,10 +199,12 @@
             w = await pyscript.window.Confirm("Do you want to ...", {"confirmText": "Load up to editor", "cancelText": "Load as module"})
             if w:
                 link = js.prompt("Enter URL:")
-                await putincode(link)
+                if link: 
+                    await putincode(link)
             else:
                 link = js.prompt("Enter URL:")
-                await module_load(link)
+                if link: 
+                    await module_load(link)
 
         async def gitBtn(event):
             b = js.prompt("Enter GitHub repo & branch/file (i.e. Ericwasepic127/loader-python main/loady.py)").split()
