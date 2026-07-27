@@ -1,8 +1,12 @@
 ## This is my own website
 **Made by HTML**, but it can **compile python!**
-## Special thanks 
-**For PyScript developers**
-And **GitHub Developers** for giving free website! That's my dream! 
+
+## Credits:
+- [@pyscript](https://github.com/pyscript) for giving python in browser
+- [@github](https://github.com/github) for giving free website host
+- [@ajaxorg](https://github.com/ajaxorg) for giving ace editor
+- [@tobi007-del](https://github.com/Tobi007-del) for giving prompts
+
 ## License:
 
 License is [**MIT**](LICENSE) but I've been tested and it has almost no bugs ([releases](https://github.com/Ericwasepic127/ericwasepic127.github.io/releases) only). Bugs appear so feel free to [create issue](https://github.com/Ericwasepic127/ericwasepic127.github.io/issues) and tell about it!
