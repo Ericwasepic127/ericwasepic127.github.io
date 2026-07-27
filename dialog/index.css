@@ -1,0 +1,244 @@
+/* src/css/index.css */
+:where(:root) {
+  --t007-dialog-font-family: inherit;
+  --t007-dialog-background: rgb(20, 20, 20);
+  --t007-dialog-height: fit-content;
+  --t007-dialog-max-width: 90%;
+  --t007-dialog-border: 0.8px solid rgba(255, 255, 255, 0.25);
+  --t007-dialog-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5), -2px -2px 6px rgba(0, 0, 0, 0.5);
+  --t007-dialog-backdrop-background: rgba(0, 0, 0, 0.2);
+  --t007-dialog-backdrop-filter: blur(6px);
+  --t007-dialog-message-color: whitesmoke;
+  --t007-dialog-button-text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+  --t007-dialog-button-width: unset;
+  --t007-dialog-button-max-width: unset;
+  --t007-dialog-button-height: unset;
+  --t007-dialog-button-max-height: unset;
+  --t007-button-outline-width: 2px;
+  --t007-button-outline-style: solid;
+  --t007-dialog-entry-duration: 150ms;
+  --t007-dialog-starting-transform: translateY(-100%);
+  --t007-dialog-starting-opacity: 0;
+}
+:where(:root, .t007-dialog) {
+  --t007-dialog-unit: 1rem;
+  --t007-dialog-gap: calc(var(--t007-dialog-unit) * 0.8);
+  --t007-dialog-width: calc(var(--t007-dialog-unit) * 26.5);
+  --t007-dialog-max-height: min(calc(var(--t007-dialog-unit) * 30), 90%);
+  --t007-dialog-max-content-height: calc(var(--t007-dialog-unit) * 12);
+  --t007-dialog-padding: var(--t007-dialog-unit);
+  --t007-dialog-content-padding-block: calc(var(--t007-dialog-unit) * 1.5);
+  --t007-dialog-border-radius: var(--t007-dialog-unit);
+  --t007-dialog-message-font-size: calc(var(--t007-dialog-unit) * 0.9);
+  --t007-dialog-button-font-size: calc(var(--t007-dialog-unit) * 0.85);
+  --t007-dialog-button-min-width: calc(var(--t007-dialog-unit) * 4.5);
+  --t007-dialog-button-min-height: calc(var(--t007-dialog-unit) * 2.3);
+  --t007-dialog-button-padding-inline: var(--t007-dialog-unit);
+  --t007-dialog-button-padding-block: calc(var(--t007-dialog-unit) * 0.5);
+  --t007-dialog-button-border-radius: calc(var(--t007-dialog-unit) * 1.25);
+  --t007-dialog-button-gap: calc(var(--t007-dialog-unit) * 0.65);
+  --t007-dialog-confirm-button-color: grey;
+  --t007-dialog-confirm-button-background: var(--t007-dialog-cancel-button-color);
+  --t007-dialog-cancel-button-color: greenyellow;
+  --t007-dialog-cancel-button-background: var(--t007-dialog-confirm-button-color);
+  --t007-dialog-confirm-button-outline-color: var(--t007-dialog-cancel-button-color);
+  --t007-dialog-cancel-button-outline-color: var(--t007-dialog-cancel-button-color);
+}
+:where(.t007-dialog) .t007-input-field {
+  --t007-input-color: var(--t007-dialog-message-color);
+}
+.t007-dialog,
+.t007-dialog *,
+.t007-dialog *::after,
+.t007-dialog *::before {
+  box-sizing: border-box;
+  font-family: var(--t007-dialog-font-family);
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+.t007-dialog *:disabled {
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+.t007-dialog *:focus {
+  outline-style: solid;
+  outline-offset: 2px;
+  outline-width: 0;
+}
+.t007-dialog *:is(:focus-visible, :where(.focus-outline:focus)) {
+  outline-width: 0.15rem;
+  transition: none !important;
+}
+.t007-dialog :where(button) {
+  background: none;
+  border: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 200ms ease;
+}
+:where(button):hover {
+  cursor: pointer;
+  filter: brightness(1.15);
+}
+html:has(> body > .t007-dialog),
+body:has(> .t007-dialog) {
+  overflow: hidden;
+}
+body:has(> .t007-dialog) {
+  overflow-y: visible;
+}
+*:where(:has(> .t007-dialog.t007-dialog-scoped)) {
+  position: relative;
+  overflow: hidden !important;
+}
+.t007-dialog,
+.t007-dialog::backdrop,
+.t007-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  display: none;
+  transition-property:
+    display,
+    transform,
+    opacity,
+    backdrop-filter;
+  transition-duration: var(--t007-dialog-entry-duration);
+  transition-behavior: allow-discrete;
+}
+.t007-dialog.t007-dialog-scoped,
+.t007-dialog-backdrop {
+  position: absolute;
+}
+.t007-dialog,
+.t007-dialog form {
+  flex-direction: column;
+  gap: var(--t007-dialog-gap);
+}
+.t007-dialog {
+  padding: 0;
+  margin: auto;
+  background: var(--t007-dialog-background);
+  width: var(--t007-dialog-width);
+  height: var(--t007-dialog-height);
+  max-width: var(--t007-dialog-max-width);
+  max-height: var(--t007-dialog-max-height);
+  border: var(--t007-dialog-border);
+  border-radius: var(--t007-dialog-border-radius);
+  box-shadow: var(--t007-dialog-box-shadow);
+  opacity: var(--t007-dialog-starting-opacity);
+  transform: var(--t007-dialog-starting-transform);
+}
+.t007-dialog.t007-dialog-scoped {
+  z-index: 2147483647;
+}
+.t007-dialog[open] {
+  display: flex;
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .t007-dialog[open] {
+    opacity: var(--t007-dialog-starting-opacity);
+    transform: var(--t007-dialog-starting-transform);
+  }
+}
+.t007-dialog::backdrop,
+.t007-dialog-backdrop {
+  background-color: transparent;
+}
+.t007-dialog-backdrop {
+  z-index: 2147483646;
+  pointer-events: none;
+}
+.t007-dialog[open]::backdrop,
+.t007-dialog.t007-dialog-scoped[open] + .t007-dialog-backdrop {
+  display: block;
+  background-color: var(--t007-dialog-backdrop-background);
+  -webkit-backdrop-filter: var(--t007-dialog-backdrop-filter);
+  backdrop-filter: var(--t007-dialog-backdrop-filter);
+}
+@starting-style {
+  .t007-dialog[open]::backdrop,
+  .t007-dialog.t007-dialog-scoped[open] + .t007-dialog-backdrop {
+    background-color: transparent;
+  }
+}
+.t007-dialog > * {
+  padding-inline: var(--t007-dialog-padding);
+}
+.t007-dialog-top-section {
+  margin-top: var(--t007-dialog-padding);
+}
+.t007-dialog-bottom-section {
+  margin-bottom: var(--t007-dialog-padding);
+}
+.t007-dialog-top-section {
+  padding-block: var(--t007-dialog-content-padding-block);
+  max-height: var(--t007-dialog-max-content-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.t007-dialog:has(.field) .t007-dialog-top-section {
+  padding-block-end: 0;
+}
+.t007-dialog form {
+  display: flex;
+}
+.t007-dialog-question {
+  color: var(--t007-dialog-message-color);
+  font-size: var(--t007-dialog-message-font-size);
+}
+.t007-dialog-bottom-section {
+  align-self: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--t007-dialog-button-gap);
+}
+.t007-dialog button {
+  font-size: var(--t007-dialog-button-font-size);
+  min-width: var(--t007-dialog-button-min-width);
+  width: var(--t007-dialog-button-width);
+  max-width: var(--t007-dialog-button-max-width);
+  min-height: var(--t007-dialog-button-min-height);
+  height: var(--t007-dialog-button-height);
+  max-height: var(--t007-dialog-button-max-height);
+  padding-inline: var(--t007-dialog-button-padding-inline);
+  padding-block: var(--t007-dialog-button-padding-block);
+  border-radius: var(--t007-dialog-button-border-radius);
+  text-shadow: var(--t007-dialog-button-text-shadow);
+  transition: 100ms ease;
+}
+.t007-dialog-confirm-button {
+  color: var(--t007-dialog-confirm-button-color);
+  background: var(--t007-dialog-confirm-button-background);
+  opacity: 1;
+}
+.t007-dialog-cancel-button {
+  color: var(--t007-dialog-cancel-button-color);
+  background: var(--t007-dialog-cancel-button-background);
+  opacity: 0.9;
+}
+.t007-dialog button:hover {
+  cursor: pointer;
+}
+.t007-dialog-confirm-button:hover {
+  opacity: 0.9;
+}
+.t007-dialog-cancel-button:hover {
+  opacity: 1;
+}
+.t007-dialog button:focus {
+  outline-style: var(--t007-button-outline-style);
+  outline-width: var(--t007-button-outline-width);
+}
+.t007-dialog-confirm-button:focus {
+  outline-color: var(--t007-dialog-confirm-button-outline-color);
+}
+.t007-dialog-cancel-button:focus {
+  outline-color: var(--t007-dialog-cancel-button-outline-color);
+  }
