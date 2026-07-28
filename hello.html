@@ -31,7 +31,6 @@
             from asyncio import run as asynch
             from random import choice as c
             from pyodide.ffi import create_proxy as cP, can_run_sync as cRs
-
             def a(coroutine):
                 """Awaits coroutine"""
                 try:
@@ -43,23 +42,7 @@
                    else:
                       raise
                 async def coro_wrap():
-                    try:
-                       return False, await coroutine
-                    except (BaseException, Exception) as e:
-                       return True, e
-                       
-                coro = cP(coro_wrap).callPromising(args)
-                while not coro.done():
-                    time.sleep(.0825)
-                status, info = coro.result()
-                if status:
-                    raise info
-                return info
-            asyncio.run = a
-
-            class SLD:
-                 def __init__(self, name=None):
-                    if name is None:
+                  name is None:
                         q = "qwertyuiopasdfghjklzxcvbnm1234567890"
                         name = "".join([c(q) for _ in "-"*6])
                     self.name = name
@@ -140,6 +123,19 @@
                sys.ps2 = "\033[92m... \033[0m"
                confIg.save("nocolor", False)
             restore() if confIg.load("nocolor") else color()
+            def _fetch(url, slient=False)
+                try:
+                    aw = asyncio.run
+                    it = aw(pyscript.fetch(url))
+                    if it.ok:
+                       re = aw(it.text())
+                    else: 
+                       print(f"Something went wrong when fetching URL {url}! Status code: {it.status}", file=sys.stderr) if not slient else None
+                       re = ""
+                    return re
+                except (BaseException, Exception) as e:
+                  print(f"Something went wrong when fetching URL {url}! Error: {e}", file=sys.stderr) if not slient else None
+                  return ""
             def fetcher(url):
                 """Gets text from website, then return
                 For example, use my loady project, URL is https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py
@@ -149,16 +145,15 @@
                 It will execute it
                 Now, use as
                   loadBar('#')"""
-                try:
-                    aw = asyncio.run
-                    it = aw(pyscript.fetch(url))
-                    if it.ok:
-                       re = aw(it.text())
-                    else: 
-                       re = ""
-                    return re
-                except:
-                  return ""
+                return _fetch(url, slient=False)
+
+            code = _fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py", slient=True)
+            if code:
+                with open("pagerfix.py", "w") as file:
+                    file.write(code)
+                import pagerfix
+                pagerfix.activate()
+            
             inputs = input
             sys.input = inputs
             def _input(prompt=""):
@@ -271,10 +266,9 @@
                     if yes.lower() == 'y':
                         packs = input("Enter package name (if multiple, split by space): ")
                         packs = packs.split()
-                        if not preSave:
-                             yes = input("Do you wanna save this pip package configuration (Y/n)? ")
-                             if yes.lower() == 'y':
-                                 confIg.save("pip", packs)
+                        yes1 = input("Do you wanna save this pip package configuration (Y/n)? ")
+                        if yes1.lower() == 'y':
+                            confIg.save("pip", packs)
                     else: 
                         packs = []
                 else:
@@ -313,12 +307,20 @@
                           clear()
                     elif type == "history":
                         reader.clshist()
+                    elif type == "pip":
+                         confIg.save("pip", [])
                     else:
                         print("Available types:")
-                        print("- terminal: For clear terminal (default for empty cases)\n- history: Clears persistent & current history")
+                        print("- terminal: For clear terminal (default for empty cases)\n- history: Clears persistent & current history\n- pip: Clears pip package names configuration")
                 reader.assign("%history", reader.history)
                 reader.assign("%clear", clsall)
-                reader.assign("%install", install)
+                def installit(*p):
+                    if len(p) == 1 and cancel:
+                       if p[0] == "list":
+                           print(micropip.list())
+                           return
+                    install(*p)
+                reader.assign("%install", installit)
                 reader.assign("%limit", reader.limit)
                 reader.assign("%help", help)
                 reader.assign("%color", color)
@@ -334,7 +336,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.7.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.7.9")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
