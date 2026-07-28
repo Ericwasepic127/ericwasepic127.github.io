@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and Discussions
+    url: https://github.com/Ericwasepic127/ericwasepic127.github.io/discussions
+    about: Please ask questions and have general discussions here.
+  - name: Project Documentation
+    url: https://github.com/Ericwasepic127/ericwasepic127.github.io/wiki
+    about: Check the wiki for documentation and guides.
+  - name: Report a Security Vulnerability
+    url: https://github.com/Ericwasepic127/ericwasepic127.github.io/security/advisories/new
+    about: Please report security vulnerabilities using this private form.
+  - name: Take a small survey
+    url: https://forms.cloud.microsoft/r/2njMAGVy4S
+    about: Please rate our Py3REPL or Py3IDE 
