@@ -48,7 +48,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.7.7</strong></p>
+    <p>Py3IDE Version: <strong>V4.7.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -141,16 +141,18 @@
         import js, m2w, base64
         from pyscript import storage as s
         from random import choice as c
+        from pyodide.ffi import JsNull as null
 
         async def fetcher(url):
-            from pyodide.ffi import JsNull as null
             if url == null:
                 return 1
             by = await pyscript.fetch(url)
             if by.ok:
-                 return await bytes(by.bytes())
+                 file = await bytes(by.bytes())
+                 js.alert(f"Fetching URL {url} success!")
+                 return file
             else:
-                 js.alert(f"Looks like error encourted: {by.status}")
+                 js.alert(f"Looks like error encourted!\nReturned code: {by.status}")
                  return 1
                 
         class SLD:
@@ -184,7 +186,6 @@
                      else:
                          raise KeyError(f"Key {name} doesn't exist!")
                  
-        from pyodide.ffi import create_proxy, JsNull as null
         connect = m2w.Main(id="#executer")
         storage = SLD("codeStorage")
         await storage.init()
@@ -197,7 +198,9 @@
                 name = path.split("/")[-1].strip().rstrip()
                 if not name:
                    name = js.prompt("Enter name to save it (note: extension .py won't added, so you can save as anyfilenamewith.anyextention)")
-                run = f"with open({repr(name)}, \"wb\") as file:\n    file.write({repr(modcode)})"
+                run = f"print('Module loader: Adding {name} to current directory')\nwith open({repr(name)}, \"wb\") as file:\n    file.write({repr(modcode)})\nprint('DONE!')"
+                js.alert("Result are at terminal!")
+                connect.sendmsg(run)
 
         async def putincode(url):
             codeb = await fetcher(url)
@@ -209,20 +212,29 @@
                js.alert("Given URL isn't plain text!")
                return
             pyscript.window.setCode(code)
+            js.alert("Successfully set up the code editor!")
 
         async def fetchBtn(event):
+            link = js.prompt("Enter URL:")
+            if link == null: 
+                return
+            link = link.strip().rstrip()
+            if not link:
+                return
             w = await pyscript.window.Confirm("Do you want to ...", {"confirmText": "Load up to editor", "cancelText": "Load as module"})
             if w:
-                link = js.prompt("Enter URL:")
-                if link: 
-                    await putincode(link)
+                await putincode(link)
             else:
-                link = js.prompt("Enter URL:")
-                if link: 
-                    await module_load(link)
+                await module_load(link)
 
         async def gitBtn(event):
-            b = js.prompt("Enter GitHub repo & branch/file (i.e. Ericwasepic127/loader-python main/loady.py)").split()
+            b = js.prompt("Enter GitHub repo & branch/file (i.e. Ericwasepic127/loader-python main/loady.py)")
+            if b == null: 
+                return
+            b = b.strip().rstrip()
+            if not b:
+                return
+            b = b.split()
             link = f"https://raw.githubusercontent.com/{b[0]}/refs/heads/{b[1]}"
             w = await pyscript.window.Confirm("Do you want to ...", {"confirmText": "Load up to editor", "cancelText": "Load as module"})
             if w:
