@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.9.3</strong></p>
+    <p>Py3IDE Version: <strong>V4.9.4</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -262,7 +262,7 @@
             code = codeparse()
             if code:
                 name = js.prompt("What do you want to name your code as? ", code.split("\n")[0])
-                if name is null or name is None: 
+                if name == null or name == None: 
                     return
                 name = name.strip().rstrip()
                 if not name:
@@ -283,7 +283,7 @@
              build = "\n".join(["- " + per for per in alls.keys()])
              pr = "Saved projects:\n" + build + "\nEnter name of saved code to load:"
              nm = js.prompt(pr)
-             if nm is null or nm is None: 
+             if nm == null or nm == None: 
                 return
              nm = nm.strip().rstrip()
              if not nm:
@@ -301,7 +301,7 @@
              build = "\n".join(["- " + per for per in alls.keys()])
              pr = "Saved projects:\n" + build + "\nEnter name of saved code to delete:"
              nm = js.prompt(pr)
-             if nm is null or nm is None: 
+             if nm == null or nm == None: 
                 return
              nm = nm.strip().rstrip()
              if not nm:
@@ -323,7 +323,7 @@
         
         def inp(event):
             packages = js.prompt("Enter package name (if multiple, split by space)")
-            if packages is null:
+            if packages == null:
                 return
             if not packages:
                 return
@@ -421,6 +421,7 @@
         eish = pyscript.document.querySelector("#gitBtn")
         eish.disabled = False
         eish.onclick = create_proxy(lambda event: create_proxy(gitBtn).callPromising(event))
+        pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Loaded PyScript! Ready to run!"
     </script>
