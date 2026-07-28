@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.8.1</strong></p>
+    <p>Py3IDE Version: <strong>V4.8.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -153,7 +153,8 @@
         import js, m2w, base64
         from pyscript import storage as s
         from random import choice as c
-        from pyodide.ffi import JsNull as null
+        from pyodide.ffi import JsNull as null, create_proxy
+        cp = create_proxy
 
         async def fetcher(url):
             if url == null:
