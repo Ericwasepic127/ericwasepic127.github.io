@@ -161,10 +161,10 @@
                   loadBar('#')"""
                 return _fetch(url, slient=False)
 
-            code = _fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py", slient=True)
-            if code:
+            pager = _fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py", slient=True)
+            if pager:
                 with open("pagerfix.py", "w") as file:
-                    file.write(code)
+                    file.write(pager)
                 import pagerfix
                 pagerfix.activate()
             
@@ -350,7 +350,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.8.8")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.8.9")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
