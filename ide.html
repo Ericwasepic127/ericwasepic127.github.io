@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.9.0</strong></p>
+    <p>Py3IDE Version: <strong>V4.9.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -464,11 +464,11 @@
     async def run_code(code):
         def runable(c):
             try:
-               obj = repr(eval(c))
+               obj = repr(eval(c, {}))
                if obj != "None":
                    print(obj)
             except SyntaxError:
-               exec(c)
+               exec(c, {})
                     
         try:
             await asyncio.to_thread(runable, code)
