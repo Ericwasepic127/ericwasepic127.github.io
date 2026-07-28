@@ -26,7 +26,7 @@
             packages = ["micropip"]
         </py-config>
         <script type="py" terminal worker>
-            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins
+            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js
             from pyscript import storage as s
             from asyncio import run as asynch
             from random import choice as c
@@ -137,12 +137,15 @@
                sys.ps2 = "\033[92m... \033[0m"
                confIg.save("nocolor", False)
             restore() if confIg.load("nocolor") else color()
-            def _fetch(url, slient=False):
+            def _fetch(url, slient=False, mode="t"):
                 try:
                     aw = asyncio.run
                     it = aw(pyscript.fetch(url))
                     if it.ok:
-                       re = aw(it.text())
+                       if mode == "b":
+                           re = bytes(aw(it.bytes()))
+                       else:
+                            re = aw(it.text())
                     else: 
                        print(f"Something went wrong when fetching URL {url}! Status code: {it.status}", file=sys.stderr) if not slient else None
                        re = ""
@@ -150,8 +153,9 @@
                 except (BaseException, Exception) as e:
                   print(f"Something went wrong when fetching URL {url}! Error: {e}", file=sys.stderr) if not slient else None
                   return ""
-            def fetcher(url):
+            def fetcher(url, mode="t"):
                 """Gets text from website, then return
+                You can get bytes from the URL, add mode="b" to it! Anything else on mode will give you text/str
                 For example, use my loady project, URL is https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py
                 Then, 
                   file = fetcher('https://raw.githubusercontent.com/Ericwasepic127/loader-python/refs/heads/main/loady.py')
@@ -159,15 +163,15 @@
                 It will execute it
                 Now, use as
                   loadBar('#')"""
-                return _fetch(url, slient=False)
+                return _fetch(url, slient=False, mode=mode)
 
-            pager = _fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py", slient=True)
+            pager = _fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py", slient=True, mode="t")
             if pager:
                 with open("pagerfix.py", "w") as file:
                     file.write(pager)
                 import pagerfix
                 pagerfix.activate()
-            
+
             inputs = input
             sys.input = inputs
             def _input(prompt=""):
@@ -179,6 +183,18 @@
                     return i
             builtins.input = _input
 
+            def save(url, custom_name=False):
+                """Save file from URL - You can set custom name using custom_name=True"""
+                code = fetcher(url, mode="b")
+                if code:
+                    name = js.URL.new(url).pathname
+                    name = name.split("/")[-1]
+                    if not name or custom_name:
+                        name = input("Enter name to save it (Extensions won't added, so you can do anyfilenamewith.anyextension: ")
+                    with open(name, "wb") as f:
+                        f.write(code)
+                        print(f"Saved {url} to {name} successfully!")
+            
             class Input:
                 def __init__(self):
                    self.shortcuts = {}
@@ -324,7 +340,7 @@
                     elif type == "pip":
                          confIg.save("pip", [])
                     else:
-                        print("Available types:")
+                        print("Available types after %clear:")
                         print("- terminal: For clear terminal (default for empty cases)\n- history: Clears persistent & current history\n- pip: Clears pip package names configuration")
                 reader.assign("%history", reader.history)
                 reader.assign("%clear", clsall)
@@ -339,18 +355,19 @@
                 reader.assign("%help", help)
                 reader.assign("%color", color)
                 reader.assign("%restore", restore)
+                reader.assign("%save", save)
                 
-                names = {"color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
+                names = {"save": save, "color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
                 reader.assign("%storage.help", names["storage"].help)
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
                 cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
-                cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*)"
+                cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*), 'save(url_link)' for download thing from given URL (*), '%install list' for list installed pip packages"
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.8.9")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of REPL (Erkhembayr edition): \nV4.9.2")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
