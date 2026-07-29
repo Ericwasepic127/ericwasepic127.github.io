@@ -22,6 +22,7 @@ jobs:
             cp ../mini-coi-fd.js mini-coi-fd.js
             cp ../python.png python.png
             curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
+            curl -o pager.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py
             cd ..
             git clone https://github.com/ajaxorg/ace-builds.git
             cp -r ace-builds/src-min-noconflict/* release/ace/
