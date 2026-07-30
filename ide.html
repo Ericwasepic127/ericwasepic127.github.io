@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.4</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -509,6 +509,7 @@
         if connect.getmsg:
             if connect.getmsg == "STOP":
                 print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
+                connect.getmsg = ""
                 continue 
             os.chdir(cd)
             connect.sendmsg("dontrun")
