@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -545,7 +545,7 @@
                 print("\033c\033[92mCode executing ...\033[96m")
                 await runcode(connect.getmsg)
                 connect.getmsg = ""
-                connect.sendmsg("disconnect()")
+                connect.sendmsg("txt.innerHTML = 'Execution finished!'\ndisconnect()")
                 connect.sendmsg("")
             print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
             time.sleep(.0825)
