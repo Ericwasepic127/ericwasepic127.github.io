@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -141,7 +141,7 @@
         const sharedCode = urlParams.get('code');
         const urlCode = urlParams.get('url');
         if (urlCode && sharedCode) {
-             js.alert(`Looks like given link is invalid!`);
+             alert(`Looks like given link is invalid!`);
              window.location = window.location.origin + window.location.pathname
         }
         if (sharedCode && !urlCode) {
@@ -472,7 +472,7 @@
             return asyncio.run(i)
         else:
             return i
-    def run_code(code):
+    def run_code(c):
         try:
             obj = repr(eval(c, {}))
             print(obj) if obj != "None" else None
