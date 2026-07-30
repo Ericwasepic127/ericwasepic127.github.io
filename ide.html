@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.3</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -515,6 +515,7 @@
         
     builtins.input = _input
     connect = m2w.Worker()
+    connect.getDOM()
     cd = os.getcwd()
     load = itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "])
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
