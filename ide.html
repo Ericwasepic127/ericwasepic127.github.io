@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -210,7 +210,7 @@
         connect = m2w.Main(id="#executer")
         def runitforworker(msg):
            global connect
-           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": js.console.log, "txt": js.document.querySelector("#ready")}
+           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": js.console.log, "txt": js.document.querySelector("#ready")})
         connect.handler(runitforworker)
         storage = SLD("codeStorage")
         await storage.init()
