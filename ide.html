@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V4.9.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V4.9.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -472,13 +472,6 @@
                       print(obj)
                except SyntaxError:
                   exec(c, {})
-            except SystemExit:
-                print("Looks like you've run exit()!")
-            except:
-                print("Error occured! Details:", file=sys.stderr)
-                traceback.print_exc()
-            finally:
-                print("\033[95m=======\033[96mEND\033[95m=======\033[0m")
                     
         await asyncio.to_thread(runable, code)
 
@@ -502,6 +495,16 @@
                     raise KeyboardInterrupt("User interrupted code execution") from e
                 except:
                     traceback.print_exc()
+        else:
+            try:
+               coder.result()
+            except SystemExit:
+                print("Looks like you've run exit()!")
+            except:
+                print("Error occured! Details:", file=sys.stderr)
+                traceback.print_exc()
+            finally:
+                print("\033[95m=======\033[96mEND\033[95m=======\033[0m")
             
         
     builtins.input = _input
