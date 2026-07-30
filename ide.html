@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.6</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -366,7 +366,7 @@
 
         def stopBtn(event):
             if connect.getmsg:
-                 connect.sendmsg("STOP")
+                 connect.sendmsg("CLEAR")
             else:
                  js.alert("Cannot stop when code is not running")
 
@@ -464,22 +464,22 @@
         else:
             return i
     async def run_code(code):
-        def runable(c):
-            try:
-                obj = repr(eval(c, {}))
-                print(obj) if obj != "None" else None
-            except SyntaxError:
-                exec(c, {})
-        await asyncio.to_thread(runable, code)
+        try:
+            obj = repr(eval(c, {}))
+            print(obj) if obj != "None" else None
+            return
+        except SyntaxError:
+            pass
+        exec(c, {})
 
     async def timer():
         while 1:
-            if connect.getmsg == "STOP":
+            if connect.getmsg == "CLEAR":
                  break
             await asyncio.sleep(.0825)
         
     async def runcode(code):
-        coder = asyncio.create_task(run_code(code))
+        coder = asyncio.create_task(asyncio.to_thread(run_code, code))
         timeis = asyncio.create_task(timer())
         done, pending = await asyncio.wait([coder, timeis], return_when=asyncio.FIRST_COMPLETED)
         try:
@@ -507,7 +507,7 @@
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     while 1:
         if connect.getmsg:
-            if connect.getmsg == "STOP":
+            if connect.getmsg == "CLEAR":
                 print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
                 connect.getmsg = ""
                 continue 
