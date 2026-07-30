@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.2</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -227,7 +227,7 @@
         async def putincode(url):
             codeb = await fetcher(url)
             if codeb == 1:
-                return
+                return True
             try:
               code = codeb.decode("ascii")
             except UnicodeDecodeError:
@@ -235,7 +235,7 @@
                if y:
                    code = codeb.decode("utf-8")
                else:
-                   return
+                   return True
             pyscript.window.setCode(code)
             js.alert("Successfully set up the code editor!")
 
@@ -401,8 +401,9 @@
                 js.alert(f"Looks like your link is malformed!\nError details: {e}")
             link = params.get("url")
             if link:
-                 await putincode(link)
-                 return
+                 x = await putincode(link)
+                 if not x:
+                    return
             pyscript.window.setCode(code_bytes)
         async def shareBtn(event):
             c = codeparse()
