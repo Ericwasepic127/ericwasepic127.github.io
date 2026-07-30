@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.8</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -522,24 +522,35 @@
     connect = m2w.Worker()
     cd = os.getcwd()
     load = itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "])
+    async def sl(hold):
+        s = time.time()
+        try:
+            await asyncio.sleep(hold)
+        except:
+            await sl(hold - (time.time() - s))
+
+    await sl(1.75)
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
     while 1:
-        if connect.getmsg:
-            if connect.getmsg == "CLEAR":
-                print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
+        try:
+            if connect.getmsg:
+                if connect.getmsg == "CLEAR":
+                    print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
+                    connect.getmsg = ""
+                    continue 
+                os.chdir(cd)
+                connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
+                print("\033c\033[92mCode executing ...\033[96m")
+                await runcode(connect.getmsg)
                 connect.getmsg = ""
-                continue 
-            os.chdir(cd)
-            connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
-            print("\033c\033[92mCode executing ...\033[96m")
-            await runcode(connect.getmsg)
-            connect.getmsg = ""
-            connect.sendmsg("disconnect()")
-            connect.sendmsg("")
-        print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
-        time.sleep(.0825)
+                connect.sendmsg("disconnect()")
+                connect.sendmsg("")
+            print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
+            time.sleep(.0825)
+        except KeyboardInterrupt:
+            pass
     </script>
 </body>
   </html>
