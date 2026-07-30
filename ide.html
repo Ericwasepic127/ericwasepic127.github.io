@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V4.9.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V4.9.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -440,7 +440,7 @@
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
-    import m2w, time, traceback, builtins, inspect, os, sys
+    import m2w, time, traceback, builtins, inspect, os, sys, itertools
 
     class stderr:
         """Colored sys.STDERR version by Erkhemee"""
@@ -466,10 +466,8 @@
     async def run_code(code):
         def runable(c):
             try:
-               try:
-                  obj = repr(eval(c, {}))
-                  if obj != "None":
-                      print(obj)
+                obj = repr(eval(c, {}))
+                if obj != "None" else
                except SyntaxError:
                   exec(c, {})
                     
@@ -510,18 +508,19 @@
     builtins.input = _input
     connect = m2w.Worker()
     cd = os.getcwd()
+    load = itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "])
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
     while 1:
         if connect.getmsg:
             if connect.getmsg == "STOP":
-                print("\033c\033[93mWrong code gathered, skipping\033[0m")
-                continue
+                print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
             os.chdir(cd)
             connect.sendmsg("dontrun")
             print("\033c\033[92mCode executing ...\033[96m")
             await runcode(connect.getmsg)
             connect.getmsg = None
             connect.sendmsg("")
+        print(f"\n[INFO]: Waiting for any code receives {next(load)}", end="\r")
         time.sleep(.0825)
     </script>
 </body>
