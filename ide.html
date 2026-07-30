@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.9</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -231,8 +231,10 @@
             try:
               code = codeb.decode("ascii")
             except UnicodeDecodeError:
-               js.alert("Given URL isn't plain text!")
-               return
+               if js.prompt("Given URL isn't plain text!\nConitune anyway?"):
+                   code = codeb.decode("utf-8")
+               else:
+                   return
             pyscript.window.setCode(code)
             js.alert("Successfully set up the code editor!")
 
