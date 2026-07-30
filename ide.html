@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.4</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.1.5</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -209,7 +209,8 @@
                  
         connect = m2w.Main(id="#executer")
         def runitforworker(msg):
-           exec(msg, {"disconnect": connect.defaultHandler, "console": js.console.log, "txt": js.document.querySelector("#ready")}
+           global connect
+           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": js.console.log, "txt": js.document.querySelector("#ready")}
         connect.handler(runitforworker)
         storage = SLD("codeStorage")
         await storage.init()
@@ -270,7 +271,7 @@
                 await module_load(link)
         
         def codeparse(): 
-            return pyscript.window.getCode()
+            return pyscript.window.getCode().strip("\n").rstrip("\n").strip().rstrip()
         async def saveBtn(event):
             code = codeparse()
             if code:
@@ -329,6 +330,7 @@
             if connect.getmsg:
                 js.alert("Already running code!")
             else:
+                connect.handler(runitforworker)
                 connect.sendmsg(codeparse())
         run_btn = pyscript.document.querySelector("#runBtn")
         run_btn.addEventListener("click", create_proxy(onrun))
@@ -522,7 +524,7 @@
     load = itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "])
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
-    connect.sendmsdg(aaq)
+    connect.sendmsdg("\n".join(aaq))
     while 1:
         if connect.getmsg:
             if connect.getmsg == "CLEAR":
@@ -530,10 +532,11 @@
                 connect.getmsg = ""
                 continue 
             os.chdir(cd)
-            connect.sendmsg("dontrun")
+            connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
             print("\033c\033[92mCode executing ...\033[96m")
             await runcode(connect.getmsg)
-            connect.getmsg = None
+            connect.getmsg = ""
+            connect.sendmsg("disconnect()")
             connect.sendmsg("")
         print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
         time.sleep(.0825)
