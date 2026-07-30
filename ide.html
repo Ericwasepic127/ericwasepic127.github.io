@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -468,9 +468,8 @@
             try:
                 obj = repr(eval(c, {}))
                 print(obj) if obj != "None" else None
-               except SyntaxError:
-                  exec(c, {})
-                    
+            except SyntaxError:
+                exec(c, {})
         await asyncio.to_thread(runable, code)
 
     async def timer():
