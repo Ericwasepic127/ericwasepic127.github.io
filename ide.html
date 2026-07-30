@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.0.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.0.4</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -482,23 +482,21 @@
         coder = asyncio.create_task(run_code(code))
         timeis = asyncio.create_task(timer())
         done, pending = await asyncio.wait([coder, timeis], return_when=asyncio.FIRST_COMPLETED)
-        for task in pending:
-            task.cancel()
         try:
-            exception = coder.exception()
-            if exception:
-                raise exception
-        except asyncio.CancelledError as e:
-            try:
-                raise KeyboardInterrupt("User interrupted code execution") from e
-            except:
-                traceback.print_exc()
+            if coder in pending:
+                raise KeyboardInterrupt
+            if coder.done():
+                exc = coder.exception()
+                if exc:
+                   raise exc
         except SystemExit:
             print("Looks like you've run exit()!")
         except:
             print("Error occured! Details:", file=sys.stderr)
             traceback.print_exc()
         finally:
+            for task in pending:
+                task.cancel()
             print("\033[95m=======\033[92mEND\033[95m=======\033[0m\n")
             
         
