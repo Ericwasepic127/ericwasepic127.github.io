@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta property="og:title" content="PyScript Python IDE">
+    <meta property="og:title" content="PyScript Python IDE - SUPY3IDE">
     <meta property="og:description" content="Python environment in your browser">
     <meta property="og:image" content="python.png">
     <meta name="description" content="Run Python in your browser with PyScript">
@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="./mini-coi-fd.js"></script>
     <link rel="icon" type="image/png" sizes="499x499" href="python.png">
-    <title>Py3IDE - Run python code with IDE!</title>
+    <title>SUPY3IDE - Run python code with IDE!</title>
     <style>
         body {
             font-family: 'Courier New', monospace;
@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>Py3IDE Version: <strong>V4.9.4</strong></p>
+    <p>SUPY3IDE Version: <strong>V4.9.7</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -201,6 +201,7 @@
                          raise KeyError(f"Key {name} doesn't exist!")
                  
         connect = m2w.Main(id="#executer")
+        connect.giveDOM()
         storage = SLD("codeStorage")
         await storage.init()
         async def module_load(url):
@@ -436,9 +437,9 @@
     <h3>Terminal/Output</h3>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio
-    data = asyncio.run(pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"))
+    data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
-        file.write(asyncio.run(data.text())) if data.ok else None
+        file.write(await data.text()) if data.ok else None
     import m2w, time, traceback, builtins, inspect, os, sys
 
     class stderr:
@@ -465,26 +466,21 @@
     async def run_code(code):
         def runable(c):
             try:
-               obj = repr(eval(c, {}))
-               if obj != "None":
-                   print(obj)
-            except SyntaxError:
-               exec(c, {})
-                    
-        try:
-            await asyncio.to_thread(runable, code)
-        except asyncio.CancelledError:
-            try:
-                raise KeyboardInterrupt
+               try:
+                  obj = repr(eval(c, {}))
+                  if obj != "None":
+                      print(obj)
+               except SyntaxError:
+                  exec(c, {})
+            except SystemExit:
+                print("Looks like you've run exit()!")
             except:
+                print("Error occured! Details:", file=sys.stderr)
                 traceback.print_exc()
-        except SystemExit:
-            print("Looks like you've run exit()!")
-        except:
-            print("Error occured! Details:")
-            traceback.print_exc()
-        finally:
-            print("\033[95m=======\033[96mEND\033[95m=======\033[0m")
+            finally:
+                print("\033[95m=======\033[96mEND\033[95m=======\033[0m")
+                    
+        await asyncio.to_thread(runable, code)
 
     async def timer():
         while 1:
@@ -493,9 +489,20 @@
             await asyncio.sleep(.0825)
         
     async def runcode(code):
-        done, pending = await asyncio.wait([asyncio.create_task(run_code(code)), asyncio.create_task(timer())], return_when=asyncio.FIRST_COMPLETED)
+        coder = asyncio.create_task(run_code(code))
+        timeis = asyncio.create_task(timer())
+        done, pending = await asyncio.wait([coder, timeis], return_when=asyncio.FIRST_COMPLETED)
         for task in pending:
             task.cancel()
+        if timeis in done and coder in pending:
+            try:
+                coder.result()
+            except asyncio.CancelledError as e:
+                try:
+                    raise KeyboardInterrupt("User interrupted code execution") from e
+                except:
+                    traceback.print_exc()
+            
         
     builtins.input = _input
     connect = m2w.Worker()
