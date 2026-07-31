@@ -25,12 +25,38 @@
         <py-config>
              packages = ["micropip"]
         </py-config>
-        <script type="py" terminal worker>
+        <script type="py">
+            import pyscript, js
+            from pyodide.ffi import create_proxy as cP
+            m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
+            if m2wcode.ok:
+                _x = await m2wcode.text()
+                with open("m2w.py", "w") as _obj:
+                   _obj.write(_x) if _x else None
+            import m2w
+            connect = m2w.Main(id="#code")
+            
+            @cP
+            def stopBtn(event):
+                connect.sendmsg("STOP") if connect.getmsg else js.alert("Code isn't running!")
+            pyscript.document.querySelector("#stopBtn").onclick = stopBtn
+            pyscript.document.querySelector("#stopBtn").disabled = False
+        </script>
+        <button id="stopBtn" disabled>Interrupt/Stop</button>
+        <script type="py" terminal worker id="code">
             import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js
             from pyscript import storage as s
             from asyncio import run as asynch
             from random import choice as c
             from pyodide.ffi import create_proxy as cP, can_run_sync as cRs
+            m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
+            if m2wcode.ok:
+                _x = await m2wcode.text()
+                with open("m2w.py", "w") as _obj:
+                   _obj.write(_x) if _x else None
+            import m2w
+            connect = m2w.Worker()
+                
             def a(coroutine):
                 """Awaits coroutine"""
                 try:
@@ -55,6 +81,44 @@
                 if status:
                     raise info
                 return info
+            oldval = builtins.eval
+            oldxec = builtins.exec
+            async def timer():
+                while connect.getmsg != "STOP":
+                  await asyncio.sleep(.0825)
+            def newxec(code, global_s={}, local_s=None):
+                if local_s is None:
+                    local_s = global_s
+                stop = asyncio.create_task(timer())
+                codexec = asyncio.create_task(asyncio.to_thread(oldxec, global_s, local_s))
+                done, pending = asyncio.run(asyncio.wait([stop, codexec], return_when=asyncio.FIRST_COMPLETED))
+                if codexec in done:
+                    if codexec.exception():
+                        raise codexec.exception()
+                for task in pending:
+                    task.cancel()
+                if codexec in pending:
+                    raise KeyboardInterrupt
+            
+            def newval(code, global_s={}, local_s=None):
+                if local_s is None:
+                    local_s = global_s
+                stop = asyncio.create_task(timer())
+                codeval = asyncio.create_task(asyncio.to_thread(oldval, global_s, local_s))
+                done, pending = asyncio.run(asyncio.wait([stop, codeval], return_when=asyncio.FIRST_COMPLETED))
+                if codeval in done:
+                    if codeval.exception():
+                        raise codeval.exception()
+                    else:
+                        return codeval.result()
+                for task in pending:
+                    task.cancel()
+                if codeval in pending:
+                    raise KeyboardInterrupt
+            
+            builtins.exec = newxec
+            buultins.eval = newval
+                
             class SLD:
                  def __init__(self, name=None):
                     if name is None:
@@ -368,7 +432,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.2.0")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.2.8")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
