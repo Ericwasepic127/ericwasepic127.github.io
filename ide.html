@@ -62,7 +62,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.2.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.2.4</strong></p>
     <hr>
     <details>
         <summary>Code saving and loading</summary>
@@ -81,6 +81,11 @@
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div id="editor-container"></div>
     <script>
+        function x() {
+            js.alert("PyScript doesn't loaded yet!")
+        }
+        window.runCode = x
+        window.runHandled = x
         const editor = ace.edit("editor-container", {
             mode: "ace/mode/python",
             theme: "ace/theme/eclipse",
@@ -220,7 +225,10 @@
         connect = m2w.Main(id="#executer")
         def runitforworker(msg):
            global connect
-           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": js.console.log, "txt": js.document.querySelector("#ready")})
+           def x(msgis):
+            if js.document.querySelector("#verbose"):
+                 console.log(msgis)
+           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready")})
         connect.handler(runitforworker)
         storage = SLD("codeStorage")
         await storage.init()
@@ -458,6 +466,7 @@
         g.disabled = False
         g.onclick = create_proxy(clearBtn)
         pyscript.window.runCode = create_proxy(connect.sendmsg)
+        pyscript.window.runHandled = create_proxy(onrun)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
@@ -571,5 +580,14 @@
         except KeyboardInterrupt:
             pass
     </script>
+    <details>
+        <summary>More tools</summary>
+        <label>
+            <input type="checkbox" id="verbose"> Enable worker logs at console
+        </label>
+        <button onclick="window.setCode(``)">Clears current editor code</button>
+        <button onclick="window.alert(window.getCode())">Get code from editor</button>
+        <button onclick="window.runHandled(window.prompt(`Enter code`))">Run code directly from editor</button>
+    </details>
 </body>
   </html>
