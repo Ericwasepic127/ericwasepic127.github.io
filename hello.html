@@ -195,16 +195,29 @@
                def flush(self):
                    """Flush it"""
                    self.orig.flush()
+            class stdout:
+               """Colored sys.STDOUT version by Erkhemee"""
+               def __init__(self, original=None):
+                   """Initalize colorful stdout"""
+                   self.orig = original or sys.stdout
+               def write(self, message):
+                   """Write colorful error in stdout"""
+                   self.orig.write("\033[96m" + str(message) + "\033[0m")
+               def flush(self):
+                   """Flush it"""
+                   self.orig.flush()
 
             def restore():
                """Restores layout into normal (colorless)"""
                sys.ps1 = ">>> "
                sys.ps2 = "... "
                sys.stderr = sys.__stderr__
+               sys.stdout = sys.__stdout__
                confIg.save("nocolor", True)
             def color():
                """Color the terminal (if restored or changed color codes)"""
                sys.stderr = stderr()
+               sys.stdout = stdout()
                sys.ps1 = "\033[95m>>> \033[0m"
                sys.ps2 = "\033[92m... \033[0m"
                confIg.save("nocolor", False)
@@ -248,7 +261,8 @@
             sys.input = inputs
             def _input(prompt=""):
                 """Asks for user input"""
-                i = inputs(str(prompt))
+                p = str(prompt) if confIg.load("nocolor") else "\033[92m" + str(prompt) + "\033[92m"
+                i = inputs(p)
                 if inspect.isawaitable(i):
                     return asyncio.run(i)
                 else:
@@ -439,7 +453,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.3.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.3.6")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
