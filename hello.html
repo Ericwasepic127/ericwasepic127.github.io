@@ -95,6 +95,7 @@
                 codexec = asyncio.create_task(asyncio.to_thread(oldxec, code, global_s, local_s))
                 done, pending = asyncio.run(asyncio.wait([stop, codexec], return_when=asyncio.FIRST_COMPLETED))
                 connect.sendmsg("")
+                connect.getmsg = ""
                 if codexec in done:
                     if codexec.exception():
                         raise codexec.exception()
@@ -111,6 +112,7 @@
                 codeval = asyncio.create_task(asyncio.to_thread(oldval, code, global_s, local_s))
                 done, pending = asyncio.run(asyncio.wait([stop, codeval], return_when=asyncio.FIRST_COMPLETED))
                 connect.sendmsg("")
+                connect.getmsg = ""
                 if codeval in done:
                     if codeval.exception():
                         raise codeval.exception()
@@ -437,7 +439,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.3.3")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.3.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
