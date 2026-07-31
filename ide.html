@@ -60,7 +60,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.1.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.2.1</strong></p>
     <hr>
     <button id="pipIn" disabled>Install pip package</button>
     <button id="pipLs" disabled>List all installed pip packages</button>
@@ -161,7 +161,6 @@
         from pyscript import storage as s
         from random import choice as c
         from pyodide.ffi import JsNull as null, create_proxy
-        cp = create_proxy
 
         async def fetcher(url):
             if url == null:
@@ -476,7 +475,7 @@
     inputs = input
     def _input(prompt=""):
         """Asks for user input"""
-        i = inputs("\033[96m" + str(prompt))
+        i = inputs("\033[96m" + str(prompt) + "\033[96m")
         if inspect.isawaitable(i):
             return asyncio.run(i)
         else:
@@ -537,7 +536,7 @@
         try:
             if connect.getmsg:
                 if connect.getmsg == "CLEAR":
-                    print(f"\033[93mReady to run! Python version: {sys.version}\033[0m")
+                    print(f"\033c\033[93mReady to run! Python version: {sys.version}\033[0m")
                     connect.getmsg = ""
                     continue 
                 os.chdir(cd)
