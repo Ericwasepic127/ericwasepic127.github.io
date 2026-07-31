@@ -62,7 +62,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.2.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.2.6</strong></p>
     <hr>
     <details>
         <summary>Code saving and loading</summary>
@@ -168,7 +168,7 @@
         
     </script>
     <script type="py">
-        import pyscript, asyncio, micropip
+        import pyscript, asyncio
         data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
         with open("m2w.py", "w") as file:
             file.write(await data.text()) if data.ok else None
@@ -225,7 +225,7 @@
         def runitforworker(msg):
            global connect
            def x(msgis):
-            if js.document.querySelector("#verbose"):
+            if js.document.querySelector("#verbose").checkedp:
                  js.console.log(msgis)
            exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready")})
         connect.handler(runitforworker)
@@ -469,16 +469,17 @@
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
     </script>
-    <hr>
-    <h3>Terminal/Output</h3>
     <details>
         <summary>Pip package management</summary>
         <button id="pipIn" disabled>Install pip package</button>
         <button id="pipLs" disabled>List all installed pip packages</button>
     </details>
+    <hr>
+    <h3>Terminal/Output</h3>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
     <button id="clearBtn" disabled>Clear</button>
+    <hr>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
