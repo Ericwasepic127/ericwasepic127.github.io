@@ -62,7 +62,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.2.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.2.7</strong></p>
     <hr>
     <details>
         <summary>Code saving and loading</summary>
@@ -225,7 +225,7 @@
         def runitforworker(msg):
            global connect
            def x(msgis):
-            if js.document.querySelector("#verbose").checkedp:
+            if js.document.querySelector("#verbose").checked:
                  js.console.log(msgis)
            exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready")})
         connect.handler(runitforworker)
