@@ -34,6 +34,7 @@
         #saveBtn {background-color: yellow}
         #loadB {background-color: white; color: black}
         #delB {background-color: darkblue; color: white}
+        #clearBtn {background-color: darkgreen}
         #pipIn:hover {color: blue}
         #pipLs:hover {color: lightblue}
         #dwnldBtn:hover {color: gray; background-color: white}
@@ -46,6 +47,7 @@
         #saveBtn:hover {color: yellow}
         #loadB:hover {color: white; background-color: black}
         #delB:hover {color: darkblue; background-color: white}
+        #clearBtn:hover {color: darkgreen}
     </style>
     <link rel="https://cdn.jsdelivr.net/npm/@t007/dialog@latest/dist/index.css">
     <script src="https://cdn.jsdelivr.net/npm/@t007/dialog@latest"></script>
@@ -60,13 +62,22 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.2.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.2.2</strong></p>
     <hr>
-    <button id="pipIn" disabled>Install pip package</button>
-    <button id="pipLs" disabled>List all installed pip packages</button>
-    <button id="dwnldBtn">Download code into storage</button>
-    <button id="loadBtn">Upload code from storage</button>
-    <button id="shareBtn" disabled>Share your code</button>
+    <details>
+        <summary>Code saving and loading</summary>
+        <button id="dwnldBtn">Download code into storage</button>
+        <button id="loadBtn">Upload code from storage</button>
+        <button id="saveBtn" disabled>Save to local browser storage</button>
+        <button id="loadB" disabled>Load code from local browser storage</button>
+        <button id="delB" disabled>Delete code from local browser storage</button>
+    </details>
+    <details>
+        <summary>Code sharing and loading from URL</summary>
+        <button id="shareBtn" disabled>Share your code</button>
+        <button id="fetchBtn" disabled>Fetch code from network</button>
+        <button id="gitBtn" disabled>Fetch code from GitHub</button>
+    </details>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div id="editor-container"></div>
     <script>
@@ -419,6 +430,11 @@
                     js.alert(f"URL: {o}")
             else:
                print("No code to share!")
+        def clearBtn(event):
+            if connect.getmsg:
+                js.alert("Cannot clear output when code is running")
+                return
+            connect.sendmsg("CLEAR")
         await lsc()
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
@@ -438,20 +454,24 @@
         eish = pyscript.document.querySelector("#gitBtn")
         eish.disabled = False
         eish.onclick = create_proxy(lambda event: create_proxy(gitBtn).callPromising(event))
+        g = pyscript.document.querySelector("#clearBtn")
+        g.disabled = False
+        g.onclick = create_proxy(clearBtn)
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
     </script>
     <hr>
+    <h3>Terminal/Output</h3>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
-    <button id="fetchBtn" disabled>Fetch code from network</button>
-    <button id="gitBtn" disabled>Fetch code from GitHub</button>
-    <button id="saveBtn" disabled>Save to local browser storage</button>
-    <button id="loadB" disabled>Load code from local browser storage</button>
-    <button id="delB" disabled>Delete code from local browser storage</button>
-    <h3>Terminal/Output</h3>
+    <button id="clearBtn" disabled>Clear</button>
+    <details>
+        <summary>Pip package management</summary>
+        <button id="pipIn" disabled>Install pip package</button>
+        <button id="pipLs" disabled>List all installed pip packages</button>
+    </details>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
@@ -536,7 +556,7 @@
         try:
             if connect.getmsg:
                 if connect.getmsg == "CLEAR":
-                    print(f"\033c\033[93mReady to run! Python version: {sys.version}\033[0m")
+                    print(f"\033c\033[93mCleared terminal successfully!\033[0m\n")
                     connect.getmsg = ""
                     continue 
                 os.chdir(cd)
@@ -544,7 +564,7 @@
                 print("\033c\033[92mCode executing ...\033[96m")
                 await runcode(connect.getmsg)
                 connect.getmsg = ""
-                connect.sendmsg("txt.innerHTML = 'Execution finished!'\ndisconnect()")
+                connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
             print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
             time.sleep(.0825)
