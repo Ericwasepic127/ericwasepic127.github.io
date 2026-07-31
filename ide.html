@@ -62,21 +62,35 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.2.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.3.1</strong></p>
     <hr>
     <details>
-        <summary>Code saving and loading</summary>
-        <button id="dwnldBtn">Download code into storage</button>
-        <button id="loadBtn">Upload code from storage</button>
-        <button id="saveBtn" disabled>Save to local browser storage</button>
-        <button id="loadB" disabled>Load code from local browser storage</button>
-        <button id="delB" disabled>Delete code from local browser storage</button>
-    </details>
-    <details>
-        <summary>Code sharing and loading from URL</summary>
-        <button id="shareBtn" disabled>Share your code</button>
-        <button id="fetchBtn" disabled>Fetch code from network</button>
-        <button id="gitBtn" disabled>Fetch code from GitHub</button>
+        <summary>Toolbox</summary>
+        <details>
+            <summary>Code saving and loading</summary>
+            <button id="dwnldBtn">Download code into storage</button>
+            <button id="loadBtn">Upload code from storage</button>
+            <button id="saveBtn" disabled>Save to local browser storage</button>
+            <button id="loadB" disabled>Load code from local browser storage</button>
+            <button id="delB" disabled>Delete code from local browser storage</button>
+        </details>
+        <details>
+            <summary>Code sharing and loading from URL</summary>
+            <button id="shareBtn" disabled>Share your code</button>
+            <button id="fetchBtn" disabled>Fetch code from network</button>
+            <button id="gitBtn" disabled>Fetch code from GitHub</button>
+        </details>
+        <details>
+            <summary>Pip package management</summary>
+            <button id="pipIn" disabled>Install pip package</button>
+            <button id="pipLs" disabled>List all installed pip packages</button>
+        </details>
+        <details>
+            <summary>Support</summary>
+            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/issues/">I got bug!</a></p>
+            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/">View source code</a></p>
+            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/wiki/">SUPY3 documention</a></p>
+        </details>
     </details>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
     <div id="editor-container"></div>
@@ -469,12 +483,6 @@
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
     </script>
-    <details>
-        <summary>Pip package management</summary>
-        <button id="pipIn" disabled>Install pip package</button>
-        <button id="pipLs" disabled>List all installed pip packages</button>
-    </details>
-    <hr>
     <h3>Terminal/Output</h3>
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
