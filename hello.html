@@ -43,11 +43,12 @@
                       raise
                 async def coro_wrap():
                     try:
-                       return False, await coroutine
+                       x = await coroutine
+                       return False, x
                     except (BaseException, Exception) as e:
                        return True, e
                        
-                coro = cP(coro_wrap).callPromising(args)
+                coro = cP(coro_wrap).callPromising()
                 while not coro.done():
                     time.sleep(.0825)
                 status, info = coro.result()
@@ -367,7 +368,7 @@
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.0.3")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.2.0")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
