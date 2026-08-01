@@ -12,9 +12,9 @@
 License is [**MIT**](LICENSE) but I've been tested and it has almost no bugs ([releases](https://github.com/Ericwasepic127/ericwasepic127.github.io/releases) only). Bugs appear so feel free to [create issue](https://github.com/Ericwasepic127/ericwasepic127.github.io/issues) and tell about it!
 ## Screenshots:
 
-![Screenshot 1: The starting](https://ericwasepic127.github.io/Pyrepl.jpg)
+![Screenshot 1: REPL startup](https://ericwasepic127.github.io/wiki_files/supy3repl_greet.jpg)
 
-![Screenshot 2: The loadbar simulator](https://ericwasepic127.github.io/Loady.jpg)
+![Screenshot 2: IDE startup](https://ericwasepic127.github.io/wiki_files/supy3ide_greet.jpg)
 
 ## What Makes This Different:
 
