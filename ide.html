@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.6.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.6.6</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -476,7 +476,6 @@
                 connect.sendmsg(run) 
         await lsc()
         if js.URLSearchParams.new(js.window.location.search).get("multi"):
-            connect.sendmsg("multi")
             _x = pyscript.document.querySelector("#multiBtn")
             _x.disabled = False
             _x.onclick = create_proxy(multiBtn)
@@ -506,6 +505,7 @@
         g.onclick = create_proxy(clearBtn)
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
+        connect.sendmsg("multi") if js.URLSearchParams.new(js.window.location.search).get("multi") else None
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
     </script>
