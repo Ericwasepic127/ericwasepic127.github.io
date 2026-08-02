@@ -88,7 +88,7 @@
                     
                     builtins.input = lambda t="": asyncio.run(read(t))
                     sys.stdout.write, sys.stderr.write = write, write
-                    sys.stdout.flush, sys.stderr.flush = non
+                    sys.stdout.flush, sys.stderr.flush = non, non
                     try:
                         exec(got, {})
                     except:
