@@ -62,9 +62,9 @@
     <py-config>
         packages = ["micropip"]
     </py-config>
-    <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html">Go to multi-file editor</a></p>
+    <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.6.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.6.4</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -182,8 +182,9 @@
             document.querySelector("#ready").innerHTML = `Looks like you opened shared code from URL link! Please wait, fetching code from shared URL...`;
         }
         if (urlParams.get("multi")) {
-            document.title = `SUPY3MULTI - Multiple python edit IN once!`;
             document.querySelector("#multiBtn").hidden = false;
+            document.querySelector("#x").remove();
+            document.title = `SUPY3MULTI - Multiple python edit IN once!`;
         }
         
     </script>
