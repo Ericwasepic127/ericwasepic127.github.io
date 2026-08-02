@@ -23,7 +23,7 @@
                 _x = await m2wcode.text()
                 with open("m2w.py", "w") as _obj:
                    _obj.write(_x) if _x else None
-            import m2w, asyncio, sys, builtins
+            import m2w, asyncio, sys, builtins, time
             from pyodide.ffi import can_run_sync as cRs
             from asyncio import run as asynch
 
