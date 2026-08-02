@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <script src="./mini-coi-fd.js"></script>
+        <script type="module" src="./pyscript/core.js"></script>
+        <link rel="stylesheet" href="./pyscript/core.css">
+        <link rel="icon" type="image/png" sizes="499x499" href="python.png">
+        <title>SUPY3MULTI - Multiple python edit IN once!</title>
+    </head>
+    <body>
+        <py-config>
+             packages = ["micropip"]
+        </py-config>
+        <p><a href="/index.html" target="_blank">Back to homepage</a> | <a href="/ide.html?multi" target="_blank">Open new editor</a></p>
+        <h3>Welcome to SUPY3MULTI!</h3>
+        <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
+        <script type="py" terminal worker>
+            import pyscript, traceback
+            m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
+            if m2wcode.ok:
+                _x = await m2wcode.text()
+                with open("m2w.py", "w") as _obj:
+                   _obj.write(_x) if _x else None
+            import m2w, asyncio
+            from pyscript import sync
+            
+            connect = m2w.specTab("host", id="pythonCode")
+            editors = []
+            _read = sync.pyterminal_read
+            _write = sync.pyterminal_write
+            
+            def handler(content):
+                global editors
+                connect.sendmsg("busy")
+                if content.get("assign"):
+                    name = content["assign"]
+                    editors.append(name)
+                    _write(f"Editor added! ID: {int(name):04d}\n")
+                    connect.sendmsg("")
+                    return
+            
+                name = content.get("from")
+                got = content.get("got")
+                if name in editors:
+                    async def read(value=""):
+                        if not value:
+                            return await asyncio.sleep(0)
+                        f = asyncio.Future()
+                        def when(msg):
+                            if msg.get("from") == name:
+                                f.set_result(msg.get("got"))
+                            connect.handler(handler)
+                        connect.handler(when)
+                            
+                        connect.sendTab(name, {"request": "read", "from": "host", "got": value})
+                        return await f
+                    def write(value):
+                        if not value:
+                            return
+                        connect.sendTab(name, {"request": "write", "from": "host", "got": value})
+                    
+                    sync.pyterminal_read = read
+                    sync.pyterminal_write = write
+                    try:
+                        exec(got)
+                    except:
+                        traceback.print_exc()
+                connect.sendmsg("")
+            connect.handler(handler)
+                            
+        </script>
+    </body>
+</html>
