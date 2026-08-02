@@ -64,9 +64,10 @@
                 connect.sendmsg("busy")
                 if content.get("assign"):
                     name = content["assign"]
-                    editors.append(name)
-                    _write(f"Editor added! ID: {int(name):04d}\n")
-                    connect.sendmsg("")
+                    if not (name in editors):
+                        editors.append(name)
+                        _write(f"Editor added! ID: {int(name):04d}\n")
+                        connect.sendmsg("")
                     return
             
                 name = content.get("from")
