@@ -23,13 +23,41 @@
                 _x = await m2wcode.text()
                 with open("m2w.py", "w") as _obj:
                    _obj.write(_x) if _x else None
-            import m2w, asyncio
-            from pyscript import sync
+            import m2w, asyncio, sys, builtins
+            from pyodide.ffi import can_run_sync as cRs
+            from asyncio import run as asynch
+
+            def a(coroutine):
+                """Awaits coroutine"""
+                try:
+                   if cRs():
+                      return asynch(coroutine)
+                except (BaseException, Exception) as e: 
+                   if "stack" in str(e).lower():
+                      pass
+                   else:
+                      raise
+                async def coro_wrap():
+                    try:
+                       x = await coroutine
+                       return False, x
+                    except (BaseException, Exception) as e:
+                       return True, e
+                       
+                coro = asyncio.create_task(coro_wrap)
+                while not coro.done():
+                    time.sleep(.0825)
+                status, info = coro.result()
+                if status:
+                    raise info
+                return info
+            asyncio.run = a
             
             connect = m2w.specTab("host", id="pythonCode")
             editors = []
-            _read = sync.pyterminal_read
-            _write = sync.pyterminal_write
+            _read = input
+            _write = sys.__stdout__.write
+            non = lambda: None
             
             def handler(content):
                 global editors
@@ -61,14 +89,16 @@
                             return
                         connect.sendTab(name, {"request": "write", "from": "host", "got": value})
                     
-                    sync.pyterminal_read = read
-                    sync.pyterminal_write = write
+                    builtins.input = lambda t="": asyncio.run(read(t))
+                    sys.stdout.write, sys.stderr.write = write, write
+                    sys.stdout.flush, sys.stderr.flush = non
                     try:
-                        exec(got)
+                        exec(got, {})
                     except:
                         traceback.print_exc()
                 connect.sendmsg("")
             connect.handler(handler)
+            _write("Ready!\n")
                             
         </script>
     </body>
