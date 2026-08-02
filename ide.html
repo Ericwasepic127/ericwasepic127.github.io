@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.6.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.6.7</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -644,7 +644,7 @@
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
-    while 1 or not multi:
+    while True and not multi:
         try:
             if connect.getmsg:
                 unlock = False
