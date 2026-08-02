@@ -44,7 +44,7 @@
                     except (BaseException, Exception) as e:
                        return True, e
                        
-                coro = asyncio.create_task(coro_wrap)
+                coro = asyncio.create_task(coro_wrap())
                 while not coro.done():
                     time.sleep(.0825)
                 status, info = coro.result()
