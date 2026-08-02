@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.5.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.6.0</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -472,7 +472,7 @@
                 if name == null or not name:
                    return
                 name = name + ".py"
-                run = f"print('Module loader: Adding {name} to current directory')\nwith open({repr(name)}, \"wb\") as file:\n    file.write({repr(modcode)})\nprint('DONE!')"
+                run = f"print('Module loader: Adding {name} to current directory')\nwith open({repr(name)}, \"w\") as file:\n    file.write({repr(modcode)})\nprint('DONE!')"
                 js.alert("Result are at terminal!")
                 connect.sendmsg(run) 
         await lsc()
