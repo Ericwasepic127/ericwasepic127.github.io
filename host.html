@@ -73,15 +73,12 @@
                 got = content.get("got")
                 if name in editors:
                     async def read(value=""):
-                        if not value:
-                            return await asyncio.sleep(0)
                         f = asyncio.Future()
                         def when(msg):
                             if msg.get("from") == name:
                                 f.set_result(msg.get("got"))
                             connect.handler(handler)
                         connect.handler(when)
-                            
                         connect.sendTab(name, {"request": "read", "from": "host", "got": value})
                         return await f
                     def write(value):
