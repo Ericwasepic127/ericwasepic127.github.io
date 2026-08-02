@@ -48,6 +48,8 @@
         #loadB:hover {color: white; background-color: black}
         #delB:hover {color: darkblue; background-color: white}
         #clearBtn:hover {color: lightcyan}
+        #multiBtn {background-color: orchid}
+        #multiBtn:hover {color: orchid}
     </style>
     <link rel="https://cdn.jsdelivr.net/npm/@t007/dialog@latest/dist/index.css">
     <script src="https://cdn.jsdelivr.net/npm/@t007/dialog@latest"></script>
@@ -62,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.3.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.5.5</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -178,6 +180,10 @@
         }
         if (urlCode && !sharedCode) {
             document.querySelector("#ready").innerHTML = `Looks like you opened shared code from URL link! Please wait, fetching code from shared URL...`;
+        }
+        if (urlParams.get("multi") {
+            document.title = `SUPY3MULTI - Multiple python edit IN once!`;
+            document.querySelector("#multiBtn").hidden = false;
         }
         
     </script>
@@ -456,7 +462,26 @@
                 js.alert("Cannot clear output when code is running")
                 return
             connect.sendmsg("CLEAR")
+        def multiBtn(event):
+            if connect.getmsg:
+               js.alert("Code is already running at host!")
+               return
+            modcode = codeparse()
+            if modcode:
+                name = js.prompt("Enter name to save it (note: extension .py will added, so you must enter name as 'script' to get 'script.py' result)")
+                if name == null or not name:
+                   return
+                name = name + ".py"
+                run = f"print('Module loader: Adding {name} to current directory')\nwith open({repr(name)}, \"wb\") as file:\n    file.write({repr(modcode)})\nprint('DONE!')"
+                js.alert("Result are at terminal!")
+                connect.sendmsg(run) 
         await lsc()
+        if js.URLSearchParams.new(js.window.location.search).get("multi"):
+            connect.sendmsg("multi")
+            _x = pyscript.document.querySelector("#multiBtn")
+            _x.disabled = False
+            _x.onclick = create_proxy(multiBtn)
+        
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
             x.disabled = False
@@ -487,9 +512,10 @@
     <button id="runBtn" disabled>Run</button>
     <button id="stopBtn" disabled>Stop</button>
     <button id="clearBtn" disabled>Clear</button>
+    <button id="multiBtn" disabled hidden>Save as module</button>
     <hr>
     <script type="py" terminal worker id="executer">
-    import pyscript, asyncio
+    import pyscript, asyncio, random
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
@@ -577,16 +603,54 @@
         except:
             await sl(hold - (time.time() - s))
 
+    def handle(content):
+        req = content.get("request")
+        got = content.get("got")
+        if req == "read":
+            u = input(got)
+            connect.sendTab("host", {"got": u, "from": "1270"})
+        elif req == "write":
+            sys.stdout.write(got)
+        elif req == "error":
+            sys.stderr.write(got)
+
+    def _sender(name, handler):
+        def c(code):
+            if not handler.getmsg:
+                handler.sendTab("host", {"got": code, "from": name})
+        return c
+    unlock = True
+    def _ch(handler):
+        async def x():
+            while 1:
+                connect.sendmsg(handler.getmsg) if unlock else None
+                await asyncio.sleep(.1)
+        return x
     await sl(1.75)
+    multi = False
+    if connect.getmsg == "multi":
+        connect.getmsg = None
+        multi = True
+        name = str(random.randint(1, 9999))
+        nector = m2w.specTab(name, id="pythonCode")
+        nector.handler(handle)
+        nector.sendTab("host", {"assign": name})
+        send = _sender(name, nector)
+        asyncio.create_task(_ch(nector)())
+        print(f"\033[93mMulti-file editor assigned! ID: {int(name):04d}\033[0m")
+        
+        
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
-    while 1:
+    while 1 or not multi:
         try:
             if connect.getmsg:
+                unlock = False
                 if connect.getmsg == "CLEAR":
                     print(f"\033c\033[93mCleared terminal successfully!\033[0m\n")
                     connect.getmsg = ""
+                    unlock = True
                     continue 
                 os.chdir(cd)
                 connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
@@ -595,6 +659,32 @@
                 connect.getmsg = ""
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
+                unlock = True
+            print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
+            time.sleep(.0825)
+        except KeyboardInterrupt:
+            load = itertools.cycle(next(animlib))
+        
+    while multi:
+        try:
+            if connect.getmsg:
+                unlock = False
+                if connect.getmsg == "CLEAR":
+                    print(f"\033c\033[93mCleared terminal successfully!\033[0m\n")
+                    connect.getmsg = ""
+                    unlock = True
+                    continue 
+                os.chdir(cd)
+                connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
+                print("\033c\033[92mCode executing ...\033[96m")
+                send(connect.getmsg)
+                while nector.getmsg:
+                     if connect.getmsg == "CLEAR":
+                         nector.sendTab("host", {"from": name, "got": "CLEAR"})
+                     time.sleep(.0825)
+                connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
+                connect.sendmsg("")
+                unlock = True
             print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
             time.sleep(.0825)
         except KeyboardInterrupt:
