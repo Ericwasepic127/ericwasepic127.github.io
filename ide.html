@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.7.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.7.3</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -513,6 +513,7 @@
         g = pyscript.document.querySelector("#clearBtn")
         g.disabled = False
         g.onclick = create_proxy(clearBtn)
+        pyscript.window.worker = connect.worker
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
         pyscript.window.enableEditor()
@@ -701,8 +702,8 @@
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
                 unlock = True
-            print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
-            time.sleep(.0825)
+            print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m") if not nector.getmsg else None
+            time.sleep(.0825) if not nector.getmsg else None
         except KeyboardInterrupt:
             load = itertools.cycle(next(animlib))
     </script>
@@ -713,6 +714,9 @@
         </label>
         <button onclick="window.setCode(``)">Clears current editor code</button>
         <button onclick="window.alert(window.getCode())">Get code from editor</button>
+        <button onclick="window.location.reload()">Refresh page</button>
+        <button onclick="window.worker.terminate()">Kill worker</button>
+        <button onclick="alert(eval(prompt(`CODE:`)))">Run JS code</button>
     </details>
 </body>
   </html>
