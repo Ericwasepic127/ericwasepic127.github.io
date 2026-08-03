@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.7.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.7.6</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -676,6 +676,7 @@
                     connect.getmsg = ""
                     continue 
                 if connect.getmsg == "ANIM":
+                    connect.getmsg = ""
                     raise KeyboardInterrupt 
                 os.chdir(cd)
                 connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
@@ -699,16 +700,17 @@
                     unlock = True
                     continue 
                 if connect.getmsg == "ANIM":
+                    connect.getmsg = ""
                     raise KeyboardInterrupt 
                 os.chdir(cd)
                 connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
                 print("\033c\033[92mCode executing ...\033[96m")
                 send(connect.getmsg)
+                nector.getmsg = "tmplock"
                 while nector.getmsg:
                      if connect.getmsg == "CLEAR":
                          break
                      time.sleep(.0825)
-                nector.sendTab("host", {"from": name, "got": "CLEAR"})
                 connect.getmsg = ""
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
