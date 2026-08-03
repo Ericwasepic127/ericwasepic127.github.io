@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.7.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.7.2</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -475,9 +475,14 @@
                 js.alert("Result are at terminal!")
                 connect.sendmsg(run) 
         async def multiMode():
-         while not hasattr(connect.worker.sync, "multi"):
-          connect.sendmsg("multi")
-          await asyncio.sleep(.0825)
+         bok = True
+         while bok:
+          try:
+            await connect.worker.sync.multi()
+            bok = False
+          except:
+            connect.sendmsg("multi")
+            await asyncio.sleep(.0825)
         await lsc()
         if js.URLSearchParams.new(js.window.location.search).get("multi"):
             _x = pyscript.document.querySelector("#multiBtn")
@@ -522,6 +527,7 @@
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio, random
     from pyscript import sync
+    from pyodide.ffi import create_proxy
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
@@ -609,6 +615,10 @@
         except:
             await sl(hold - (time.time() - s))
 
+    @create_proxy
+    def multiMode():
+        return True
+        
     def handle(content):
         req = content.get("request")
         got = content.get("got")
@@ -635,7 +645,7 @@
     await sl(1.75)
     multi = False
     if connect.getmsg == "multi":
-        sync.multi = True
+        sync.multi = multiMode
         connect.getmsg = None
         multi = True
         name = str(random.randint(1, 9999))
