@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.6.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.7.0</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -644,14 +644,12 @@
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
-    while True and not multi:
+    while not multi:
         try:
             if connect.getmsg:
-                unlock = False
                 if connect.getmsg == "CLEAR":
                     print(f"\033c\033[93mCleared terminal successfully!\033[0m\n")
                     connect.getmsg = ""
-                    unlock = True
                     continue 
                 os.chdir(cd)
                 connect.sendmsg("console('[worker/supy3ide]: Started running code!')\ntxt.innerHTML = 'Executing code ...'\nconnect.getmsg = 'dontrun'")
@@ -660,7 +658,6 @@
                 connect.getmsg = ""
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
-                unlock = True
             print(f"\033[93mWaiting for any code receives {next(load)}", end="\r\033[0m")
             time.sleep(.0825)
         except KeyboardInterrupt:
@@ -684,6 +681,7 @@
                          break
                      time.sleep(.0825)
                 nector.sendTab("host", {"from": name, "got": "CLEAR"})
+                connect.getmsg = ""
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
                 unlock = True
