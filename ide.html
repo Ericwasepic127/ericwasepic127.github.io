@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.7.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.7.1</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -474,13 +474,18 @@
                 run = f"print('Module loader: Adding {name} to current directory')\nwith open({repr(name)}, \"w\") as file:\n    file.write({repr(modcode)})\nprint('DONE!')"
                 js.alert("Result are at terminal!")
                 connect.sendmsg(run) 
+        async def multiMode():
+         while not hasattr(connect.worker.sync, "multi"):
+          connect.sendmsg("multi")
+          await asyncio.sleep(.0825)
         await lsc()
         if js.URLSearchParams.new(js.window.location.search).get("multi"):
             _x = pyscript.document.querySelector("#multiBtn")
             _x.disabled = False
             _x.onclick = create_proxy(multiBtn)
             _x.hidden = False;
-            pyscript.document.querySelector("#x").remove();
+            pyscript.document.querySelector("#x").remove()
+            asyncio.create_task(multiMode())
         
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
@@ -505,7 +510,6 @@
         g.onclick = create_proxy(clearBtn)
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
-        connect.sendmsg("multi") if js.URLSearchParams.new(js.window.location.search).get("multi") else None
         pyscript.window.enableEditor()
         pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
     </script>
@@ -517,6 +521,7 @@
     <hr>
     <script type="py" terminal worker id="executer">
     import pyscript, asyncio, random
+    from pyscript import sync
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
@@ -630,6 +635,7 @@
     await sl(1.75)
     multi = False
     if connect.getmsg == "multi":
+        sync.multi = True
         connect.getmsg = None
         multi = True
         name = str(random.randint(1, 9999))
