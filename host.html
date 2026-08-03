@@ -14,8 +14,9 @@
              packages = ["micropip"]
         </py-config>
         <p><a href="/index.html">Back to homepage</a> | <a href="/ide.html?multi=true" target="_blank">Open new editor</a></p>
-        <h3>Welcome to SUPY3MULTI! Version: V5.6.8</h3>
+        <h3>Welcome to SUPY3MULTI! Version: V5.7.9</h3>
         <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
+        <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker>
             import pyscript, traceback
             m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
@@ -84,6 +85,7 @@
                     print("\033[95m=======\033[92mEND\033[95m=======\033[0m\n")
                     connect.sendmsg("")
                     connect.handler(handler)
+                    _write("Handled execution successfully!\n\n")
             
             connect = m2w.specTab("host", id="pythonCode")
             editors = []
@@ -101,11 +103,14 @@
                         editors.append(name)
                         _write(f"Editor added! ID: {int(name):04d}\n")
                         connect.sendmsg("")
+                    else:
+                        _write("ID conflict - ID {int(name):04d} already assigned!\n")
                     return
             
                 name = content.get("from")
                 got = content.get("got")
                 if name in editors:
+                    _write(f"\nHandling execution from ID {int(name):04d}\n")
                     async def read(value=""):
                         f = asyncio.Future()
                         hold = connect.worker.onmessage
