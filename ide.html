@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.6.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.6.9</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -681,8 +681,9 @@
                 send(connect.getmsg)
                 while nector.getmsg:
                      if connect.getmsg == "CLEAR":
-                         nector.sendTab("host", {"from": name, "got": "CLEAR"})
+                         break
                      time.sleep(.0825)
+                nector.sendTab("host", {"from": name, "got": "CLEAR"})
                 connect.sendmsg("txt.innerHTML = 'Execution finished!'\nconsole('[worker/supy3ide]: Finished code execution!')\ndisconnect()")
                 connect.sendmsg("")
                 unlock = True
