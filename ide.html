@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.7.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.8.3</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -381,10 +381,12 @@
             package_list = packages.split()
             run = [
                 "print('-----Pip package installer-----')",
-                "import asyncio, micropip",
+                "import asyncio, micropip, time",
                 f"for p in {package_list}:",
                 "    try:",
-                "        asyncio.ensure_future(micropip.install(p))",
+                "        task = asyncio.create_task(micropip.install(p))",
+                "        while not task.done():",
+                "           time.sleep(0.1)",
                 "        print(f'Installed package {p} successfully' if p in micropip.list().keys() else 'Something went wrong')",
                 "    except Exception as e:",
                 "        print(f'Failed to install package {p}: {str(e)}')"
