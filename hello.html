@@ -489,11 +489,11 @@
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*), 'save(url_link)' for download thing from given URL (*), '%install list' for list installed pip packages"
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
                 cool += "\nYou can use 'await' keyword directly to coroutines"
-                executor = AsyncIOTerminal(local=names, local_exit=True)
+                executor = AsyncIOTerminal(locals=names, local_exit=True)
                 executor.input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.8.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.8.5")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
