@@ -39,4 +39,4 @@ jobs:
           files: ./build/offline.zip
           tag_name: "i${{ inputs.i }}+r${{ inputs.r }}+m${{ inputs.m }}"
           make_latest: "true"
-          body: "Offline release with **IDE v${{ inputs.i }}**, **REPL v${{ inputs.r }}** and **MULTI v${{ inputs.m }} (PyScript version: ${{ steps.ver.outputs.version }})! For more info to use, visit [here](https://github.com/Ericwasepic127/ericwasepic127.github.io/wiki/Using-Py3REPL-or-Py3IDE-without-internet#2nd-way-by-offline-package---most-robust-option)."
+          body: "Offline release with **IDE v${{ inputs.i }}**, **REPL v${{ inputs.r }}** and **MULTI v${{ inputs.m }}** (PyScript version: ${{ steps.ver.outputs.version }})! For more info to use, visit [here](https://github.com/Ericwasepic127/ericwasepic127.github.io/wiki/Using-Py3REPL-or-Py3IDE-without-internet#2nd-way-by-offline-package---most-robust-option)."
