@@ -44,7 +44,7 @@
         </script>
         <button id="stopBtn" disabled>Interrupt/Stop</button>
         <script type="py" terminal worker id="code">
-            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js
+            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js, ast
             from pyscript import storage as s
             from asyncio import run as asynch
             from random import choice as c
@@ -125,7 +125,40 @@
             
             builtins.exec = newxec
             builtins.eval = newval
-                
+
+            class AsyncIOTerminal(code.InteractiveConsole):
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+                    self.compile.compiler.flags |= ast.PyCF_ALLOW_TOP_LEVEL_AWAIT
+                async def runcode(self, code_obj):
+                    try:
+                      try:
+                        res = eval(code_obj, self.locals)
+                        if inspect.isawaitable(res):
+                            res = await res
+                      except SyntaxError:
+                        pass
+                      else:
+                        return repr(res) if res != None else ""
+                      x = exec(code_obj, self.locals)
+                      if inspect.isawaitable(x):
+                        await x
+                    except SystemExit:
+                        raise
+                    except:
+                        self.showtraceback()
+                    return await asyncio.sleep(0.0000001, result="")
+                def runsource(self, source, filename="<input>", symbol="single"):
+                    try:
+                        code = self.compile(source, filename, symbol)
+                    except (OverflowError, SyntaxError, ValueError):
+                        self.showsyntaxerror(filename, source=source)
+                        return False
+                    if code is None:
+                        return True
+                    a(self.runcode(code))
+                    return False
+            
             class SLD:
                  def __init__(self, name=None):
                     if name is None:
@@ -447,17 +480,20 @@
                 reader.assign("%restore", restore)
                 reader.assign("%save", save)
                 
-                names = {"save": save, "color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "_await": asyncio.run, "awaiter": asyncio.run, "fetcher": fetcher, "install": install, "history": reader.history} 
+                names = {"save": save, "color": color, "restore": restore, "storage": SLD("Userspace"), "limit": reader.limit, "clear": clear, "fetcher": fetcher, "install": install, "history": reader.history} 
                 reader.assign("%storage.help", names["storage"].help)
                 print("Opening terminal ...", end="\r")
                 time.sleep(1.125)
                 cool = f"\033[93mPython {sys.version} on Browser\n(Erkhemee Edition: Py3REPL)\nType 'clear()' for clear screen (*), 'help(obj)' (%help obj) for object documention (*)"
-                cool += ", limit(set_limit) for set history limit (*), '_await(awaitable)' or 'awaiter(awaitable)' for await keyword, 'fetcher(url_link)' for get text from URL"
+                cool += ", limit(set_limit) for set history limit (*), 'fetcher(url_link)' for get text from URL"
                 cool += ", 'color()' for colorful terminal if you modified or restored (*), 'restore()' for back for basic colorless terminal (*), 'save(url_link)' for download thing from given URL (*), '%install list' for list installed pip packages"
                 cool += ", 'install(package_name)' (%install package1 package2) for install package (*), 'history()' for history getting (*), 'storage' for a persistent storage (\033[1mTip: try storage.help() (*)\033[0m\033[93m), '%clear history' to clear history in persistent storage and current session history. \n\033[1mTip: (*) functions had '%' shortcuts (like %clear, e.g.)"
-                code.interact(readfunc=reader, banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...", local=names, local_exit=True)
+                cool += "\nYou can use 'await' keyword directly to coroutines"
+                executor = AsyncIOTerminal(local=names, local_exit=True)
+                executor.input = reader
+                executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.7.8")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV5.8.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
