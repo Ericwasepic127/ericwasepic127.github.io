@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.9.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.9.4</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -743,6 +743,8 @@
                 exc = coder.exception()
                 if exc:
                    raise exc
+        except SystemExit:
+            pass
         finally:
             for task in pending:
                 task.cancel()
