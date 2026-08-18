@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.8.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.8.8</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -657,6 +657,14 @@
         return FakeModule(importer(name, *args, **kwargs))
 
     _import.__doc__ = importer.__doc__
+
+    class DictLike(dict):
+        def __getitem__(self, name):
+            if name == "__import__":
+                return _import
+            if hasattr(builtins, name):
+                return getattr(builtins, name)
+            return super().__getitem__(name) 
         
     class stderr:
         """Colored sys.STDERR version by Erkhemee"""
@@ -693,7 +701,7 @@
             return i
     def run_code(c):
         lines = c.split("\n")
-        runner = Terminal({"__name__": "__main__", "__builtins__": {"__import__": _import}}, local_exit=True, filename="<SUPY3-interpreter>")
+        runner = Terminal({"__name__": "__main__", "__builtins__": DictLike()}, local_exit=True, filename="<SUPY3-interpreter>")
         for line in lines:
             if runner.get_error():
                 break
