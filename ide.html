@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.9.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.9.1</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -627,8 +627,9 @@
             mod = super().__getattribute__("module")
             usr = super().__getattribute__("user")
             dld = super().__getattribute__("delete")
-            ismod = hasattr(mod, name) and not dld.get(name)
-            return usr.get(name, getattr(mod, name) if ismod else raiser(name))
+            testcusobjnonexists = ["no", "target", "same", "id"]
+            ismod = hasattr(mod, name) and (dld.get(name, testcusobjnonexists) is not testcusobjnonexists)
+            return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
     
         def __setattr__(self, name, value):
             usr = super().__getattribute__("user")
