@@ -14,7 +14,7 @@
              packages = ["micropip"]
         </py-config>
         <p><a href="/index.html">Back to homepage</a> | <a href="/ide.html?multi=true" target="_blank">Open new editor</a></p>
-        <h3>Welcome to SUPY3MULTI! Version: V5.7.9</h3>
+        <h3>Welcome to SUPY3MULTI! Version: V5.9.5</h3>
         <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
         <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker>
@@ -54,15 +54,131 @@
                 return info
             asyncio.run = a
 
+            class Terminal(code.InteractiveConsole):
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+                    self.compile.compiler.flags |= ast.PyCF_ALLOW_TOP_LEVEL_AWAIT
+                    self.set_error = False
+                def get_error(self):
+                    current = self.set_error
+                    self.set_error = False
+                    return current
+                async def runcode(self, code_obj):
+                    try:
+                      try:
+                        res = eval(code_obj, self.locals)
+                        if inspect.isawaitable(res):
+                            res = await res
+                      except SyntaxError:
+                        pass
+                      else:
+                        return repr(res) if res != None else ""
+                      x = exec(code_obj, self.locals)
+                      if inspect.isawaitable(x):
+                        await x
+                    except SystemExit:
+                        print("Looks like you've run exit()!")
+                        raise
+                    except:
+                        self.showtraceback()
+                    return await asyncio.sleep(0.0000001, result="")
+                def runsource(self, source, filename="<input>", symbol="single"):
+                    try:
+                        code = self.compile(source, filename, symbol)
+                    except (OverflowError, SyntaxError, ValueError):
+                        self.showsyntaxerror(filename, source=source)
+                        return False
+                    if code is None:
+                        return True
+                    a(self.runcode(code))
+                    return False
+    
+                def showtraceback(self, *args, **kwargs):
+                    self.set_error = True
+                    print("Error occured! Details:", file=sys.stderr)
+                    return super().showtraceback(*args, **kwargs)
+                def showsyntaxerror(self, *args, **kwargs):
+                    self.set_error = True
+                    print("Error occured! Details:", file=sys.stderr)
+                    return super().showsyntaxerror(*args, **kwargs)
+
+            class FakeModule:
+                def __dir__(self):
+                    mod = dir(super().__getattribute__("module"))
+                    dld = super().__getattribute__("delete").keys()
+                    usr = dir(super().__getattribute__("user"))
+                    mod = sorted(mod + usr)
+                    for i in dld:
+                        mod.remove(i)
+                    return mod
+                def __repr__(self):
+                    return repr(super().__getattribute__("module"))
+    
+                def __init__(self, actual_module):
+                    super().__setattr__("module", actual_module)
+                    super().__setattr__("user", {})
+                    super().__setattr__("delete", {})
+    
+                def __getattr__(self, name):
+                    mod = super().__getattribute__("module")
+                    def raiser(name):
+                        m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
+                        if m:
+                             m = f"Did you mean {m[0]!r}?"
+                        else:
+                             m = ""
+                        raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
+                    usr = super().__getattribute__("user")
+                    dld = super().__getattribute__("delete")
+                    ismod = hasattr(mod, name) and name not in dld.keys()
+                    return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
+    
+                def __setattr__(self, name, value):
+                    usr = super().__getattribute__("user")
+                    usr[name] = value
+                    super().__setattr__("user", usr)
+    
+                def __delattr__(self, name):
+                    mod = super().__getattribute__("module")
+                    def raiser(name):
+                        m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
+                        if m:
+                             m = f"Did you mean {m[0]!r}?"
+                        else:
+                             m = ""
+                        raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
+                    usr = super().__getattribute__("user")
+                    dld = super().__getattribute__("delete")
+                    ismod = hasattr(mod, name) and name not in dld.keys()
+                    if usr.get(name):
+                        del usr[name]
+                        super().__setattr__("user", usr)
+                        return
+                    if ismod:
+                        dld[name] = True
+                        super().__setattr__("delete", dld)
+                        return
+                    raiser(name)
+
+            importer = __import__
+
+            def _import(name, *args, **kwargs):
+                return FakeModule(importer(name, *args, **kwargs))
+
+            _import.__doc__ = importer.__doc__
+
+            class DictLike(dict):
+                def __getitem__(self, name):
+                    if name == "__import__":
+                        return _import
+                    if hasattr(builtins, name):
+                        return getattr(builtins, name)
+                    return super().__getitem__(name) 
+
             def run_code(c):
-                try:
-                    obj = repr(eval(c, {}))
-                    print(obj) if obj != "None" else None
-                    return
-                except SyntaxError:
-                    pass
-                exec(c, {})
-            
+                runner = Terminal({"__name__": "__main__", "__builtins__": DictLike()}, local_exit=True, filename="<SUPY3-interpreter>")
+                runner.runsource(c, symbol="exec")
+        
             async def runcode(code, timer):
                 coder = asyncio.create_task(asyncio.to_thread(run_code, code))
                 timeis = asyncio.create_task(timer)
@@ -76,9 +192,6 @@
                            raise exc
                 except SystemExit:
                     print("Looks like you've run exit()!")
-                except:
-                    print("Error occured! Details:", file=sys.stderr)
-                    traceback.print_exc()
                 finally:
                     for task in pending:
                         task.cancel()
