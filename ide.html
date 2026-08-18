@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.8.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.8.7</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -208,7 +208,7 @@
             else:
                  js.alert(f"Looks like error encourted!\nReturned code: {by.status}")
                  return 1
-                
+        
         class SLD:
                  def __init__(self, name=None):
                     if name is None:
@@ -541,8 +541,123 @@
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
-    import m2w, time, traceback, builtins, inspect, os, sys, itertools
+    import m2w, time, traceback, builtins, inspect, os, sys, itertools, code, ast, inspect
+    from asyncio import run as asynch
+    from pyodide.ffi import can_run_sync as cRs
 
+    def blocking_async(coroutine):
+        """Awaits coroutine, for Pyodide, blocking"""
+        try:
+            if cRs():
+                return asynch(coroutine)
+        except (BaseException, Exception) as e: 
+            if "stack" in str(e).lower():
+                pass
+            else:
+                raise
+        async def coro_wrap():
+            try:
+                return False, await coroutine
+            except (BaseException, Exception) as e:
+                return True, e
+        coro = asyncio.create_task(coro_wrap)
+        while not coro.done():
+            time.sleep(.1)
+        error, info = coro.result()
+        if error:
+            raise info
+        return info
+    asyncio.run = blocking_async
+    class Terminal(code.InteractiveConsole):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.compile.compiler.flags |= ast.PyCF_ALLOW_TOP_LEVEL_AWAIT
+            self.set_error = False
+        def get_error(self):
+            current = self.set_error
+            self.set_error = False
+            return current
+        async def runcode(self, code_obj):
+            try:
+              try:
+                res = eval(code_obj, self.locals)
+                if inspect.isawaitable(res):
+                    res = await res
+              except SyntaxError:
+                pass
+              else:
+                return repr(res) if res != None else ""
+              x = exec(code_obj, self.locals)
+              if inspect.isawaitable(x):
+                await x
+            except SystemExit:
+                raise
+            except:
+                self.showtraceback()
+            return await asyncio.sleep(0.0000001, result="")
+        def runsource(self, source, filename="<input>", symbol="single"):
+            try:
+                code = self.compile(source, filename, symbol)
+            except (OverflowError, SyntaxError, ValueError):
+                self.showsyntaxerror(filename, source=source)
+                return False
+            if code is None:
+                return True
+            blocking_async(self.runcode(code))
+            return False
+    
+        def showtraceback(self, *args, **kwargs):
+            self.set_error = True
+            return super().showtraceback(*args, **kwargs)
+        def showsyntaxerror(self, *args, **kwargs):
+            self.set_error = True
+            return super().showsyntaxerror(*args, **kwargs)
+
+    class FakeModule:
+        def __repr__(self):
+            return repr(super().__getattr__("module"))
+    
+        def __init__(self, actual_module):
+            super().__setattr__("module", actual_module)
+            super().__setattr__("user", {})
+            super().__setattr__("delete", {})
+    
+        def __getattr__(self, name):
+            raiser = lambda nameX: {}[nameX]
+            mod = super().__getattr__("module")
+            usr = super().__getattr__("user")
+            dld = super().__getattr__("delete")
+            ismod = hasattr(mod, name) and not dld.get(name)
+            return usr.get(name, getattr(mod, name) if ismod else raiser(name))
+    
+        def __setattr__(self, name, value):
+            usr = super().__getattr__("user")
+            usr[name] = value
+            super().__setattr__("user", usr)
+    
+        def __delattr__(self, name):
+            raiser = lambda nameX: {}[nameX]
+            mod = super().__getattr__("module")
+            usr = super().__getattr__("user")
+            dld = super().__getattr__("delete")
+            ismod = hasattr(mod, name) and not dld.get(name)
+            if usr.get(name):
+                del usr[name]
+                super().__setattr__("user", usr)
+                return
+            if ismod:
+                dld[name] = True
+                super().__setattr__("delete", dld)
+                return
+            raiser(name)
+
+    importer = __import__
+
+    def _import(name, *args, **kwargs):
+        return FakeModule(importer(name, *args, **kwargs))
+
+    _import.__doc__ = importer.__doc__
+        
     class stderr:
         """Colored sys.STDERR version by Erkhemee"""
         def __init__(self, original=None):
@@ -577,13 +692,12 @@
         else:
             return i
     def run_code(c):
-        try:
-            obj = repr(eval(c, {}))
-            print(obj) if obj != "None" else None
-            return
-        except SyntaxError:
-            pass
-        exec(c, {})
+        lines = c.split("\n")
+        runner = Terminal({"__name__": "__main__", "__builtins__": {"__import__": _import}}, local_exit=True, filename="<SUPY3-interpreter>")
+        for line in lines:
+            if runner.get_error():
+                break
+            runner.push(line)
 
     async def timer():
         while 1:
