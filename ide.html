@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.8.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.9.0</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -700,13 +700,9 @@
         else:
             return i
     def run_code(c):
-        lines = c.split("\n")
         runner = Terminal({"__name__": "__main__", "__builtins__": DictLike()}, local_exit=True, filename="<SUPY3-interpreter>")
-        for line in lines:
-            if runner.get_error():
-                break
-            runner.push(line)
-
+        runner.runsource(c, symbol="exec")
+        
     async def timer():
         while 1:
             if connect.getmsg == "CLEAR":
