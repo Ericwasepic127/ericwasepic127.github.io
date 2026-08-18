@@ -14,7 +14,7 @@
              packages = ["micropip"]
         </py-config>
         <p><a href="/index.html">Back to homepage</a> | <a href="/ide.html?multi=true" target="_blank">Open new editor</a></p>
-        <h3>Welcome to SUPY3MULTI! Version: V5.9.5</h3>
+        <h3>Welcome to SUPY3MULTI! Version: V5.9.6</h3>
         <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
         <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker>
@@ -24,7 +24,7 @@
                 _x = await m2wcode.text()
                 with open("m2w.py", "w") as _obj:
                    _obj.write(_x) if _x else None
-            import m2w, asyncio, sys, builtins, time
+            import m2w, asyncio, sys, builtins, time, ast, inspect, code
             from pyodide.ffi import can_run_sync as cRs
             from asyncio import run as asynch
 
