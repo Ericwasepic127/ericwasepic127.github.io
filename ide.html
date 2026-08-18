@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.9.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.9.2</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -541,7 +541,7 @@
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
-    import m2w, time, traceback, builtins, inspect, os, sys, itertools, code, ast, inspect
+    import m2w, time, traceback, builtins, inspect, os, sys, itertools, code, ast, inspect, difflib
     from asyncio import run as asynch
     from pyodide.ffi import can_run_sync as cRs
 
@@ -614,6 +614,14 @@
             return super().showsyntaxerror(*args, **kwargs)
 
     class FakeModule:
+        def __dir__(self):
+            mod = dir(super().__getattribute__("module"))
+            dld = super().__getattribute__("delete").keys()
+            usr = dir(super().__getattribute__("user"))
+            mod = sorted(mod + usr)
+            for i in dld:
+                mod.remove(i)
+            return mod
         def __repr__(self):
             return repr(super().__getattribute__("module"))
     
@@ -637,8 +645,14 @@
             super().__setattr__("user", usr)
     
         def __delattr__(self, name):
-            raiser = lambda nameX: {}[nameX]
             mod = super().__getattribute__("module")
+            def raiser(name):
+                m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
+                if m:
+                     m = f"Did you mean {m[0]!r}?"
+                else:
+                     m = ""
+                raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
             usr = super().__getattribute__("user")
             dld = super().__getattribute__("delete")
             ismod = hasattr(mod, name) and not dld.get(name)
