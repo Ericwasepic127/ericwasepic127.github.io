@@ -64,7 +64,7 @@
     </py-config>
     <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.9.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V5.9.9</strong></p>
     <hr>
     <details>
         <summary>Toolbox</summary>
@@ -504,7 +504,7 @@
                 await asyncio.sleep(75)
                 c = codeparse()
                 if c:
-                    await storage.save(c)
+                    await storage.save("Auto-saved", c)
                     pyscript.document.querySelector("#ready").innerHTML = "Auto-saved successfully!"
         asyncio.create_task(autosave())
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
