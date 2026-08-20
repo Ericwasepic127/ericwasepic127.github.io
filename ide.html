@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.0.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.0.8</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -509,8 +509,7 @@
         async def shareBtn(event):
             c = codeparse()
             if c:
-               o = sharecode(c)
-               async def cpoy():
+               async def cpoy(o):
                  try:
                    await pyscript.window.navigator.clipboard.writeText(o)
                    js.alert(f"Copied to Clipboard!\nURL: {o}")
@@ -524,8 +523,8 @@
                mkLink = mkText("Add hompage redirect link:", False)
                def br():
                     return pyscript.document.createElement("br")
-               def onRun(e=None):
-                   global o
+               def onRun(xD):
+                   o = sharecode(xD)
                    if hideToolbar[1].checked:
                        o += "&hideTool=true"
                    if hidenEdit[1].checked:
@@ -545,11 +544,11 @@
                         b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
                         uri_encoded = js.encodeURIComponent(b64_encoded)
                         o += f"&link={uri_encoded}"
-                   asyncio.create_task(cpoy())
+                   asyncio.create_task(cpoy(o))
                    getflagmod.close()
                onrun = pyscript.document.createElement("button")
                onrun.innerHTML = "SHARE"
-               onrun.onclick = create_proxy(onRun)
+               onrun.onclick = create_proxy(lambda e: onRun(c))
                x, y = [], [x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink]]
                for q in y: x += [q, br()]
                x.append(onrun)
