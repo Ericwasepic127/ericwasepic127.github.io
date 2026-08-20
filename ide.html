@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.0.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.0.4</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -91,9 +91,11 @@
         </details>
         <details>
             <summary>Support</summary>
-            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/issues/">I got bug!</a></p>
-            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/">View source code</a></p>
-            <p><a href="https://github.com/ericwasepic127/ericwasepic127.github.io/wiki/">SUPY3 documention</a></p>
+            <a href="https://github.com/ericwasepic127/ericwasepic127.github.io/issues/">I got bug!</a>
+            <br>
+            <a href="https://github.com/ericwasepic127/ericwasepic127.github.io/">View source code</a>
+            <br>
+            <a href="https://github.com/ericwasepic127/ericwasepic127.github.io/wiki/">SUPY3 documention</a>
         </details>
     </details>
     <h2 id="ready">Loading PyScript ... Please wait!</h2>
@@ -519,8 +521,10 @@
                hidenEdit = mkChkbox("Hide editor", False)
                mkTitle = mkText("Change title to:", False)
                mkNote = mkText("Add note:", False)
-               mkLink = mkText("Add hompage redirect link:")
-               def onRun():
+               mkLink = mkText("Add hompage redirect link:", False)
+               def br():
+                    return pyscript.document.createElement("br")
+               def onRun(e=None):
                    global o
                    if hideToolbar[1].checked:
                        o += "&hideTool=true"
@@ -546,7 +550,7 @@
                onrun = pyscript.document.createElement("button")
                onrun.innerHTML = "SHARE"
                onrun.onclick = create_proxy(onRun)
-               getflagmod.body.append(*[x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote]] + [onrun])
+               getflagmod.body.append(*[*(x[0], br()) for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink]] + [onrun])
             else:
                print("No code to share!")
         def clearBtn(event):
