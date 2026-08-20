@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.1.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.1.1</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -478,14 +478,14 @@
             if note:
                  try:
                    b64_encoded = js.decodeURIComponent(note).encode("utf-8")
-                   pyscript.window.querySelector("#ready").innerHTML = base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
+                   pyscript.document.querySelector("#ready").innerHTML = base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
                  except (binascii.Error, UnicodeDecodeError):
-                     pyscript.window.querySelector("#ready").innerHTML = "Python app"
+                     pyscript.document.querySelector("#ready").innerHTML = "Python app"
             where = params.get("link")
             if where:
                  try:
                    b64_encoded = js.decodeURIComponent(where).encode("utf-8")
-                   pyscript.window.querySelector("#red").innerHTML = pyscript.window.querySelector("#red").innerHTML + " | Back to <a href='%s'>homepage</a>" % base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
+                   pyscript.document.querySelector("#red").innerHTML = pyscript.document.querySelector("#red").innerHTML + " | Back to <a href='%s'>homepage</a>" % base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
                  except (binascii.Error, UnicodeDecodeError):
                      pass
             pyscript.window.setCode(code_bytes)
