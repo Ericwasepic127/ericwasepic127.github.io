@@ -57,16 +57,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js"></script>
     <script type="module" src="./pyscript/core.js"></script>
     <link rel="stylesheet" href="./pyscript/core.css">
+    <link rel="stylesheet" href="./window.css">
 </head>
 <body>
     <py-config>
         packages = ["micropip"]
     </py-config>
-    <p><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
+    <script src="./window.js"></script>
+    <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V5.9.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.0.2</strong></p>
     <hr>
-    <details>
+    <details id="tools">
         <summary>Toolbox</summary>
         <details>
             <summary>Code saving and loading</summary>
@@ -74,7 +76,7 @@
             <button id="loadBtn">Upload code from storage</button>
             <button id="saveBtn" disabled>Save to local browser storage</button>
             <button id="loadB" disabled>Load code from local browser storage</button>
-            <button id="delB" disabled>Delete code from local browser storage</button>
+            <button id="delB" disabled>Delete code from local browser stage</button>
         </details>
         <details>
             <summary>Code sharing and loading from URL</summary>
@@ -176,7 +178,11 @@
              window.location = window.location.origin + window.location.pathname
         }
         if (sharedCode && !urlCode) {
-            document.querySelector("#ready").innerHTML = `Looks like you opened shared code! Please wait, loading your code...`;
+            if (urlParams.get("note")) {
+                document.querySelector("#ready").innerHTML = `...`;
+            } else {
+                document.querySelector("#ready").innerHTML = `Looks like you opened shared code! Please wait, loading your code ...`;
+            }
         }
         if (urlCode && !sharedCode) {
             document.querySelector("#ready").innerHTML = `Looks like you opened shared code from URL link! Please wait, fetching code from shared URL...`;
@@ -184,7 +190,19 @@
         if (urlParams.get("multi")) {
             document.title = `SUPY3MULTI - Multiple python edit IN once!`;
         }
-        
+        if (urlParams.get("title")) {
+            document.title = "..."
+        }
+        if (urlParams.get("hideDitor")) {
+            document.getElementById('editor-container').style.display = 'none';
+        }
+        if (urlParams.get("hideTool")) {
+            document.getElementById('tools').hidden = true;
+        }
+        if (urlParams.get("link")) {
+            const la = document.getElementById('red');
+            la.innerHTML = 'This app uses <a href="https://ericwasepic127.github.io/ide.html">SUPY3IDE</a>'
+        }
     </script>
     <script type="py">
         import pyscript, asyncio
@@ -447,16 +465,88 @@
                  x = await putincode(link)
                  if not x:
                     return
+            title = params.get("title")
+            if title:
+                 try:
+                   b64_encoded = js.decodeURIComponent(title).encode("utf-8")
+                   pyscript.document.title = base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
+                 except (binascii.Error, UnicodeDecodeError) as e:
+                     pyscript.document.title = "Python app"
+            note = params.get("note")
+            if note:
+                 try:
+                   b64_encoded = js.decodeURIComponent(note).encode("utf-8")
+                   pyscript.window.querySelector("#ready").innerHTML = base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
+                 except (binascii.Error, UnicodeDecodeError):
+                     pyscript.window.querySelector("#ready").innerHTML = "Python app"
+            where = params.get("link")
+            if where:
+                 try:
+                   b64_encoded = js.decodeURIComponent(where).encode("utf-8")
+                   pyscript.window.querySelector("#red").innerHTML = pyscript.window.querySelector("#red").innerHTML + " | Back to <a href='%s'>homepage</a>" % base64.urlsafe_b64decode(b64_encoded).decode('utf-8')
+                 except (binascii.Error, UnicodeDecodeError):
+                     pass
             pyscript.window.setCode(code_bytes)
+
+        def mkChkbox(meaning, retChk=True):
+            tit = pyscript.document.createElement("label")
+            ckbox = pyscript.document.createElement("input")
+            ckbox.type = "checkbox"
+            tit.appendChild(ckbox)
+            tit.append(pyscript.document.createTextNode(" " + meaning))
+            return ckbox if retChk else (tit, ckbox)
+
+        def mkText(meaning, retTxt=True):
+            tit = pyscript.document.createElement("label")
+            ckbox = pyscript.document.createElement("input")
+            ckbox.type = "text"
+            tit.innerHTML = meaning + " "
+            tit.appendChild(ckbox)
+            return ckbox if retTxt else (tit, ckbox)
+        
         async def shareBtn(event):
             c = codeparse()
             if c:
                o = sharecode(c)
-               try:
+               def cpoy():
+                 try:
                    await pyscript.window.navigator.clipboard.writeText(o)
                    js.alert(f"Copied to Clipboard!\nURL: {o}")
-               except:
+                 except:
                     js.alert(f"URL: {o}")
+               getflagmod = pyscript.window.topLevel("Customization")
+               hideToolbar = mkChkbox("Hide toolbar", False)
+               hidenEdit = mkChkbox("Hide editor", False)
+               mkTitle = mkText("Change title to:", False)
+               mkNote = mkText("Add note:", False)
+               mkLink = mkText("Add hompage redirect link:")
+               def onRun():
+                   global o
+                   if hideToolbar[1].checked:
+                       o += "&hideTool=true"
+                   if hidenEdit[1].checked:
+                       o += "&hideDitor=true"
+                   if mkTitle[1].value:
+                        bytesx = mkTitle.value.encode('utf-8')
+                        b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
+                        uri_encoded = js.encodeURIComponent(b64_encoded)
+                        o += f"&title={uri_encoded}"
+                   if mkNote[1].value:
+                        bytesx = mkNote[1].value.encode('utf-8')
+                        b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
+                        uri_encoded = js.encodeURIComponent(b64_encoded)
+                        o += f"&note={uri_encoded}"
+                   if mkLink[1].value:
+                        bytesx = mkLink[1].value.encode('utf-8')
+                        b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
+                        uri_encoded = js.encodeURIComponent(b64_encoded)
+                        o += f"&link={uri_encoded}"
+                   cpoy()
+                   getflagmod.close()
+               onrun = pyscript.document.createElement("button")
+               onrun.innerHTML = "SHARE"
+               onrun.onclick = create_proxy(onRun)
+               getflagmod.body.append(*[x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote]] + [onrun])
             else:
                print("No code to share!")
         def clearBtn(event):
@@ -535,7 +625,7 @@
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
         pyscript.window.enableEditor()
-        pyscript.document.querySelector("#ready").innerHTML = "Main thread initailized, waiting for executor worker thread..."
+        pyscript.document.querySelector("#ready").innerHTML = notemsg() if js.URLSearchParams.new(js.window.location.search).get("note") else "Main thread initailized, waiting for executor worker thread..."
     </script>
     <h3>Terminal/Output</h3>
     <button id="runBtn" disabled>Run</button>
