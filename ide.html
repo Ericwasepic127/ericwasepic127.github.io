@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.0.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.0.3</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -508,7 +508,7 @@
             c = codeparse()
             if c:
                o = sharecode(c)
-               def cpoy():
+               async def cpoy():
                  try:
                    await pyscript.window.navigator.clipboard.writeText(o)
                    js.alert(f"Copied to Clipboard!\nURL: {o}")
@@ -541,7 +541,7 @@
                         b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
                         uri_encoded = js.encodeURIComponent(b64_encoded)
                         o += f"&link={uri_encoded}"
-                   cpoy()
+                   asyncio.create_task(cpoy())
                    getflagmod.close()
                onrun = pyscript.document.createElement("button")
                onrun.innerHTML = "SHARE"
