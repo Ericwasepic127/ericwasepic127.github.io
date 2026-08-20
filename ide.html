@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.1.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.1.4</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -196,7 +196,7 @@
             document.title = "..."
         }
         if (urlParams.get("hideDitor")) {
-            document.getElementById('editor-container').style.display = 'none';
+            editor.container.style.display = 'none';
         }
         if (urlParams.get("hideTool")) {
             document.getElementById('tools').hidden = true;
@@ -266,7 +266,7 @@
            def x(msgis):
             if js.document.querySelector("#verbose").checked:
                  js.console.log(msgis)
-           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready")})
+           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready"), "note": js.URLSearchParams.new(js.window.location.search).get("note")})
         connect.handler(runitforworker)
         storage = SLD("codeStorage")
         await storage.init()
@@ -602,7 +602,7 @@
                 if c:
                     await storage.save("Auto-saved", c)
                     pyscript.document.querySelector("#ready").innerHTML = "Auto-saved successfully!"
-        asyncio.create_task(autosave())
+        asyncio.create_task(autosave()) if not js.URLSearchParams.new(js.window.location.search).get("note") else None
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
             x.disabled = False
@@ -911,7 +911,7 @@
         
         
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
-    aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!'", "disconnect()"]
+    aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
     while not multi:
         try:
