@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.4</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -739,7 +739,7 @@
         def __dir__(self):
             mod = dir(super().__getattribute__("module"))
             dld = super().__getattribute__("delete").keys()
-            usr = super().__getattribute__("user").keys()
+            usr = list(super().__getattribute__("user").keys())
             mod = sorted(mod + usr)
             for i in dld:
                 mod.remove(i)
