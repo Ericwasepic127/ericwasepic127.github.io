@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.8</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -737,9 +737,9 @@
 
     class FakeModule(types.ModuleType):
         def __dir__(self):
-            mod = dir(super().__getattribute__("module"))
-            dld = super().__getattribute__("delete").keys()
-            usr = list(super().__getattribute__("user").keys())
+            mod = dir(object.__getattribute__("module"))
+            dld = object.__getattribute__("delete").keys()
+            usr = list(object.__getattribute__("user").keys())
             mod = sorted(mod + usr)
             for i in dld:
                 mod.remove(i)
@@ -747,21 +747,21 @@
         def __repr__(self):
             return repr(super().__getattribute__("module"))
         def __init__(self, actual_module):
-            super().__init__(actual_module.__name__)
-            super().__setattr__("module", actual_module)
-            super().__setattr__("user", {})
-            super().__setattr__("delete", {})
-            super().__setattr__("__class__", actual_module.__class__)
-            super().__setattr__("__doc__", actual_module.__doc__)
-            super().__setattr__("__file__", actual_module.__file__)
-            super().__setattr__("__loader__", actual_module.__loader__)
-            super().__setattr__("__package__", actual_module.__package__)
-            super().__setattr__("__spec__", actual_module.__spec__)
-            super().__setattr__("__builtins__", actual_module.__builtins__)
-            super().__setattr__("__path__", actual_module.__path__ if hasattr(actual_module, "__path__") else None)
+            types.ModuleType.__init__(actual_module.__name__)
+            object.__setattr__("module", actual_module)
+            object.__setattr__("user", {})
+            object.__setattr__("delete", {})
+            object.__setattr__("__class__", actual_module.__class__)
+            object.__setattr__("__doc__", actual_module.__doc__)
+            object.__setattr__("__file__", actual_module.__file__)
+            object.__setattr__("__loader__", actual_module.__loader__)
+            object.__setattr__("__package__", actual_module.__package__)
+            object.__setattr__("__spec__", actual_module.__spec__)
+            object.__setattr__("__builtins__", actual_module.__builtins__)
+            object.__setattr__("__path__", actual_module.__path__ if hasattr(actual_module, "__path__") else None)
     
         def __getattr__(self, name):
-            mod = super().__getattribute__("module")
+            mod = object.__getattribute__("module")
             def raiser(name):
                 m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
                 if m:
@@ -769,18 +769,18 @@
                 else:
                      m = ""
                 raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
-            usr = super().__getattribute__("user")
-            dld = super().__getattribute__("delete")
+            usr = object.__getattribute__("user")
+            dld = object.__getattribute__("delete")
             ismod = hasattr(mod, name) and name not in dld.keys()
             return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
     
         def __setattr__(self, name, value):
-            usr = super().__getattribute__("user")
+            usr = object.__getattribute__("user")
             usr[name] = value
-            super().__setattr__("user", usr)
+            object.__setattr__("user", usr)
 
         def __delattr__(self, name):
-            mod = super().__getattribute__("module")
+            mod = object.__getattribute__("module")
             def raiser(name):
                 m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
                 if m:
@@ -788,16 +788,16 @@
                 else:
                      m = ""
                 raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
-            usr = super().__getattribute__("user")
-            dld = super().__getattribute__("delete")
+            usr = object.__getattribute__("user")
+            dld = object.__getattribute__("delete")
             ismod = hasattr(mod, name) and name not in dld.keys()
             if usr.get(name):
                 del usr[name]
-                super().__setattr__("user", usr)
+                object.__setattr__("user", usr)
                 return
             if ismod:
                 dld[name] = True
-                super().__setattr__("delete", dld)
+                object.__setattr__("delete", dld)
                 return
             raiser(name)
 
