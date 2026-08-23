@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.3</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -657,7 +657,6 @@
     import pyscript, asyncio, random
     from pyscript import sync
     from pyodide.ffi import create_proxy
-    from importlib.util import find_spec as mod_exists
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
     with open("m2w.py", "w") as file:
         file.write(await data.text()) if data.ok else None
@@ -747,9 +746,6 @@
             return mod
         def __repr__(self):
             return repr(super().__getattribute__("module"))
-        def __call__(self, *args, **kwargs):
-            x = super().__getattribute__("module")(*args, **kwargs)
-            return FakeModule(x) if callable(x) or mod_exists(x.__name__) is not None else x
         def __init__(self, actual_module):
             super().__setattr__("module", actual_module)
             super().__setattr__("user", {})
@@ -767,8 +763,7 @@
             usr = super().__getattribute__("user")
             dld = super().__getattribute__("delete")
             ismod = hasattr(mod, name) and name not in dld.keys()
-            r = usr.get(name, raiser(name) if not ismod else getattr(mod, name))
-            return FakeModule(r) if callable(r) or mod_exists(r.__name__) else r
+            return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
     
         def __setattr__(self, name, value):
             usr = super().__getattribute__("user")
