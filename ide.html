@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.7</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -654,7 +654,7 @@
     <button id="multiBtn" disabled hidden>Save as module</button>
     <hr>
     <script type="py" terminal worker id="executer">
-    import pyscript, asyncio, random
+    import pyscript, asyncio, random, types
     from pyscript import sync
     from pyodide.ffi import create_proxy
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
@@ -735,7 +735,7 @@
             print("Error occured! Details:", file=sys.stderr)
             return super().showsyntaxerror(*args, **kwargs)
 
-    class FakeModule:
+    class FakeModule(types.ModuleType):
         def __dir__(self):
             mod = dir(super().__getattribute__("module"))
             dld = super().__getattribute__("delete").keys()
@@ -747,11 +747,11 @@
         def __repr__(self):
             return repr(super().__getattribute__("module"))
         def __init__(self, actual_module):
+            super().__init__(actual_module.__name__)
             super().__setattr__("module", actual_module)
             super().__setattr__("user", {})
             super().__setattr__("delete", {})
             super().__setattr__("__class__", actual_module.__class__)
-            super().__setattr__("__name__", actual_module.__name__)
             super().__setattr__("__doc__", actual_module.__doc__)
             super().__setattr__("__file__", actual_module.__file__)
             super().__setattr__("__loader__", actual_module.__loader__)
