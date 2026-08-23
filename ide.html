@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.1.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.1.8</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -521,6 +521,7 @@
                mkTitle = mkText("Change title to:", False)
                mkNote = mkText("Add note:", False)
                mkLink = mkText("Add hompage redirect link:", False)
+               mkPip = mkText("Add pip package dependency (split by space for multiple pacakges)", False)
                def br():
                     return pyscript.document.createElement("br")
                def onRun(xD):
@@ -544,6 +545,9 @@
                         b64_encoded = base64.urlsafe_b64encode(bytesx).decode('utf-8')
                         uri_encoded = js.encodeURIComponent(b64_encoded)
                         o += f"&link={uri_encoded}"
+                   if mkPip[1].value:
+                        pips = "+".join([js.encodeURIComponent(x) for x in mkPip[1].value.split()])
+                        o += f"&pip={pips}"
                    asyncio.create_task(cpoy(o))
                    getflagmod.close()
                onrun = pyscript.document.createElement("button")
@@ -607,6 +611,12 @@
                     await storage.save("Auto-saved", c)
                     pyscript.document.querySelector("#ready").innerHTML = "Auto-saved successfully!"
         asyncio.create_task(autosave()) if not js.URLSearchParams.new(js.window.location.search).get("note") else None
+        bbd = js.URLSearchParams.new(js.window.location.search).get("pip")
+        if bbd:
+            pipDepSed = [js.decodeURIComponent(c) for c in bbd.split("+")]
+            def modlist():
+                 return pipDepSed
+            connect.worker.sync.piplist = modlist
         pip = [pyscript.document.querySelector("#saveBtn"), pyscript.document.querySelector("#loadB"), pyscript.document.querySelector("#delB"), pyscript.document.querySelector("#pipLs"), pyscript.document.querySelector("#pipIn"), pyscript.document.querySelector("#stopBtn")]
         for x in pip:
             x.disabled = False
@@ -754,13 +764,13 @@
             usr = super().__getattribute__("user")
             dld = super().__getattribute__("delete")
             ismod = hasattr(mod, name) and name not in dld.keys()
-            return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
+            return FakeModule(usr.get(name, raiser(name) if not ismod else getattr(mod, name)))
     
         def __setattr__(self, name, value):
             usr = super().__getattribute__("user")
             usr[name] = value
             super().__setattr__("user", usr)
-    
+
         def __delattr__(self, name):
             mod = super().__getattribute__("module")
             def raiser(name):
@@ -913,7 +923,22 @@
         asyncio.create_task(_ch(nector)())
         print(f"\033[93mMulti-file editor assigned! ID: {int(name):04d}\033[0m")
         
-        
+    try:
+        deps = sync.piplist()
+        import micropip
+        for dep in deps:
+            print("\033[93mInstalling pip dependency:", dep)
+            try:
+                await micropip.install(dep)
+                if dep in micropip.list().keys():
+                     print("Successfully installed dependency", dep)
+                else:
+                     print("Failed to install dependency", dep)
+            except (BaseException, Exception) as e:
+                print("Failed to install dependency %s:" % dep, e)
+        print()
+    except:
+        pass
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
