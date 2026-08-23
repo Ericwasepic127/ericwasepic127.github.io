@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.2</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -901,7 +901,7 @@
             sys.stdout.write(got)
         elif req == "error":
             sys.stderr.write(got)
-     return hanle
+     return handle
 
     def _sender(name, handler):
         def c(code):
