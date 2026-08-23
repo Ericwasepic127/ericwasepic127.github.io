@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.1.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.1.9</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -556,7 +556,7 @@
                cancel = pyscript.document.createElement("button")
                cancel.innerHTML = "Cancel"
                cancel.onclick = create_proxy(lambda e: getflagmod.close())
-               x, y = [], [x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink]]
+               x, y = [], [x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink, mkPip]]
                for q in y: x += [q, br()]
                x.append(onrun)
                x.append(cancel)
@@ -885,17 +885,19 @@
     @create_proxy
     def multiMode():
         return True
-        
-    def handle(content):
+
+    def handlingmoderc(name):
+     def handle(content):
         req = content.get("request")
         got = content.get("got")
         if req == "read":
             u = input(got)
-            connect.sendTab("host", {"got": u, "from": "1270"})
+            connect.sendTab("host", {"got": u, "from": name})
         elif req == "write":
             sys.stdout.write(got)
         elif req == "error":
             sys.stderr.write(got)
+     return hanle
 
     def _sender(name, handler):
         def c(code):
@@ -917,14 +919,14 @@
         multi = True
         name = str(random.randint(1, 9999))
         nector = m2w.specTab(name, id="pythonCode")
-        nector.handler(handle)
+        nector.handler(handlingmoderc(name))
         nector.sendTab("host", {"assign": name})
         send = _sender(name, nector)
         asyncio.create_task(_ch(nector)())
         print(f"\033[93mMulti-file editor assigned! ID: {int(name):04d}\033[0m")
         
     try:
-        deps = sync.piplist()
+        deps = await sync.piplist()
         import micropip
         for dep in deps:
             print("\033[93mInstalling pip dependency:", dep)
