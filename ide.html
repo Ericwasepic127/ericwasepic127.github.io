@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.2.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.2.6</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -750,6 +750,15 @@
             super().__setattr__("module", actual_module)
             super().__setattr__("user", {})
             super().__setattr__("delete", {})
+            super().__setattr__("__class__", actual_module.__class__)
+            super().__setattr__("__name__", actual_module.__name__)
+            super().__setattr__("__doc__", actual_module.__doc__)
+            super().__setattr__("__file__", actual_module.__file__)
+            super().__setattr__("__loader__", actual_module.__loader__)
+            super().__setattr__("__package__", actual_module.__package__)
+            super().__setattr__("__spec__", actual_module.__spec__)
+            super().__setattr__("__builtins__", actual_module.__builtins__)
+            super().__setattr__("__path__", actual_module.__path__ if hasattr(actual_module, "__path__") else None)
     
         def __getattr__(self, name):
             mod = super().__getattribute__("module")
