@@ -14,7 +14,7 @@
              packages = ["micropip"]
         </py-config>
         <p><a href="/index.html">Back to homepage</a> | <a href="/ide.html?multi=true" target="_blank">Open new editor</a></p>
-        <h3>Welcome to SUPY3MULTI! Version: V5.9.6</h3>
+        <h3>Welcome to SUPY3MULTI! Version: V6.3.1</h3>
         <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
         <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker>
@@ -24,7 +24,7 @@
                 _x = await m2wcode.text()
                 with open("m2w.py", "w") as _obj:
                    _obj.write(_x) if _x else None
-            import m2w, asyncio, sys, builtins, time, ast, inspect, code
+            import m2w, asyncio, sys, builtins, time, ast, inspect, code, types, difflib
             from pyodide.ffi import can_run_sync as cRs
             from asyncio import run as asynch
 
@@ -102,25 +102,33 @@
                     print("Error occured! Details:", file=sys.stderr)
                     return super().showsyntaxerror(*args, **kwargs)
 
-            class FakeModule:
+            class FakeModule(types.ModuleType):
                 def __dir__(self):
-                    mod = dir(super().__getattribute__("module"))
-                    dld = super().__getattribute__("delete").keys()
-                    usr = dir(super().__getattribute__("user"))
+                    mod = dir(object.__getattribute__(self, "module"))
+                    dld = object.__getattribute__(self, "delete").keys()
+                    usr = list(object.__getattribute__(self, "user").keys())
                     mod = sorted(mod + usr)
                     for i in dld:
                         mod.remove(i)
                     return mod
                 def __repr__(self):
-                    return repr(super().__getattribute__("module"))
-    
+                    return repr(object.__getattribute__(self, "module"))
                 def __init__(self, actual_module):
-                    super().__setattr__("module", actual_module)
-                    super().__setattr__("user", {})
-                    super().__setattr__("delete", {})
-    
+                    types.ModuleType.__init__(self, actual_module.__name__)
+                    object.__setattr__(self, "module", actual_module)
+                    object.__setattr__(self, "user", {})
+                    object.__setattr__(self, "delete", {})
+                    object.__setattr__(self, "__class__", actual_module.__class__)
+                    object.__setattr__(self, "__doc__", actual_module.__doc__)
+                    object.__setattr__(self, "__file__", actual_module.__file__)
+                    object.__setattr__(self, "__loader__", actual_module.__loader__)
+                    object.__setattr__(self, "__package__", actual_module.__package__)
+                    object.__setattr__(self, "__spec__", actual_module.__spec__)
+                    object.__setattr__(self, "__builtins__", actual_module.__builtins__)
+                    object.__setattr__(self, "__path__", actual_module.__path__ if hasattr(actual_module, "__path__") else None)
+            
                 def __getattr__(self, name):
-                    mod = super().__getattribute__("module")
+                    mod = object.__getattribute__(self, "module")
                     def raiser(name):
                         m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
                         if m:
@@ -128,37 +136,10 @@
                         else:
                              m = ""
                         raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
-                    usr = super().__getattribute__("user")
-                    dld = super().__getattribute__("delete")
+                    usr = object.__getattribute__(self, "user")
+                    dld = object.__getattribute__(self, "delete")
                     ismod = hasattr(mod, name) and name not in dld.keys()
                     return usr.get(name, raiser(name) if not ismod else getattr(mod, name))
-    
-                def __setattr__(self, name, value):
-                    usr = super().__getattribute__("user")
-                    usr[name] = value
-                    super().__setattr__("user", usr)
-    
-                def __delattr__(self, name):
-                    mod = super().__getattribute__("module")
-                    def raiser(name):
-                        m = difflib.get_close_matches(name.lower(), dir(mod), n=1, cutoff=0.6)
-                        if m:
-                             m = f"Did you mean {m[0]!r}?"
-                        else:
-                             m = ""
-                        raise AttributeError(f"module {mod.__name__!r} does not have attribute {name!r}. %s" % m)
-                    usr = super().__getattribute__("user")
-                    dld = super().__getattribute__("delete")
-                    ismod = hasattr(mod, name) and name not in dld.keys()
-                    if usr.get(name):
-                        del usr[name]
-                        super().__setattr__("user", usr)
-                        return
-                    if ismod:
-                        dld[name] = True
-                        super().__setattr__("delete", dld)
-                        return
-                    raiser(name)
 
             importer = __import__
 
@@ -176,8 +157,8 @@
                     return super().__getitem__(name) 
 
             def run_code(c):
-                runner = Terminal({"__name__": "__main__", "__builtins__": DictLike()}, local_exit=True, filename="<SUPY3-interpreter>")
-                runner.runsource(c, symbol="exec")
+                runner = Terminal({"__name__": "__main__", "__builtins__": DictLike()})
+                runner.runsource(c, symbol="exec", filename="<SUPY3-interpreter>")
         
             async def runcode(code, timer):
                 coder = asyncio.create_task(asyncio.to_thread(run_code, code))
