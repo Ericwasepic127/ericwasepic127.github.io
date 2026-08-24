@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.3.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.3.3</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -266,7 +266,7 @@
            def x(msgis):
             if js.document.querySelector("#verbose").checked:
                  js.console.log(msgis)
-           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready"), "note": js.URLSearchParams.new(js.window.location.search).get("note")})
+           exec(msg, {"connect": connect, "disconnect": connect.defaultHandler, "console": x, "txt": js.document.querySelector("#ready"), "note": js.URLSearchParams.new(js.window.location.search).get("note")}) if isinstance(msg, str) else None
         connect.handler(runitforworker)
         storage = SLD("codeStorage")
         await storage.init()
