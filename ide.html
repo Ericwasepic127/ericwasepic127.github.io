@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.3.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.3.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -751,14 +751,14 @@
             object.__setattr__(self, "module", actual_module)
             object.__setattr__(self, "user", {})
             object.__setattr__(self, "delete", {})
-            object.__setattr__(self, "__class__", getattr(actual_module, "__class__"))
-            object.__setattr__(self, "__doc__", getattr(actual_module, "__doc__"))
-            object.__setattr__(self, "__file__", getattr(actual_module, "__file__"))
-            object.__setattr__(self, "__loader__", getattr(actual_module, "__loader__"))
-            object.__setattr__(self, "__package__", getattr(actual_module, "__package__"))
-            object.__setattr__(self, "__spec__", getattr(actual_module, "__spec__"))
-            object.__setattr__(self, "__builtins__", getattr(actual_module, "__builtins__"))
-            object.__setattr__(self, "__path__", getattr(actual_module, "__path__"))
+            object.__setattr__(self, "__class__", getattr(actual_module, "__class__", None))
+            object.__setattr__(self, "__doc__", getattr(actual_module, "__doc__", None))
+            object.__setattr__(self, "__file__", getattr(actual_module, "__file__", None))
+            object.__setattr__(self, "__loader__", getattr(actual_module, "__loader__", None))
+            object.__setattr__(self, "__package__", getattr(actual_module, "__package__", None))
+            object.__setattr__(self, "__spec__", getattr(actual_module, "__spec__", None))
+            object.__setattr__(self, "__builtins__", getattr(actual_module, "__builtins__", None))
+            object.__setattr__(self, "__path__", getattr(actual_module, "__path__", None))
     
         def __getattr__(self, name):
             mod = object.__getattribute__(self, "module")
