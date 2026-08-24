@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.3.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.3.9</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -679,7 +679,7 @@
                 return False, await coroutine
             except (BaseException, Exception) as e:
                 return True, e
-        coro = asyncio.create_task(coro_wrap)
+        coro = asyncio.create_task(coro_wrap())
         while not coro.done():
             time.sleep(.1)
         error, info = coro.result()
@@ -747,7 +747,7 @@
         def __repr__(self):
             return repr(object.__getattribute__(self, "module"))
         def __init__(self, actual_module):
-            types.ModuleType.__init__(self, getattr(actual_module, "__name__", "<unknown>"))
+            object.__setattr__(self, "__name__", getattr(actual_module, "__name__", "<unknown>"))
             object.__setattr__(self, "module", actual_module)
             object.__setattr__(self, "user", {})
             object.__setattr__(self, "delete", {})
@@ -952,6 +952,7 @@
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
+    connect.getmsg = None
     while not multi:
         try:
             if connect.getmsg:
