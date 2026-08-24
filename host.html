@@ -14,7 +14,7 @@
              packages = ["micropip"]
         </py-config>
         <p><a href="/index.html">Back to homepage</a> | <a href="/ide.html?multi=true" target="_blank">Open new editor</a></p>
-        <h3>Welcome to SUPY3MULTI! Version: V6.3.4</h3>
+        <h3>Welcome to SUPY3MULTI! Version: V6.3.7</h3>
         <p><strong>DO NOT CLOSE</strong> this tab or else editors will stop working</p>
         <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker>
@@ -118,14 +118,14 @@
                     object.__setattr__(self, "module", actual_module)
                     object.__setattr__(self, "user", {})
                     object.__setattr__(self, "delete", {})
-                    object.__setattr__(self, "__class__", getattr(actual_module, "__class__"))
-                    object.__setattr__(self, "__doc__", getattr(actual_module, "__doc__"))
-                    object.__setattr__(self, "__file__", getattr(actual_module, "__file__"))
-                    object.__setattr__(self, "__loader__", getattr(actual_module, "__loader__"))
-                    object.__setattr__(self, "__package__", getattr(actual_module, "__package__"))
-                    object.__setattr__(self, "__spec__", getattr(actual_module, "__spec__"))
-                    object.__setattr__(self, "__builtins__", getattr(actual_module, "__builtins__"))
-                    object.__setattr__(self, "__path__", getattr(actual_module, "__path__"))
+                    object.__setattr__(self, "__class__", getattr(actual_module, "__class__", None))
+                    object.__setattr__(self, "__doc__", getattr(actual_module, "__doc__", None))
+                    object.__setattr__(self, "__file__", getattr(actual_module, "__file__", None))
+                    object.__setattr__(self, "__loader__", getattr(actual_module, "__loader__", None))
+                    object.__setattr__(self, "__package__", getattr(actual_module, "__package__", None))
+                    object.__setattr__(self, "__spec__", getattr(actual_module, "__spec__", None))
+                    object.__setattr__(self, "__builtins__", getattr(actual_module, "__builtins__", None))
+                    object.__setattr__(self, "__path__", getattr(actual_module, "__path__", None))
                 def __getattr__(self, name):
                     mod = object.__getattribute__(self, "module")
                     def raiser(name):
