@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.3.9</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.4.0</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -654,7 +654,7 @@
     <button id="multiBtn" disabled hidden>Save as module</button>
     <hr>
     <script type="py" terminal worker id="executer">
-    import pyscript, asyncio, random, types
+    import pyscript, asyncio, random, types, importlib
     from pyscript import sync
     from pyodide.ffi import create_proxy
     data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
@@ -735,7 +735,7 @@
             print("Error occured! Details:", file=sys.stderr)
             return super().showsyntaxerror(*args, **kwargs)
 
-    class FakeModule(types.ModuleType):
+    class FakeModule:
         def __dir__(self):
             mod = dir(object.__getattribute__(self, "module"))
             dld = object.__getattribute__(self, "delete").keys()
@@ -747,7 +747,6 @@
         def __repr__(self):
             return repr(object.__getattribute__(self, "module"))
         def __init__(self, actual_module):
-            object.__setattr__(self, "__name__", getattr(actual_module, "__name__", "<unknown>"))
             object.__setattr__(self, "module", actual_module)
             object.__setattr__(self, "user", {})
             object.__setattr__(self, "delete", {})
@@ -800,18 +799,26 @@
                 object.__setattr__(self, "delete", dld)
                 return
             raiser(name)
-
-    importer = __import__
-
-    def _import(name, *args, **kwargs):
-        return FakeModule(importer(name, *args, **kwargs))
-
-    _import.__doc__ = importer.__doc__
+    
+    def importit(importer):
+      def _import(name, *args, **kwargs):
+        r = importer(name, *args, **kwargs)
+        m = types.ModuleType(getattr(actual_module, "__name__", "<unknown>"))
+        fm = FakeModule(m, r)
+        object.__setattr__(m, "__getattr__", fm.__getattr__)
+        object.__setattr__(m, "__delattr__", fm.__delattr__)
+        object.__setattr__(m, "__setattr__", fm.__setattr__)
+        object.__setattr__(m, "__dir__", fm.__dir__)
+        object.__setattr__(m, "__repr__", fm.__repr__)
+        return m
+      _import.__doc__ = importer.__doc__
+      _import.__name__ = importer.__name__
+      return _import
 
     class DictLike(dict):
         def __getitem__(self, name):
             if name == "__import__":
-                return _import
+                return _import(__import__)
             if hasattr(builtins, name):
                 return getattr(builtins, name)
             return super().__getitem__(name) 
@@ -953,6 +960,13 @@
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
     connect.getmsg = None
+    reallib = importlib.import_module
+    fakelib = importit(reallib)
+    importlib.import_module = fakelib
+    final = {}
+    for name, module in sys.modules.items():
+        final[name] = fakelib(module)
+    sys.modules = final
     while not multi:
         try:
             if connect.getmsg:
