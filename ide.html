@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.4.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.4.2</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -961,9 +961,6 @@
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
     connect.getmsg = None
-    reallib = importlib.import_module
-    fakelib = importit(reallib)
-    importlib.import_module = fakelib
     final = {}
     for name, module in sys.modules.items():
         final[name] = fakelib(module)
