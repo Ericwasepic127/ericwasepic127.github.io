@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.5.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.5.1</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -818,7 +818,7 @@
     class DictLike(dict):
         def __getitem__(self, name):
             if name == "__import__":
-                return _import(__import__)
+                return importit(__import__)
             if hasattr(builtins, name):
                 return getattr(builtins, name)
             return super().__getitem__(name) 
