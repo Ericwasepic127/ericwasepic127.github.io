@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.4.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.4.8</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -802,7 +802,7 @@
         object.__setattr__(m, "__setattr__", fm.__setattr__)
         object.__setattr__(m, "__dir__", fm.__dir__)
         object.__setattr__(m, "__repr__", fm.__repr__)
-        object.__setattr__(m, "__class__", getattr(r, "__class__", None))
+        object.__setattr__(m, "__class__", getattr(r, "__class__")) if hasattr(r, "__class__") else None
         object.__setattr__(m, "__doc__", getattr(r, "__doc__", None))
         object.__setattr__(m, "__file__", getattr(r, "__file__", None))
         object.__setattr__(m, "__loader__", getattr(r, "__loader__", None))
