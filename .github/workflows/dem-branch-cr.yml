@@ -22,6 +22,9 @@ jobs:
             cp ../mini-coi-fd.js mini-coi-fd.js
             cp ../python.png python.png
             cp ../host.html host.html
+            cp ../window.js window.js
+            cp ../window.css window.css
+            sed -i 's|</title>| (Offline mode)</title>|g' *.html
             curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
             curl -o pager.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py
             cd ..
