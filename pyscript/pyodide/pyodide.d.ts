@@ -523,7 +523,7 @@ interface API {
 		connect: (fd: number, host: string, port: number) => Promise<void>;
 		recv: (fd: number, nbytes: number) => Promise<Uint8Array | number>;
 		send: (fd: number, data: any) => Promise<number>;
-		startTls: (fd: number) => Promise<number>;
+		startTls: (fd: number) => number;
 	};
 }
 type PackageManagerAPI = Pick<API, "importlib" | "package_loader" | "lockfile_packages" | "bootstrapFinalizedPromise" | "sitepackages" | "defaultLdLibraryPath" | "version"> & {
