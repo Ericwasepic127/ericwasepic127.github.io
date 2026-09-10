@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.5.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.5.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -795,6 +795,8 @@
     def importit(importer):
       def _import(name, *args, **kwargs):
         r = importer(name, *args, **kwargs)
+        if "micropip" in name:
+            return r
         m = types.ModuleType(getattr(r, "__name__", "<unknown>"))
         fm = FakeModule(r)
         object.__setattr__(m, "__getattr__", fm.__getattr__)
@@ -960,8 +962,11 @@
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
     fakelib = importit(__import__)
+    import html.parser
     final = {}
     for name, r in sys.modules.items():
+        if "micropip" in name:
+            continue
         m = types.ModuleType(name)
         fm = FakeModule(r)
         object.__setattr__(m, "__getattr__", fm.__getattr__)
