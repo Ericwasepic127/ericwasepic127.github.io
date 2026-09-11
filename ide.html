@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.6.0</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.6.1</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -950,8 +950,15 @@
         if inspect.isawaitable(deps):
             deps = await deps
         deps = str(deps).split()
-        import micropip
-        for dep in deps:
+    except:
+        pass
+    else:
+        try:
+          import micropip
+        except:
+           print("Failed to install dependencies: Micropip isn't available")
+        else:
+          for dep in deps:
             print("\033[93mInstalling pip dependency:", dep)
             try:
                 await micropip.install(dep)
@@ -964,9 +971,6 @@
                 print("Failed to install dependency %s:" % dep, e)
                 print("App might break if it depends on package", dep)
         print()
-    except (BaseException, Exception) as e:
-        print("Pip dependency install failed:", e, file=sys.stderr)
-        print("App might break if it depends on pip packages")
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
