@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.6.1</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.6.2</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -877,6 +877,8 @@
         done, pending = await asyncio.wait([coder, timeis], return_when=asyncio.FIRST_COMPLETED)
         try:
             if coder in pending:
+                coder.cancel()
+                pending = []
                 raise KeyboardInterrupt
             if coder.done():
                 exc = coder.exception()
@@ -884,6 +886,8 @@
                    raise exc
         except SystemExit:
             pass
+        except:
+            traceback.print_exc()
         finally:
             for task in pending:
                 task.cancel()
