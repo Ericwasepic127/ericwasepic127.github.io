@@ -66,7 +66,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.5.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.6.0</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -193,7 +193,7 @@
             document.title = `SUPY3MULTI - Multiple python edit IN once!`;
         }
         if (urlParams.get("title")) {
-            document.title = "..."
+            document.title = "Loading title ..."
         }
         if (urlParams.get("hideDitor")) {
             editor.container.style.display = 'none';
@@ -521,11 +521,12 @@
                mkTitle = mkText("Change title to:", False)
                mkNote = mkText("Add note:", False)
                mkLink = mkText("Add hompage redirect link:", False)
-               mkPip = mkText("Add pip package dependency (split by space for multiple pacakges)", False)
+               mkPip = mkText("Add pip package dependency (split by space for multiple pacakges):", False)
+               mkUrl = mkText("Fetch from given URL and use this code instead:")
                def br():
                     return pyscript.document.createElement("br")
                def onRun(xD):
-                   o = sharecode(xD)
+                   o = (f"%s?url={mkUrl[1].value}" % (js.window.location.origin + js.window.location.pathname)) if mkUrl[1].value else sharecode(xD)
                    if hideToolbar[1].checked:
                        o += "&hideTool=true"
                    if hidenEdit[1].checked:
@@ -556,7 +557,7 @@
                cancel = pyscript.document.createElement("button")
                cancel.innerHTML = "Cancel"
                cancel.onclick = create_proxy(lambda e: getflagmod.close())
-               x, y = [], [x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink, mkPip]]
+               x, y = [], [x[0] for x in [hideToolbar, hidenEdit, mkTitle, mkNote, mkLink, mkPip, mkUrl]]
                for q in y: x += [q, br()]
                x.append(onrun)
                x.append(cancel)
@@ -585,7 +586,9 @@
          bok = True
          while bok:
           try:
-            await connect.worker.sync.multi()
+            xd = connect.worker.sync.multi()
+            if inspect.isawaitable(xd):
+                await xd
             bok = False
           except:
             connect.sendmsg("multi")
@@ -943,7 +946,10 @@
         print(f"\033[93mMulti-file editor assigned! ID: {int(name):04d}\033[0m")
         
     try:
-        deps = await sync.piplist()
+        deps = sync.piplist()
+        if inspect.isawaitable(deps):
+            deps = await deps
+        deps = str(deps).split()
         import micropip
         for dep in deps:
             print("\033[93mInstalling pip dependency:", dep)
@@ -953,11 +959,14 @@
                      print("Successfully installed dependency", dep)
                 else:
                      print("Failed to install dependency", dep)
+                     print("App might break if it depends on package", dep)
             except (BaseException, Exception) as e:
                 print("Failed to install dependency %s:" % dep, e)
+                print("App might break if it depends on package", dep)
         print()
-    except:
-        pass
+    except (BaseException, Exception) as e:
+        print("Pip dependency install failed:", e, file=sys.stderr)
+        print("App might break if it depends on pip packages")
     print(f"\033[93mReady to run! Python version: {sys.version}\033[0m\n")
     aaq = ["console('[worker/supy3ide]: Initailized! Going to code listener loop ...')", "txt.innerHTML = 'Ready to run now!' if not note else txt.innerHTML + '<br>Ready to run now!'", "disconnect()"]
     connect.sendmsg("\n".join(aaq))
