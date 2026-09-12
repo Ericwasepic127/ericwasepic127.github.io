@@ -18,6 +18,7 @@ jobs:
             cd release || mkdir release && cd release
             mkdir pyscript
             mkdir ace
+            cp ../LICENSE LICENSE
             cp -r ../pyscript/* pyscript/
             cp ../demo.html index.html
             cp ../ide.html ide.html
@@ -38,6 +39,7 @@ jobs:
             mv release/* .
             rm -rf release/
             rm -rf .github/
+            rm -r .htaccess
             
       - name: Upload
         run: |
