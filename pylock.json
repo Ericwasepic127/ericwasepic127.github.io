@@ -1,3 +1,4 @@
 {
+    "packages": ["micropip"],
     "interpreter": "https://cdn.jsdelivr.net/pyodide/v314.0.6/full/pyodide.mjs"
 }
