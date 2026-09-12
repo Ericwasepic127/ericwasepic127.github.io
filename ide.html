@@ -60,13 +60,10 @@
     <link rel="stylesheet" href="./window.css">
 </head>
 <body>
-    <py-config>
-        interpreter = "https://cdn.jsdelivr.net/npm/pyodide@latest/pyodide.mjs"
-    </py-config>
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.6.7</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.7.2</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -651,7 +648,7 @@
     <button id="clearBtn" disabled>Clear</button>
     <button id="multiBtn" disabled hidden>Save as module</button>
     <hr>
-    <script type="py" terminal worker id="executer">
+    <script type="py" terminal worker id="executer" config="./pylock.json">
     import pyscript, asyncio, random, types, importlib
     from pyscript import sync
     from pyodide.ffi import create_proxy
