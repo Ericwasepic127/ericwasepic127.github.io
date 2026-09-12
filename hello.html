@@ -22,9 +22,6 @@
         <hr>
         <p><a href="/archived_terminal.html">Legacy Terminal</a> | <a href="/ide.html">Open IDE</a> | <a href="https://forms.cloud.microsoft/r/2njMAGVy4S">Open Rating Survey</a></p>
         <hr>
-        <py-config>
-             packages = ["micropip"]
-        </py-config>
         <script type="py">
             import pyscript, js
             from pyodide.ffi import create_proxy as cP
@@ -44,7 +41,7 @@
             pyscript.window.worker = connect.worker
         </script>
         <button id="stopBtn" disabled>Interrupt/Stop</button>
-        <script type="py" terminal worker id="code">
+        <script type="py" terminal worker id="code" config="./pylock.json">
             import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js, ast
             from pyscript import storage as s
             from asyncio import run as asynch
@@ -494,7 +491,7 @@
                 executor.raw_input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV6.5.8")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV6.7.4")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
