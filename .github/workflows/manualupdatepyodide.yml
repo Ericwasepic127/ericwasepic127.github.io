@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Check version exists
         run: |
-          VERSION="v${{ inputs.version }}"
+          VERSION="${{ inputs.version }}"
           if curl -s "https://api.github.com/repos/pyodide/pyodide/releases/tags/$VERSION" | jq -e '.tag_name' > /dev/null; then
             echo "exists=true" >> $GITHUB_OUTPUT
             echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -30,10 +30,10 @@ jobs:
           fi
         id: check
       - name: Update pylock.json
-        run: python3 ./pydate.py "${{ steps.check.outputs.version }}"
+        run: python3 ./pydate.py "v${{ steps.check.outputs.version }}"
       - name: Update version file
         if: ${{ inputs.update_version_file == 'true' }}
-        run: echo "${{ steps.check.outputs.version }}" > pyodide-version.txt
+        run: echo "v${{ steps.check.outputs.version }}" > pyodide-version.txt
       - name: Commit and PR
         run: |
           git checkout -b pyodide-${{ steps.check.outputs.version }}
