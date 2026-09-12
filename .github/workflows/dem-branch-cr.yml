@@ -26,6 +26,8 @@ jobs:
             cp ../window.css window.css
             cp ../demolock.json pylock.json
             sed -i 's|</title>| (Offline mode)</title>|g' *.html
+            sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js|./ace/ace.js|g' ide.html
+            sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js|./ace/ext-language_tools.js|g' ide.html
             curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
             curl -o pager.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py
             cd ..
