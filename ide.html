@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.9.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.0.8</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -887,7 +887,7 @@
     builtins.input = _input
     connect = m2w.Worker()
     cd = os.getcwd()
-    animlib = itertools.cycle([[".  ", ".. ", "...", " ..", "  .", "   "], ["-", "\\", "|", "/"], ["/", "|", "\\", "-"], ["#", "@", "&", "?", "*", "!"]])
+    animlib = itertools.cycle([[".  ", ".. ", "...", " ..", "  .", "   "], ["-", "\\", "|", "/"], ["/", "|", "\\", "-"], ["#", "@", "&", "?", "*", "!"], [w.ljust(8) for w in ["print", "input", "if", "else", "range", "for", "while", "pass", "continue"]], [chr(i) for i in range(65, 91)], [str(x) for x in range(0, 10)]])
     load = itertools.cycle(next(animlib))
     async def sl(hold):
         s = time.time()
