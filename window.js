@@ -29,3 +29,25 @@ function topLevel(t="Toplevel"){
   const r=()=>{w.classList.add('x');setTimeout(()=>o.remove(),200)};
   return {body:b,overlay:o,win:w,close:r};
 }
+function Prompt(ask, txt={confirmText: "OK", cancelText: "Cancel", title: "Confirmation"}) {
+  const c=(typeof txt.confirmText !== 'undefined' ? txt.confirmText : "OK")
+  const a=(typeof txt.cancelText !== 'undefined' ? txt.cancelText : "Cancel")
+  const t=(typeof txt.title !== 'undefined' ? txt.title : "Confirmation")
+  const w=topLevel(t)
+  const p=document.createElement("p")
+  p.innerHTML=ask
+  const o=document.createElement("button")
+  o.innerHTML=c
+  const b=document.createElement("button")
+  b.innerHTML=a
+  w.body.append(p,document.createElement("br"),o,b)
+  const cls = function() {
+    o.onclick = null;
+    b.onclick = null;
+    w.close()
+  }
+  return new Promise((resolve) => {
+    o.onclick = () => { cls(); resolve(true); };
+    b.onclick = () => { cls(); resolve(false); };
+  });
+}
