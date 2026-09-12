@@ -26,12 +26,12 @@ jobs:
       - name: Check version exists
         run: |
           VERSION="${{ inputs.version }}"
-          if ${{ inputs.useapi }}; then
+          if ${{ inputs.useapi  }}; then
             LINK="https://api.github.com/repos/pyodide/pyodide/releases/tags/$VERSION"
           else
-            LINK="https://cdn.jsdelivr.net/pyodide/$VERSION/full/pyodide.js"
+            LINK="https://cdn.jsdelivr.net/pyodide/v$VERSION/full/pyodide.js"
           fi
-          curl -s "$LINK" >/dev/null
+          curl -sf "$LINK" >/dev/null
           if [ $? -eq 0 ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
             echo "version=$VERSION" >> $GITHUB_OUTPUT
