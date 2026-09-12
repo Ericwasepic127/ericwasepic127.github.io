@@ -1,6 +1,13 @@
 ## This is my own website
 **Made by HTML**, but it can **compile python!**
 
+## Needed to use and modify?
+
+```bash
+git clone -b product --single-branch https://github.com/Ericwasepic127/ericwasepic127.github.io.git
+```
+I cannot guarantee this is not buggy, because of it always updates on my push so it might buggy
+
 ## Credits:
 - [@pyscript](https://github.com/pyscript) for giving python in browser
 - [@github](https://github.com/github) for giving free website host
