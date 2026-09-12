@@ -5,7 +5,7 @@
 - [@pyscript](https://github.com/pyscript) for giving python in browser
 - [@github](https://github.com/github) for giving free website host
 - [@ajaxorg](https://github.com/ajaxorg) for giving ace editor
-- [@tobi007-del](https://github.com/Tobi007-del) for giving prompts - But, sorry tobi007-del, I am no longer using your cool prompts, but you will always my credits!
+- [@tobi007-del](https://github.com/Tobi007-del) for giving prompts - But, sorry tobi007-del, I am no longer using your cool prompts, but you will always in my credits!
 
 ## License:
 
