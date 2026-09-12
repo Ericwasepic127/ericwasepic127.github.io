@@ -63,7 +63,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V6.7.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V6.7.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -942,12 +942,11 @@
         print(f"\033[93mMulti-file editor assigned! ID: {int(name):04d}\033[0m")
     else:
      try:
-        import pyodide_js as pjs, js
+        import js
         if not js.navigator.onLine:
             print("[WARNING]: Looks like you are not online")
-        await pjs.loadPackage("micropip")
      except (BaseException, Exception) as e:
-        print("Micropip Loading Failure:", e)
+        pass
      else:
       try:
         deps = sync.piplist()
