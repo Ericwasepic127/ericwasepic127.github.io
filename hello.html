@@ -32,7 +32,6 @@
                    _obj.write(_x) if _x else None
             import m2w
             connect = m2w.Main(id="#code")
-            
             @cP
             def stopBtn(event):
                 connect.sendmsg("STOP") if connect.getmsg else js.alert("Code isn't running!")
@@ -494,7 +493,7 @@
                 executor.raw_input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.1.0")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.1.8")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
@@ -529,7 +528,6 @@
             print("\033[94mRefresh for restart")
             print("\033[94m============Program ended!============")
             print("\033[?25l", end="", flush=True)
-            
         </script>
     </body>
 </html>
