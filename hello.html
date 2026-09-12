@@ -449,7 +449,10 @@
                         print(f"Installing package {cooks}")
                         try:
                            await micropip.install(cooks)
-                           print("Installed", cooks)
+                           if cooks in micropip.list().keys():
+                             print("Installed", cooks)
+                           else:
+                              print("Failed to install", cooks)
                         except:
                             print("Failed to install", cooks)
                 reader = Input()
@@ -491,7 +494,7 @@
                 executor.raw_input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV6.7.4")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.1.0")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
