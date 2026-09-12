@@ -36,7 +36,8 @@ jobs:
             shopt -s extglob
             rm -rf !(release)
             mv release/* .
-            rm -r release/
+            rm -rf release/
+            rm -rf .github/
             
       - name: Upload
         run: |
