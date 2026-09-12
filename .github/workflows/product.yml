@@ -1,0 +1,47 @@
+name: Production branch creator
+
+on: 
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build
+        run: |
+            git checkout -b product || git checkout product
+            git push --set-upstream origin release || git branch --set-upstream-to=origin/release release || true
+            cd release || mkdir release && cd release
+            mkdir pyscript
+            mkdir ace
+            cp -r ../pyscript/* pyscript/
+            cp ../demo.html index.html
+            cp ../ide.html ide.html
+            cp ../hello.html repl.html
+            cp ../mini-coi-fd.js mini-coi-fd.js
+            cp ../python.png python.png
+            cp ../host.html host.html
+            cp ../window.js window.js
+            cp ../window.css window.css
+            cp ../demolock.json pylock.json
+            curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
+            curl -o pager.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py
+            cd ..
+            git clone https://github.com/ajaxorg/ace-builds.git
+            cp -r ace-builds/src-min-noconflict/* release/ace/
+            shopt -s extglob
+            rm -rf !(release)
+            mv release/* .
+            rm -r release/
+            
+      - name: Upload
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Production"
+          git push --force origin release
+      
