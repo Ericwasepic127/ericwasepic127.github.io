@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.0.8</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.1.6</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -202,11 +202,11 @@
         }
     </script>
     <script type="py">
-        import pyscript, asyncio
+        import pyscript, asyncio, js, base64
         data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")
         with open("m2w.py", "w") as file:
             file.write(await data.text()) if data.ok else None
-        import js, m2w, base64
+        import m2w
         from pyscript import storage as s
         from random import choice as c
         from pyodide.ffi import JsNull as null, create_proxy
