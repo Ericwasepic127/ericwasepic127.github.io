@@ -25,6 +25,7 @@ jobs:
             cp ../window.js window.js
             cp ../window.css window.css
             cp ../demolock.json pylock.json
+            sed -i 's|<script type="module" src="./pyscript/core.js">|<script type="module" src="./pyscript/core.js" offline>|g' *.html
             sed -i 's|</title>| (Offline mode)</title>|g' *.html
             sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js|./ace/ace.js|g' ide.html
             sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js|./ace/ext-language_tools.js|g' ide.html
