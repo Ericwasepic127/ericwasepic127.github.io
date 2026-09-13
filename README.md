@@ -1,5 +1,7 @@
 ## This is my own website
-**Made by HTML**, but it can **compile python!**
+**Made by HTML**, but it can **compile python!** 
+
+![CodeQL status](https://github.com/Ericwasepic127/ericwasepic127.github.io/actions/workflows/github-code-scanning/codeql/badge.svg) [![Latest release](https://img.shields.io/github/v/release/Ericwasepic127/ericwasepic127.github.io)](https://github.com/Ericwasepic127/ericwasepic127.github.io/releases) ![Activity](https://img.shields.io/github/commit-activity/m/Ericwasepic127/ericwasepic127.github.io) ![License](https://img.shields.io/github/license/Ericwasepic127/ericwasepic127.github.io) ![Stars](https://img.shields.io/github/stars/Ericwasepic127/ericwasepic127.github.io) ![Pages production](https://github.com/Ericwasepic127/ericwasepic127.github.io/actions/workflows/static.yml/badge.svg) ![Last commit](https://img.shields.io/github/last-commit/Ericwasepic127/ericwasepic127.github.io)
 
 ## Needed to use and modify?
 
