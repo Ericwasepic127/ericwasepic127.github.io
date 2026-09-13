@@ -16,7 +16,7 @@
         <p>Wait until 'Ready!' shows up in terminal</p>
         <script type="py" terminal worker config="./pylock.json">
             import pyscript, traceback, asyncio, sys, builtins, time, ast, inspect, code, types, difflib
-            m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
+            m2wcode = await pyscript.fetch(__import__("js").location.origin + "/m2w.py")
             if m2wcode.ok:
                 _x = await m2wcode.text()
                 with open("m2w.py", "w") as _obj:
