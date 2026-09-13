@@ -54,14 +54,14 @@ jobs:
           git push --force origin product
       - name: Move product tag
         run: |
-          git tag -f product
-          git push --force origin product
+          git tag -f product-built
+          git push --force origin product-built
 
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: "product"
-          make_latest: "false"
+          tag_name: "product-built"
+          make_latest: false
           title: "Production build"
           body: "This is production release, click on Source code to download production release"
           overwrite_files: true
