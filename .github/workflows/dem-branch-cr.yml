@@ -16,7 +16,6 @@ jobs:
             mkdir pyscript
             mkdir ace
             cp -r ../pyscript/* pyscript/
-            cp ../demo.html index.html
             cp ../ide.html ide.html
             cp ../hello.html repl.html
             cp ../mini-coi-fd.js mini-coi-fd.js
@@ -25,18 +24,18 @@ jobs:
             cp ../window.js window.js
             cp ../window.css window.css
             cp ../demolock.json pylock.json
-            sed -i 's|data = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py")|data = await pyscript.fetch(js.location.origin + "/m2w.py")|g' ide.html
-            sed -i 's|m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")|m2wcode = await pyscript.fetch(js.location.origin + "m2w.py")|g' host.html
-            sed -i 's|m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")|m2wcode = await pyscript.fetch(js.location.origin + "m2w.py")|g' repl.html
-            sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py"|js.location.origin + "pager.py"|g' repl.html
+            sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"|__import__("js").location.origin + "/m2w.py"|g' *.html
+            sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py"|__import__("js").location.origin + "/pager.py"|g' repl.html
             sed -i 's|</title>| (Offline mode)</title>|g' *.html
-            sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ace.js|./ace/ace.js|g' ide.html
-            sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/ext-language_tools.js|./ace/ext-language_tools.js|g' ide.html
+            sed -i 's#<a href="/archived_terminal.html">Legacy Terminal</a> | #<p></p>#g' repl.html
+            sed -i 's|href="/hello.html"|href="/repl.html"|g' ide.html
+            sed -i 's|https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.0/|./ace/|g' ide.html
             curl -o m2w.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py
             curl -o pager.py https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py
             cd ..
             git clone https://github.com/ajaxorg/ace-builds.git
             cp -r ace-builds/src-min-noconflict/* release/ace/
+            cp demo.html release/index.html
             
       - name: Upload
         run: |
