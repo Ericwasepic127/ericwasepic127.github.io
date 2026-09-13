@@ -8,6 +8,10 @@
 ```bash
 git clone -b product --single-branch https://github.com/Ericwasepic127/ericwasepic127.github.io.git
 ```
+**OR**
+
+[Releases/tag/Product-built](https://github.com/Ericwasepic127/ericwasepic127.github.io/releases/tag/product-built)
+
 I cannot guarantee this is not buggy, because of it always updates on my push so it might buggy
 
 ## Credits:
