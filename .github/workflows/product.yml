@@ -27,6 +27,7 @@ jobs:
             cp ../python.png python.png
             cp ../host.html host.html
             cp ../window.js window.js
+            cp ../pylock.json pylock.json
             cp ../window.css window.css
             sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"|__import__("js").location.origin + "/m2w.py"|gI' *.html
             sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py"|__import__("js").location.origin + "/pager.py"|gI' repl.html
