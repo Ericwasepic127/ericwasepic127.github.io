@@ -17,7 +17,8 @@ jobs:
           python-version: '3.13'
       - name: Mark as did updated
         run: touch update.pyodide.lock && git add . && git commit -m "Pyodide lock" && git push --force origin main
-        
+      - name: Checkout again
+        uses: actions/checkout@v6
       - name: Create branch for update
         run: |
           git checkout -b pyodide-latest || git checkout pyscript-latest
@@ -28,6 +29,7 @@ jobs:
           LATEST=v$(curl -s https://api.github.com/repos/pyodide/pyodide/releases/latest | jq -r '.tag_name')
           echo "version=$LATEST" >> $GITHUB_OUTPUT
           python3 ./pydate.py $LATEST
+          rm -rf update.pyodide.lock
 
       - name: Update version file
         run: echo "${{ steps.version.outputs.version }}" > pyodide-version.txt
