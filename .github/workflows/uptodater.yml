@@ -16,13 +16,13 @@ jobs:
         with:
           python-version: '3.13'
       - name: Mark as did updated
-        run: touch update.pyodide.lock && git add . && git commit -m "Pyodide lock" && git push --force origin main
+        run: touch update.pyodide.lock && git config user.name "github-actions[bot]" && git config user.email "github-actions[bot]@users.noreply.github.com" && git add . && git commit -m "Pyodide lock" && git push --force origin main
       - name: Checkout again
         uses: actions/checkout@v6
       - name: Create branch for update
         run: |
-          git checkout -b pyodide-latest || git checkout pyscript-latest
-          git push --set-upstream origin pyodide-latest || git branch --set-upstream-to=origin/pyscript-latest pyscript-latest || true
+          git checkout -b pyodide-latest || git checkout pyodide-latest
+          git push --set-upstream origin pyodide-latest || git branch --set-upstream-to=origin/pyodide-latest pyodide-latest || true
       - name: Fetch latest version and update to it
         id: version
         run: |
