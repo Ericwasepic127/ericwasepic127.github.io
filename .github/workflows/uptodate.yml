@@ -14,7 +14,7 @@ jobs:
       - name: Mark as did updated
         run: touch update.pyscript.lock && git add . && git commit -m "Pyodide lock" && git push --force origin main
       - name: Checkout again
-        uses: actions/checkout@v
+        uses: actions/checkout@v4
       - name: Create branch for update
         run: |
           git checkout -b pyscript-latest || git checkout pyscript-latest
