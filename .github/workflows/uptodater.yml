@@ -29,7 +29,7 @@ jobs:
           LATEST=v$(curl -s https://api.github.com/repos/pyodide/pyodide/releases/latest | jq -r '.tag_name')
           echo "version=$LATEST" >> $GITHUB_OUTPUT
           python3 ./pydate.py $LATEST
-          rm -rf update.pyodide.lock
+          git rm update.pyodide.lock
 
       - name: Update version file
         run: echo "${{ steps.version.outputs.version }}" > pyodide-version.txt
