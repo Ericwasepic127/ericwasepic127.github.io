@@ -11,7 +11,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Mark as did updated
+        run: touch update.pyscript.lock && git add . && git commit -m "Pyodide lock" && git push --force origin main
+      - name: Checkout again
+        uses: actions/checkout@v
       - name: Create branch for update
         run: |
           git checkout -b pyscript-latest || git checkout pyscript-latest
@@ -21,6 +24,7 @@ jobs:
         run: |
           LATEST=$(curl -s https://api.github.com/repos/pyscript/pyscript/releases/latest | jq -r .tag_name)
           echo "version=$LATEST" >> $GITHUB_OUTPUT
+          rm -rf update.pyscript.lock
 
       - name: Download and extract PyScript
         run: |
