@@ -29,16 +29,16 @@ jobs:
           LATEST=v$(curl -s https://api.github.com/repos/pyodide/pyodide/releases/latest | jq -r '.tag_name')
           echo "version=$LATEST" >> $GITHUB_OUTPUT
           python3 ./pydate.py $LATEST
+          echo "$LATEST" > pyodide-version.txt
+          git add .
+          git commit -m "Update PyScript to $LATEST" || echo "No changes to commit"
           git rm update.pyodide.lock
+          git commit -m "Removed lock"
 
-      - name: Update version file
-        run: echo "${{ steps.version.outputs.version }}" > pyodide-version.txt
       - name: Commit changes to branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Update PyScript to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push --force origin pyodide-latest
 
       - name: Create Pull Request
