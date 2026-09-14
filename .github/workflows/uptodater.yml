@@ -15,6 +15,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Mark as did updated
+        run: touch update.pyodide.lock && git add . && git commit -m "Pyodide lock" && git push --force origin main
+        
       - name: Create branch for update
         run: |
           git checkout -b pyodide-latest || git checkout pyscript-latest
