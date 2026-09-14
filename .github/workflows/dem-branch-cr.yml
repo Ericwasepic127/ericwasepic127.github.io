@@ -24,6 +24,7 @@ jobs:
             cp ../window.js window.js
             cp ../window.css window.css
             cp ../demolock.json pylock.json
+            sed -i 's|src="./pyscript/core.js"|src="./pyscript/core.js" offline|gI' *.html
             sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/m2w.py"|__import__("js").location.origin + "/m2w.py"|gI' *.html
             sed -i 's|"https://raw.githubusercontent.com/Ericwasepic127/Ericwasepic127/refs/heads/main/pager.py"|__import__("js").location.origin + "/pager.py"|gI' repl.html
             sed -i 's|</title>| (Offline mode)</title>|g' *.html
