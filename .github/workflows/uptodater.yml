@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Mark as did updated
-        run: touch update.pyodide.lock && git config user.name "github-actions[bot]" && git config user.email "github-actions[bot]@users.noreply.github.com" && git add . && git commit -m "Pyodide lock" && git push --force origin main
+        run: touch update.pyodide.lock && git config user.name "github-actions[bot]" && git config user.email "github-actions[bot]@users.noreply.github.com" && git add . && git commit -m "Pyodide lock" && git push --force origin main || true
       - name: Checkout again
         uses: actions/checkout@v6
       - name: Create branch for update
@@ -32,8 +32,7 @@ jobs:
           echo "$LATEST" > pyodide-version.txt
           git add .
           git commit -m "Update PyScript to $LATEST" || echo "No changes to commit"
-          git rm update.pyodide.lock
-          git commit -m "Removed lock"
+          git rm update.pyodide.lock && git commit -m "Removed lock" || true
 
       - name: Commit changes to branch
         run: |
