@@ -24,7 +24,7 @@
         <hr>
         <p id="statusBox">JavaScript is disabled in this browser. Please enable or ensure your browser supports JavaScript</p>
         <script src="./run.js"></script>
-        <script type="py" config="{'interpreter': '/pyscript/pyodide/pyodide.mjs'}">
+        <script type="py" config="./pylock.json">
             import pyscript, js
             from pyodide.ffi import create_proxy as cP
             m2wcode = await pyscript.fetch("https://raw.githubusercontent.com/Ericwasepic127/ericwasepic127/refs/heads/main/m2w.py")
