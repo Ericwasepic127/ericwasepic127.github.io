@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.1-expiremental</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.2</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -188,6 +188,7 @@
           }
           workerIs.terminal = true;
           workerIs.worker = true;
+          workerIs.id = `executer`
           workerIs.config = getPy(window.pyVer);
           window.pyVer = undefined;
           workerIs.type = "py";
@@ -673,7 +674,7 @@
     <button id="clearBtn" disabled>Clear</button>
     <button id="multiBtn" disabled hidden>Save as module</button>
     <hr>
-    <script type="py" terminal worker id="executer" config="./pylock.json">
+    <script type="text/plain" id="workerOnly">
     import pyscript, asyncio, random, types, importlib
     from pyscript import sync
     from pyodide.ffi import create_proxy
