@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.5.9-expiremental</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.1-expiremental</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -175,11 +175,12 @@
         window.pyVer = urlParams.get('version') || "lock";
 
         const getPy = (x) => `py${x}.json`;
-        const w = document.getElementById("workerOnly");
-        const cIw = w.textContent; // Added semicolon here
-        const workerIs = document.createElement('script');
-        workerIs.textContent = cIw;
-        ;(async () => {
+        const LockIn = (e) => {
+         const w = document.getElementById("workerOnly");
+         const cIw = w.textContent;
+         const workerIs = document.createElement('script');
+         workerIs.textContent = cIw;
+         ;(async () => {
           const response = await fetch(getPy(window.pyVer));
           if (!response.ok) {
               alert(`The python version ${window.pyVer} metadata not found. Using preferred version!`);
@@ -192,7 +193,9 @@
           workerIs.type = "py";
           w.insertAdjacentElement("afterend", workerIs);
           w.remove();
-        })();
+         })();
+        }
+        document.addEventListener("DOMContentLoaded", LockIn);
         
         if (urlCode && sharedCode) {
              alert(`Looks like given link is invalid!`);
