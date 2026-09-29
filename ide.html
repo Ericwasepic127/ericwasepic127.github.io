@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.2</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.3</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -186,8 +186,8 @@
               alert(`The python version ${window.pyVer} metadata not found. Using preferred version!`);
               window.pyVer = `lock`;
           }
-          workerIs.terminal = true;
-          workerIs.worker = true;
+          workerIs.toggleAttribute('terminal', true);
+          workerIs.toggleAttribute('worker', true);
           workerIs.id = `executer`
           workerIs.config = getPy(window.pyVer);
           window.pyVer = undefined;
