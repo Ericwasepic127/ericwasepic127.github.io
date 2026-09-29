@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.3</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.4</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -95,7 +95,7 @@
     </details>
     <p id="statusBox">JavaScript is disabled in this browser. Please enable or ensure your browser supports JavaScript</p>
     <script src="./run.js"></script>
-    <h2 id="ready">Loading PyScript ... Please wait!</h2>
+    <h2 id="ready">Prepairing Python environment ... Please wait!</h2>
     <div id="editor-container"></div>
     <script>
         function x() {
@@ -189,7 +189,7 @@
           workerIs.toggleAttribute('terminal', true);
           workerIs.toggleAttribute('worker', true);
           workerIs.id = `executer`
-          workerIs.config = getPy(window.pyVer);
+          workerIs.setAttribute('config', getPy(window.pyVer));
           window.pyVer = undefined;
           workerIs.type = "py";
           w.insertAdjacentElement("afterend", workerIs);
@@ -666,7 +666,7 @@
         pyscript.window.runCode = create_proxy(connect.sendmsg)
         pyscript.window.console.log("[main/supy3ide]: Initailized!")
         pyscript.window.enableEditor()
-        setattr(pyscript.document.querySelector("#ready"), "innerHTML", "Main thread initailized, waiting for executor worker thread...") if not js.URLSearchParams.new(js.window.location.search).get("note") else None
+        setattr(pyscript.document.querySelector("#ready"), "innerHTML", "Configuring python environment...") if not js.URLSearchParams.new(js.window.location.search).get("note") else None
     </script>
     <h3>Terminal/Output</h3>
     <button id="runBtn" disabled>Run</button>
