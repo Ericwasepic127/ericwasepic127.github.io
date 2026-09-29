@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.5</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.6</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -190,7 +190,7 @@
           workerIs.toggleAttribute('worker', true);
           workerIs.id = `executer`
           workerIs.setAttribute('config', getPy(window.pyVer));
-          window.pyVer = undefined;
+          //window.pyVer = undefined;
           workerIs.type = "py";
           w.insertAdjacentElement("afterend", workerIs);
           w.remove();
