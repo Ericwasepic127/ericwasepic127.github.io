@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.4</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.6.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -174,7 +174,7 @@
         const urlCode = urlParams.get('url');
         window.pyVer = urlParams.get('version') || "lock";
 
-        const getPy = (x) => `py${x}.json`;
+        const getPy = (x) => `./py${x}.json`;
         const LockIn = (e) => {
          const w = document.getElementById("workerOnly");
          const cIw = w.textContent;
