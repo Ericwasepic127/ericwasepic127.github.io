@@ -19,7 +19,6 @@ jobs:
           CURRENT=$(cat pyodide-version.txt 2>/dev/null || echo "none")
           if [ "$LATEST" != "$CURRENT" ]; then
             echo "new=true" >> $GITHUB_OUTPUT
-            echo "version=$LATEST" >> $GITHUB_OUTPUT
           else
             echo "new=false" >> $GITHUB_OUTPUT
           fi
