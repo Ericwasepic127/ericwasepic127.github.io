@@ -304,6 +304,9 @@ interface EmscriptenModule {
 	HEAPU32: Uint32Array;
 	HEAP16: Int16Array;
 	SOCKFS: any;
+	DNS: {
+		lookup_addr: (addr: string) => string | null;
+	};
 	getSocketAddress: (addr: number, addrlen: number) => any;
 	getExceptionMessage(e: number): [
 		string,
@@ -1645,6 +1648,8 @@ declare class PyodideAPI_ {
 	 *        Defaults to ``"<exec>"``. If a custom file name is given, the
 	 *        traceback for any exception that is thrown will show source lines
 	 *        (unless the given file name starts with ``<`` and ends with ``>``).
+	 * @param options.dedent An optional boolean indicating whether ``code``
+	 *        should be dedented before being run. Defaults to ``true``.
 	 * @returns The result of the Python code translated to JavaScript. See the
 	 *          documentation for :py:func:`~pyodide.code.eval_code` for more info.
 	 * @example
@@ -1667,6 +1672,7 @@ declare class PyodideAPI_ {
 		globals?: PyProxy;
 		locals?: PyProxy;
 		filename?: string;
+		dedent?: boolean;
 	}): any;
 	/**
 	 * Run a Python code string with top level await using
@@ -1705,12 +1711,15 @@ declare class PyodideAPI_ {
 	 *        Defaults to ``"<exec>"``. If a custom file name is given, the
 	 *        traceback for any exception that is thrown will show source lines
 	 *        (unless the given file name starts with ``<`` and ends with ``>``).
+	 * @param options.dedent An optional boolean indicating whether ``code``
+	 *        should be dedented before being run. Defaults to ``true``.
 	 * @returns The result of the Python code translated to JavaScript.
 	 */
 	static runPythonAsync(code: string, options?: {
 		globals?: PyProxy;
 		locals?: PyProxy;
 		filename?: string;
+		dedent?: boolean;
 	}): Promise<any>;
 	/**
 	 * Registers the JavaScript object ``module`` as a JavaScript module named
