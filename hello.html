@@ -43,7 +43,7 @@
         </script>
         <button id="stopBtn" disabled>Interrupt/Stop</button>
         <script type="py" terminal worker id="code" config="./pylock.json">
-            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js, ast
+            import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js, ast, os
             from pyscript import storage as s
             from asyncio import run as asynch
             from random import choice as c
@@ -55,6 +55,20 @@
                    _obj.write(_x) if _x else None
             import m2w
             connect = m2w.Worker()
+            def getSize(fd=None):
+                """Gets terminal size for PyScript, on XTerm.js"""
+                send = 'import __main__ as m\nfrom pyscript import document as d\nconnect = m.connect\nval = d.getElementById("executer").terminal\nconnect.sendmsg(f"{val.cols};{val.rows}")'
+                s = connect.getmsg
+                connect.sendmsg(send)
+                while connect.getmsg == s:
+                    time.sleep(.1)
+                try:
+                    r = os.terminal_size([int(i) for i in connect.getmsg.split(";")] or fd)
+                except:
+                    r = os.terminal_size(fd or [80, 24])
+                connect.getmsg = s
+                return r
+            os.get_terminal_size = getSize
                 
             def a(coroutine):
                 """Awaits coroutine"""
@@ -495,7 +509,7 @@
                 executor.raw_input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.4.1")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.7.3")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
@@ -528,7 +542,8 @@
                     print(f"\n\nTerminal crashed by error {e.__class__.__name__}: {e}", file=sys.stderr)
                     print("Consider refresh webpage and run again")
             print("\033[94mRefresh for restart")
-            print("\033[94m============Program ended!============")
+            cols = int((getSize(fd=(36, 24)).columns - len("Program ended!")) / 2) * "="
+            print(f"\033[94m{cols}Program ended!{cols}")
             print("\033[?25l", end="", flush=True)
         </script>
     </body>
