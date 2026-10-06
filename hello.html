@@ -37,6 +37,10 @@
             @cP
             def stopBtn(event):
                 connect.sendmsg("STOP") if connect.getmsg else js.alert("Code isn't running!")
+            term = pyscript.document.querySelector("#code").terminal
+            def sz():
+                return term.cols, term.rows
+            connect.worker.sync.size = sz
             pyscript.document.querySelector("#stopBtn").onclick = stopBtn
             pyscript.document.querySelector("#stopBtn").disabled = False
             pyscript.window.worker = connect.worker
@@ -44,7 +48,7 @@
         <button id="stopBtn" disabled>Interrupt/Stop</button>
         <script type="py" terminal worker id="code" config="./pylock.json">
             import time, traceback, platform, sys, code, asyncio, pyscript, inspect, builtins, js, ast, os
-            from pyscript import storage as s
+            from pyscript import storage as s, sync
             from asyncio import run as asynch
             from random import choice as c
             from pyodide.ffi import create_proxy as cP, can_run_sync as cRs
@@ -57,15 +61,14 @@
             connect = m2w.Worker()
             def getSize(fd=None):
                 """Gets terminal size for PyScript, on XTerm.js"""
-                send = 'import __main__ as m\nfrom pyscript import document as d\nconnect = m.connect\nval = d.getElementById("executer").terminal\nconnect.sendmsg(f"{val.cols};{val.rows}")'
-                s = connect.getmsg
-                connect.sendmsg(send)
-                while connect.getmsg == s:
-                    time.sleep(.1)
+                got = a(sync.size())
                 try:
-                    r = os.terminal_size([int(i) for i in connect.getmsg.split(";")] or fd)
+                    r = os.terminal_size(got or fd)
                 except:
-                    r = os.terminal_size(fd or [80, 24])
+                    try:
+                       r = os.terminal_size(fd)
+                    except:
+                        r = os.terminal_size([80, 24])
                 connect.getmsg = s
                 return r
             os.get_terminal_size = getSize
@@ -509,7 +512,7 @@
                 executor.raw_input = reader
                 executor.interact(banner=cool, exitmsg="\033[94mExiting Erkhemee Terminal ...")
             
-            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.7.3")
+            print("\033[92mHello from Python (PyScript)", platform.python_version(), "\nVersion of SUPY3REPL (Erkhembayr edition): \nV7.7.6")
             print("\033[92mProgram doesn't store your data, so don't worry!")
             print("\033[92mHint: Try entering @:/\\:@ (Developer-Mode)\033[0m")
             name = input("\033[1mWhat is your name?\033[0m ")
@@ -530,7 +533,7 @@
                     except (BaseException, Exception) as e:
                         print(f"Terminal crashed by {e.__class__.__name__}:", e, file=sys.stderr)
                 else:
-                    print("\033[94m Bye!")
+                    print("\033[94mBye!")
                 
             else: 
                 print("\033[92mSecret: UNLOCKED! You entered @:/\\:@")
