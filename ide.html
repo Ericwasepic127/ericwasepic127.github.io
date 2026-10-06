@@ -61,7 +61,7 @@
     <script src="./window.js"></script>
     <p id="red"><a href="/index.html">Back to homepage</a> | <a href="/hello.html">Go to REPL version</a> | <a href="/host.html" id="x">Go to multi-file editor</a></p>
     <hr>
-    <p>SUPY3IDE Version: <strong>V7.6.6</strong></p>
+    <p>SUPY3IDE Version: <strong>V7.7.5</strong></p>
     <hr>
     <details id="tools">
         <summary>Toolbox</summary>
@@ -190,7 +190,6 @@
           workerIs.toggleAttribute('worker', true);
           workerIs.id = `executer`
           workerIs.setAttribute('config', getPy(window.pyVer));
-          //window.pyVer = undefined;
           workerIs.type = "py";
           w.insertAdjacentElement("afterend", workerIs);
           w.remove();
@@ -910,7 +909,22 @@
             for task in pending:
                 task.cancel()
             print("\033[95m=======\033[92mEND\033[95m=======\033[0m\n")
-            
+
+
+    def getSize(fd=None):
+        """Gets terminal size for PyScript, on XTerm.js"""
+        send = 'import __main__ as m\nfrom pyscript import document as d\nconnect = m.connect\nval = d.getElementById("executer").terminal\nconnect.sendmsg(f"{val.cols};{val.rows}")'
+        s = connect.getmsg
+        connect.sendmsg(send)
+        while connect.getmsg == s:
+            time.sleep(.1)
+        try:
+            r = os.terminal_size([int(i) for i in connect.getmsg.split(";")] or fd)
+        except:
+            r = os.terminal_size(fd or [80, 24])
+        connect.getmsg = s
+        return r
+    os.get_terminal_size = getSize        
         
     builtins.input = _input
     connect = m2w.Worker()
