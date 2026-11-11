@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="0; url=https://supy3.onrender.com/hello.html" />
-  <title>Redirecting...</title>
+  <title>Redirecting</title>
+  <script>
+    // Redirect, preserving any query string
+    const query = window.location.search;
+    window.location.href = 'https://supy3.onrender.com/hello.html' + query;
+  </script>
 </head>
 <body>
-  <p>Redirecting to <a href="https://supy3.onrender.com/hello.html">new URL</a>...</p>
+  <p>Redirecting to the page...</p>
+  <p>If not redirected, click <a href="https://supy3.onrender.com/hello.html">here</a></p>
 </body>
 </html>
